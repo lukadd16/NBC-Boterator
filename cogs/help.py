@@ -56,15 +56,15 @@ class NewHelpCog(commands.Cog):
             embed.set_footer(text=self.bot.config.BOT_FOOTER)
             await ctx.send(embed=embed)
 
-    @nhelp.command(enabled=False)
+    @help.command(enabled=False)
     async def choose(self, ctx):
         pass
 
-    @nhelp.command(enabled=False)
+    @help.command(enabled=False)
     async def roll(self, ctx):
         pass
 
-    @nhelp.command(aliases=["botinfo", "info"])
+    @help.command(aliases=["botinfo", "info"])
     async def about(self, ctx):
         cmd = self.bot.get_command('about')
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
@@ -85,7 +85,7 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @nhelp.command(aliases=["av"])
+    @help.command(aliases=["av"])
     async def avatar(self, ctx):
         cmd = self.bot.get_command('avatar')
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
@@ -107,7 +107,7 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @nhelp.command(aliases=["version", "whatsnew"])
+    @help.command(aliases=["version", "whatsnew"])
     async def changelog(self, ctx):
         cmd = self.bot.get_command('changelog')
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
@@ -127,7 +127,7 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @nhelp.command()
+    @help.command()
     async def ping(self, ctx):
         cmd = self.bot.get_command('ping')
 
@@ -145,7 +145,7 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @nhelp.command(aliases=["sinfo"], enabled=False)
+    @help.command(aliases=["sinfo"], enabled=False)
     async def serverinfo(self, ctx):
         cmd = self.bot.get_command('serverinfo')
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
@@ -165,7 +165,7 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @nhelp.command()
+    @help.command()
     async def suggest(self, ctx):
         cmd = self.bot.get_command('suggest')
 
@@ -183,7 +183,7 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @nhelp.command(aliases=["userinfo", "uinfo"])
+    @help.command(aliases=["userinfo", "uinfo"])
     async def whois(self, ctx):
         cmd = self.bot.get_command('whois')
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
@@ -204,7 +204,7 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @nhelp.command(enabled=True)
+    @help.command(enabled=False)
     async def ban(self, ctx):
         cmd = self.bot.get_command('ban')
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
@@ -226,7 +226,7 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @nhelp.command()
+    @help.command()
     async def kick(self, ctx):
         cmd = self.bot.get_command('kick')
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
