@@ -1,0 +1,26 @@
+# Python Environments/Compiler Files
+env/
+__pycache__
+*.pyc
+
+# IDE Files
+.vscode/
+tox.ini
+
+# Config File (we want to hide our token)
+# Example file will be added in the future
+config.py
+config.example.py
+
+# Bot Logs
+logs/
+*.log
+
+# Personal Notes
+Archive/
+2020 Bot To-Do.txt
+New Bot Version History.txt
+README_EXAMPLE.md
+labeler.yml
+
+# Deprecated cogs/features
