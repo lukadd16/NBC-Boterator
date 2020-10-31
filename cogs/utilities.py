@@ -6,11 +6,12 @@
 # - Figure out how to handle which channel to send logs to
 
 import discord
-import platform
-import sys
-import time
 import os
 import logging
+import platform
+import psutil
+import sys
+import time
 
 from utils import botUtils
 from datetime import datetime
@@ -48,8 +49,13 @@ class UtilitiesCog(commands.Cog):
         web_latency = self.bot.latency * 1000
 
         # Total users and guilds the bot can see
-        total_users = len(self.bot.users)  # NOT NEEDED
-        total_guilds = len(self.bot.guilds)  # NOT NEEDED
+        # total_users = len(self.bot.users)  # NOT NEEDED
+        # total_guilds = len(self.bot.guilds)  # NOT NEEDED
+
+        pid = os.getpid()
+        py = psutil.Process(pid)
+        bot_memory_usage = round(py.memory_info()[0]/(10**6), 2)
+        # print('memory use:', memoryUse)
 
         embed = discord.Embed(
             title='Bot Info',
@@ -65,7 +71,6 @@ class UtilitiesCog(commands.Cog):
             value='`Lukadd.16#8870`',
             inline=True
         )
-        # See .txt file for full proposals for this command, something like Pre-Release | V0.XX
         embed.add_field(
             name='Bot Version:',
             value=f'`{self.bot.config.BOT_VERSION}`',
@@ -77,23 +82,8 @@ class UtilitiesCog(commands.Cog):
             inline=True
         )
         embed.add_field(
-            name='User Count: ',
-            value=f'`{total_users}`',
-            inline=True
-        )
-        embed.add_field(
             name='Python Version: ',
             value=f'`{p_version}`',
-            inline=True
-        )
-        embed.add_field(
-            name='Websocket Ping: ',
-            value='`{:.2f}ms`'.format(web_latency),
-            inline=True
-        )
-        embed.add_field(  # No longer needed
-            name='Guild Count: ',
-            value=f'`{total_guilds}`',
             inline=True
         )
         embed.add_field(
@@ -101,7 +91,21 @@ class UtilitiesCog(commands.Cog):
             value=f'`Discord.py {d_version}`',
             inline=True
         )
-        # Use psutils here?
+        embed.add_field(
+            name='Websocket Ping: ',
+            value='`{:.2f}ms`'.format(web_latency),
+            inline=True
+        )
+        embed.add_field(
+            name='RAM Usage: ',
+            value=f'`{bot_memory_usage} MB`',
+            inline=True
+        )
+        embed.add_field(
+            name='PLACEHOLDER: ',
+            value=f'`placeholder`',
+            inline=True
+        )
         embed.add_field(
             name='Server OS: ',
             value=f'`{platform.system()}`',
