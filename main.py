@@ -12,6 +12,7 @@ import time
 
 from discord.ext import commands, tasks
 from datetime import datetime
+from utils import botUtils
 
 # Github master branch will be our public branch, I'm not gonna bother having two folders locally (except for maybe archival purposes)
 # This local copy will be our beta branch, any changes made (after the initial commit) should be pushed to the beta/dev branch on github
@@ -50,7 +51,9 @@ class NBCBoterator(commands.Bot):
             reconnect=True
         )
 
+        self.app_info = None
         self.config = config
+        self.myutils = botUtils
         self.status_channel = None
         self.log_channel = None
         self.log_file_name = None
@@ -164,8 +167,8 @@ class NBCBoterator(commands.Bot):
 
     # Perform a few tasks when the bot is ready to accept commands
     async def on_ready(self):
-        # Fetch bot info, this feature may be deprecated, look into it.
-        await self.application_info()
+        # Retrieve application info from Discord
+        self.app_info = await self.application_info()
 
         # Retrieve the IDs for the discord logging and status channels from our
         # config file and assign them to a previously declared class variable
