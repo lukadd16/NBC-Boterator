@@ -23,8 +23,9 @@ def convert_seconds_friendly(second):
     return "%02dd %02dh %02dm %02ds" % (days, hours, minutes, seconds)
 
 # Meant for when passing raw datetimes that include year, month, day, etc.
-def convert_time_friendly():
-    pass
+# Formatting: Mon, Jul 27, 2020 17:44 PM GMT
+def get_time_friendly(time):
+    return time.strftime("%a, %b %d, %Y %H:%M %p")
 
 # In weeks format for whois and serverinfo, maybe rename it to something else
 # def get_time_friendly():
