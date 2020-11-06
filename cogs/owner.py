@@ -71,6 +71,17 @@ class OwnerCog(commands.Cog):
         else:
             await ctx.send('**`SUCCESS`**')
 
+    # Reloads the bot's botUtils module into memory
+    @commands.command()
+    @commands.is_owner()
+    async def reloadutils(self, ctx):
+        try:
+            importlib_reload(botUtils)
+        except Exception as e:
+            await ctx.send(f'**`ERROR`** {type(e).__name__} - {e}')
+        else:
+            await ctx.send('**`SUCCESS`**')
+
     # Reload all cogs + config file, useful when pushing non-breaking changes
     # to the production server that span across multiple cogs
     @commands.command(aliases=["reload_all", "rall"])
