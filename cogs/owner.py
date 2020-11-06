@@ -11,15 +11,9 @@ import traceback
 from contextlib import redirect_stdout  # From ModMail, not sure exactly its purpose
 from datetime import datetime
 from discord.ext import commands
-from importlib import reload as importlib_reload  # Taken from ModMail Source Code, allows a previously imported *module* to be reloaded (like cogs) without having to restart the bot
+from importlib import reload as importlib_reload
 from utils import botUtils
-from typing import Optional  # Found from ModMail, allows for an optional arg in a function w/o having to put it at the end of all the other args
-
-# From ModMail, for use in the eval command
-def cleanup_code(content):
-    if content.startswith("```") and content.endswith("```"):
-        return "\n".join(content.split("\n")[1:-1])
-    return content.strip("` \n")
+from typing import Optional  # Allows for optional arguments
 
 class OwnerCog(commands.Cog):
     def __init__(self, bot):
@@ -95,70 +89,6 @@ class OwnerCog(commands.Cog):
             await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
         else:
             await ctx.send('**`SUCCESS`**')
-
-    # Taken from ModMail Source, invoke a command as another user (and optionally in another channel)
-    # Useful for testing commands that behave differently depending on the
-    # properties of the invoker (such as permissions or having a role)
-    @commands.command()
-    @commands.is_owner()
-    async def invoke(self, ctx, channel: Optional[discord.TextChannel], user: discord.User, *, command: str):
-        msg = copy.copy(ctx.message)
-        channel = channel or ctx.channel  # Take user inputted channel first, if not found then default to the current channel
-        msg.channel = channel
-        msg.author = channel.guild.get_member(user.id) or user
-        msg.content = ctx.prefix + command
-        new_ctx = await self.bot.get_context(msg, cls=type(ctx))
-        await self.bot.invoke(new_ctx)
-
-    # Taken from ModMail Source, evaluates code passed from within the discord
-    # client (it would be a good idea to look this over and try to understand what each part does)
-    # TODO: For some reason it causes the bot to shutdown after reacting to the message
-    @commands.command(aliases=['eval'], enabled=False)
-    @commands.is_owner()
-    async def _eval(self, ctx, *, body: str):
-        env = {
-            "bot": self.bot,
-            "ctx": ctx,
-            "channel": ctx.channel,
-            "author": ctx.author,
-            "guild": ctx.guild,
-            "message": ctx.message,
-            "_": self._last_result,
-        }
-        env.update(globals())
-        body = cleanup_code(body)
-        stdout = io.StringIO()
-        to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
-        try:
-            exec(to_compile, env)
-
-        except Exception as e:
-            return await ctx.send(embed=discord.Embed(description=f"```py\n{e.__class__.__name__}: {e}\n```", colour=self.bot.primary_colour,))
-        func = env["func"]
-
-        try:
-            with redirect_stdout(stdout):
-                ret = await func()
-
-        except Exception:
-            value = stdout.getvalue()
-            await ctx.send(embed=discord.Embed(description=f"```py\n{value}{traceback.format_exc()}\n```", colour=self.bot.error_colour,))
-
-        else:
-            value = stdout.getvalue()
-            try:
-                await ctx.message.add_reaction("✅")
-
-            except discord.Forbidden:
-                pass
-
-            if ret is None:
-                if value:
-                    await ctx.send(embed=discord.Embed(descrption=f"```py\n{value}\n```", colour=self.bot.primary_colour))
-
-            else:
-                self._last_result = ret
-                await ctx.send(embed=discord.Embed(description=f"```py\n{value}{ret}\n```", colour=self.bot.primary_colour))
 
     # Gracefully shutdown the bot; calculate and report uptime
     @commands.command(aliases=["kill", "terminate"])
