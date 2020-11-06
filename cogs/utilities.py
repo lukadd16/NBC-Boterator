@@ -13,7 +13,6 @@ import psutil
 import sys
 import time
 
-from utils import botUtils
 from datetime import datetime
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
@@ -37,25 +36,17 @@ class UtilitiesCog(commands.Cog):
         d_version = discord.__version__
         p_version = sys.version[0:5]
 
-        # Get bots' total uptime (as a good skill, should try to put this into its own method)
+        # Get bots' total uptime
         delta_uptime = datetime.utcnow() - self.bot.launch_time
-        # hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
-        # minutes, seconds = divmod(remainder, 60)
-        # days, hours = divmod(hours, 24)
-
-        friendly_uptime = botUtils.convert_seconds_friendly(delta_uptime.total_seconds())
+        friendly_uptime = self.bot.myutils.convert_seconds_friendly(delta_uptime.total_seconds())
 
         # Calculate websocket latency
         web_latency = self.bot.latency * 1000
 
-        # Total users and guilds the bot can see
-        # total_users = len(self.bot.users)  # NOT NEEDED
-        # total_guilds = len(self.bot.guilds)  # NOT NEEDED
-
+        # Calculate bot python process memory usage
         pid = os.getpid()
         py = psutil.Process(pid)
         bot_memory_usage = round(py.memory_info()[0]/(10**6), 2)
-        # print('memory use:', memoryUse)
 
         embed = discord.Embed(
             title='Bot Info',
@@ -202,7 +193,7 @@ class UtilitiesCog(commands.Cog):
         if member is None:
             member = ctx.author
 
-        member_join_position = botUtils.get_join_position(ctx, member)
+        member_join_position = self.bot.myutils.get_join_position(ctx, member)
         msg = f"*{member.name}* is member `#{member_join_position}` "\
               f"(out of {len(ctx.guild.members)})"
 
@@ -305,23 +296,19 @@ class UtilitiesCog(commands.Cog):
         user_createdate = discord.utils.snowflake_time(member.id)
 
         # Convert account creation time to readable format
-        user_createdate_friendly = user_createdate.strftime(
-            "%a, %b %d, %Y %H:%M %p"
-        )
+        user_createdate_friendly = self.bot.myutils.get_time_friendly(user_createdate)
 
         # Convert guild join time to readable format
-        member_joindate_friendly = member.joined_at.strftime(
-            "%a, %b %d, %Y %H:%M %p"
-        )
+        member_joindate_friendly = self.bot.myutils.get_time_friendly(member.joined_at)
 
         # Returns member's join position out of total guild members
-        member_join_position = botUtils.get_join_position(ctx, member)
+        member_join_position = self.bot.myutils.get_join_position(ctx, member)
 
         # Function will return an emoji if the user is a bot;
-        bot_identify = botUtils.do_bot_check(member)
+        bot_identify = self.bot.myutils.do_bot_check(member)
 
         # Function will return an emoji based on user's set status
-        status_emoji = botUtils.get_member_status(member)
+        status_emoji = self.bot.myutils.get_member_status(member)
 
         # Subtract by 1 to omit the @everyone role
         member_role_sum = len(member.roles) - 1
@@ -345,10 +332,10 @@ class UtilitiesCog(commands.Cog):
 
         embed = discord.Embed(
             title=f'User Info – ``{member.name}#{member.discriminator}``'
-                  f'{status_emoji}',
-            description=f'{member.mention + bot_identify}',
-            colour=self.bot.config.BOT_COLOUR
-            # timestamp=datetime.now()
+                  f'{status_emoji}{bot_identify}',
+            description=f'{member.mention}',
+            colour=self.bot.config.BOT_COLOUR,
+            timestamp=ctx.message.created_at
         )
         embed.set_author(
             name=self.bot.config.BOT_AUTHOR_CLICK,
