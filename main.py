@@ -58,7 +58,7 @@ class NBCBoterator(commands.Bot):
         self.log_channel = None
         self.log_file_name = None
         self.launch_time = datetime.utcnow()
-        self.cmdcount = 0  # Not being used
+        # self.cmdcount = 0  # Not being used
         self.bot_status = None
         self.db_ready = False
         self.db = None  # May or may not need this for SQL database, will need to figure out how to set db to be global here
@@ -149,7 +149,7 @@ class NBCBoterator(commands.Bot):
         except discord.LoginFailure:
             self.logger.critical("Invalid Token")
         except Exception:
-            self.logger.critical("Fatal Exception", exc_info=True) # Need to look up what exc_info does
+            self.logger.critical("Fatal Exception", exc_info=True)  # Need to look up what exc_info does
         finally:
             # Insert other shutdown logic here (like the uptime calculator that will be moved to botUtils.py)
             self.logger.warning(">>>SHUTTING DOWN<<<")
