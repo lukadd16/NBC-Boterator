@@ -10,7 +10,6 @@ tox.ini
 # Config File (we want to hide our token)
 # Example file will be added in the future
 config.py
-config.example.py
 
 # Bot Logs
 logs/
