@@ -1,4 +1,4 @@
-# Description: Cog that creates a task which changes the bot's status every so often
+# Description: Cog that creates a task which changes the bot's status on a timed interval
 
 # TODO: Test that the presences are being changed in order
 
@@ -17,7 +17,6 @@ class StatusLoop(commands.Cog):
 
     async def set_presence(self):
         home_server = self.bot.get_guild(self.bot.config.HOME_SERVER_ID)
-        print("Setting presence...")
 
         presences = [
             discord.Activity(
@@ -53,7 +52,7 @@ class StatusLoop(commands.Cog):
 
         if self.presence_index == (len(presences) - 1):
             self.presence_index = 0
-            self.bot.logger.debug("Resetting counter")  # Never reaches this
+            self.bot.logger.debug("Resetting counter")
         else:
             self.presence_index += 1
             # self.bot.logger.debug(self.presence_index)
@@ -72,7 +71,6 @@ class StatusLoop(commands.Cog):
         # await self.set_presence()
 
         await asyncio.sleep(5)
-        print("Starting prsence loop.")
         self.bot.logger.debug("Starting presence loop.")
 
     # Could potentially get rid of this entire cog and replace it with an
