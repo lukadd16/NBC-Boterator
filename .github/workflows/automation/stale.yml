@@ -18,7 +18,7 @@ jobs:
         close-pr-message: 'This issue has been closed because it is stale. Reopen if necessary.'
         stale-issue-label: 'status: stale'
         stale-pr-label: 'status: stale'
-        exempt-issue-labels: 'status: in progress' # Any others?
-        exempt-pr-labels: '' # Any?
+        exempt-issue-labels: 'status: in progress'
+        exempt-pr-labels: ''
         days-before-stale: 30
         days-before-close: 5
