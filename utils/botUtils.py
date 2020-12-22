@@ -49,7 +49,7 @@ def get_member_status(member):
 # user is a bot or not; currently being used in the whois command
 def do_bot_check(member):
     if member.bot is True:
-        return f' {config.BOT_EMOJI_BTAG}'
+        return f'{config.BOT_EMOJI_BTAG}'
     else:
         return ''
 
