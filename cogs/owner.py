@@ -1,19 +1,9 @@
-# Description: Cog that houses owner only commands (cog related commmands inspired from EvieePy)
+# Description: Cog that houses owner only commands (inspired by EvieePy)
 
-import asyncio
-import copy  # Found from ModMail, does what its name implies, it copies a an object unlike an assignment statement which only points to the other variable
-import discord
-import io
-import textwrap
-import time
-import traceback
-
-from contextlib import redirect_stdout  # From ModMail, not sure exactly its purpose
 from datetime import datetime
 from discord.ext import commands
 from importlib import reload as importlib_reload
 from utils import botUtils
-from typing import Optional  # Allows for optional arguments
 
 class OwnerCog(commands.Cog):
     def __init__(self, bot):
