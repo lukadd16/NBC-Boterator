@@ -112,8 +112,6 @@ class OwnerCog(commands.Cog):
         print("\n[BT] Disconnected Gracefully")
         await self.bot.logout()
 
-    # Add other cool owner commands from ModMail Source
-
     # If and when DB is added, manual SQL execution command can be put here
 
 def setup(bot):
