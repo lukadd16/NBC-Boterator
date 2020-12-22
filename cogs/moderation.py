@@ -34,13 +34,14 @@ class ModCog(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(manage_messages=True)
     @commands.has_permissions(manage_messages=True)
-    async def purge(self, ctx, purge_amount: int):
+    async def purge(self, ctx, purge_amount: int):  # TODO: Remove "Purge Confirm" & "Purge Complete" messages and move that field's value to description
 
         # reason = f'Purge issued by user {ctx.author} (ID: {ctx.author.id})'
 
         if purge_amount == 0:
-            # Not sure why I made the error messages like this, ERROR should be in the title
             embed = discord.Embed(
+                title='ERROR',
+                description='You cannot delete 0 messages, nice try.',
                 colour=self.bot.config.BOT_ERR_COLOUR
             )
             embed.set_author(
@@ -48,11 +49,11 @@ class ModCog(commands.Cog):
                 url=self.bot.config.BOT_URL,
                 icon_url=self.bot.user.avatar_url
             )
-            embed.add_field(
-                name='ERROR',
-                value='You cannot delete 0 messages, nice try.',
-                inline=False
-            )
+            # embed.add_field(
+            #     name='ERROR',
+            #     value='You cannot delete 0 messages, nice try.',
+            #     inline=False
+            # )
             embed.set_footer(
                 text=self.bot.config.BOT_FOOTER
             )
@@ -69,6 +70,8 @@ class ModCog(commands.Cog):
 
         elif purge_amount < 0:
             embed = discord.Embed(
+                title='ERROR',
+                description='You cannot delete a negative number of messages, nice try.',
                 colour=self.bot.config.BOT_ERR_COLOUR
             )
             embed.set_author(
@@ -76,11 +79,11 @@ class ModCog(commands.Cog):
                 url=self.bot.config.BOT_URL,
                 icon_url=self.bot.user.avatar_url
             )
-            embed.add_field(
-                name='ERROR',
-                value='You cannot delete a negative number of messages, nice try.',
-                inline=False
-            )
+            # embed.add_field(
+            #     name='ERROR',
+            #     value='You cannot delete a negative number of messages, nice try.',
+            #     inline=False
+            # )
             embed.set_footer(
                 text=self.bot.config.BOT_FOOTER
             )
@@ -93,6 +96,9 @@ class ModCog(commands.Cog):
 
         elif purge_amount >= 100:
             embed = discord.Embed(
+                title='ERROR',
+                description='For security reasons you cannot delete more than 100'
+                            'messages at a time, please try again.',
                 colour=self.bot.config.BOT_ERR_COLOUR
             )
             embed.set_author(
@@ -100,12 +106,12 @@ class ModCog(commands.Cog):
                 url=self.bot.config.BOT_URL,
                 icon_url=self.bot.user.avatar_url
             )
-            embed.add_field(
-                name='ERROR',
-                value='For security reasons you cannot delete more than 100'
-                      'messages at a time, please try again.',
-                inline=False
-            )
+            # embed.add_field(
+            #     name='ERROR',
+            #     value='For security reasons you cannot delete more than 100'
+            #           'messages at a time, please try again.',
+            #     inline=False
+            # )
             embed.set_footer(
                 text=f'Actioned by {ctx.author.name}#{ctx.author.discriminator}',
                 icon_url=(ctx.author.avatar_url)
