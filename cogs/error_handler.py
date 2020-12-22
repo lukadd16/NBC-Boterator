@@ -31,41 +31,41 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send(
                 f"You missed the `{error.param}` parameter. Run `{ctx.prefix}"
-                f"help {ctx.command}` for more information on how to use this command."
+                f"help {ctx.command}` for more information on how to use this command."  # TODO: CHANGE WORD "MISSED"
             )
 
         if isinstance(error, commands.TooManyArguments):
-            return await ctx.send(f"You passed too many arguments to the command `{ctx.command}`. Run `{ctx.prefix}help {ctx.command}` for more information on how to use this command.")
+            return await ctx.send(f"You passed too many arguments to the command `{ctx.invoked_with}`. Run `{ctx.prefix}help {ctx.command}` for more information on how to use this command.")
 
         if isinstance(error, commands.BadArgument):
-            return await ctx.send(f"You passed a bad argument to the command `{ctx.command}`.")
+            return await ctx.send(f"You passed a bad argument to the command `{ctx.invoked_with}`.")
 
         if isinstance(error, commands.CommandNotFound):
             return
 
         if isinstance(error, commands.PrivateMessageOnly):
-            return await ctx.send(f"The command `{ctx.command}` can only be used in DMs.")
+            return await ctx.send(f"The command `{ctx.invoked_with}` can only be used in DMs.")
 
         if isinstance(error, commands.NoPrivateMessage):
             try:
-                return await ctx.send(f"The command `{ctx.command}` cannot be used in DMs.")
+                return await ctx.send(f"The command `{ctx.invoked_with}` cannot be used in DMs. Please try again in a public channel.")
             except discord.Forbidden:
                 return
 
         if isinstance(error, commands.NotOwner):
-            return await ctx.send(f"The command `{ctx.command}` can only be used by my owner.")
+            return await ctx.send(f"The command `{ctx.invoked_with}` can only be used by my owner `{self.bot.app_info.owner.name}#{self.bot.app_info.owner.discriminator}`.")  #TODO: ADD VARIABLE(S) THAT RETRIEVE MY USERNAME#DISCRIM
 
         if isinstance(error, commands.MissingPermissions):
             missing_perms = ""
             for perm in error.missing_perms:
                 missing_perms += f"\n> {perm}"
-            return await ctx.send(f"You don't have the following permissions required to run the command `{ctx.command}`.\n{missing_perms}")
+            return await ctx.send(f"You don't have the following permissions required to run the command `{ctx.invoked_with}`:\n{missing_perms}")  # TODO: CHANGE WORDING
 
         if isinstance(error, commands.BotMissingPermissions):
             missing_perms = ""
             for perm in error.missing_perms:
                 missing_perms += f"\n> {perm}"
-            return await ctx.send(f"I am missing the following permissions to run the command `{ctx.command}`.\n{missing_perms}")
+            return await ctx.send(f"Uh oh! I am missing some discord permissions needed to run the command `{ctx.invoked_with}`. Please ensure that the following perms are enabled on my role:\n{missing_perms}")
 
         if isinstance(error, commands.DisabledCommand):
             return await ctx.send(f"The command `{ctx.command}` is currently disabled.")
