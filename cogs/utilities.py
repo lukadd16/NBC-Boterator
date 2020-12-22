@@ -382,7 +382,7 @@ class UtilitiesCog(commands.Cog):
         await ctx.channel.send(embed=embed)
 
     # WIP
-    @commands.command(aliases=["sinfo"], enabled=True)
+    @commands.command(aliases=["sinfo"], enabled=False)
     @commands.guild_only()
     async def serverinfo(self, ctx):
         embed = discord.Embed(
@@ -407,10 +407,10 @@ class UtilitiesCog(commands.Cog):
         )
         await ctx.channel.send(embed=embed)
 
-    # Users are only allowed to use this command once every 5 minutes
-    # Way to reset the cooldown if they trigger an error?
+    # Users are only allowed to use this command once every 30 seconds
+    # TODO: Should add JSON file + ability to blacklist users from sending suggestions (then do the same for global cmd blacklist)
     @commands.command()
-    @commands.cooldown(1, 300, type=BucketType.user)
+    @commands.cooldown(1, 30, type=BucketType.user)
     @commands.guild_only()
     async def suggest(self, ctx, *, user_suggestion: str):
         suggest_channel = self.bot.get_channel(
@@ -431,7 +431,7 @@ class UtilitiesCog(commands.Cog):
                 text=self.bot.config.BOT_FOOTER
             )
             await ctx.channel.send(embed=embed)
-            # Reset the cooldown for the user to allow them to try again
+            # Reset the cmd cooldown for the user to allow them to try again
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -440,7 +440,8 @@ class UtilitiesCog(commands.Cog):
                 title='SUCCESS',
                 description='Your suggestion for the developer has been '
                             'received!\nThank you for contributing to the bot.',
-                colour=self.bot.config.BOT_SUCCESS_COLOUR
+                colour=self.bot.config.BOT_SUCCESS_COLOUR,
+                # timestamp=ctx.message.created_at
             )
             embed.set_author(
                 name=self.bot.config.BOT_AUTHOR_CLICK,
@@ -448,16 +449,17 @@ class UtilitiesCog(commands.Cog):
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
-                text=f'Sent by {ctx.author.name}#{ctx.author.discriminator}',
+                text=f'Invoked by {ctx.author.name}#{ctx.author.discriminator}',
                 icon_url=ctx.author.avatar_url
             )
             await ctx.message.delete()
             await ctx.channel.send(embed=embed)
 
-        # Info about the user who sent in the suggestion
+        # Record about the user who sent the suggestion
         embed = discord.Embed(
             title='NEW SUGGESTION',
-            colour=self.bot.config.BOT_COLOUR
+            colour=self.bot.config.BOT_COLOUR,
+            timestamp=ctx.message.created_at
         )
         embed.set_author(
             name=self.bot.config.BOT_AUTHOR_NAME,
@@ -467,9 +469,9 @@ class UtilitiesCog(commands.Cog):
         embed.add_field(
             name='Details:',
             value=f'User: `{ctx.author.name}#{ctx.author.discriminator}` '
-                  f'(ID: {ctx.author.id})'
-                  f'\nChannel: `#{ctx.channel.name}` (ID: {ctx.channel.id})'
-                  f'\nServer: `{ctx.guild.name}` (ID: {ctx.guild.id})',
+                  f'(ID: `{ctx.author.id}`)'
+                  f'\nChannel: `#{ctx.channel.name}` (ID: `{ctx.channel.id}`)'
+                  f'\nServer: `{ctx.guild.name}` (ID: `{ctx.guild.id}`)',
             inline=False
         )
         embed.add_field(
@@ -478,12 +480,15 @@ class UtilitiesCog(commands.Cog):
             inline=False
         )
         embed.set_footer(
-            text=f'Sent by {ctx.author.name}#{ctx.author.discriminator}',
+            text=f'Suggested by {ctx.author.name}#{ctx.author.discriminator}',
             icon_url=ctx.author.avatar_url
         )
-        await suggest_channel.send(embed=embed)
+        suggest_msg = await suggest_channel.send(embed=embed)
 
         # Add checkmark and reject reactions to the message after it has sent (for the public to vote on)
+
+        await suggest_msg.add_reaction(self.bot.config.BOT_EMOJI_UPVOTE)
+        await suggest_msg.add_reaction(self.bot.config.BOT_EMOJI_DOWNVOTE)
 
 def setup(bot):
     bot.add_cog(UtilitiesCog(bot))
