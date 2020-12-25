@@ -20,5 +20,5 @@ Provide a summary here, can be as short as the title or longer.
 ### Describe alternatives you've considered
 <!-- A clear and concise description of any alternative solutions or features you've considered. -->
 
-### Screenshots
-<!-- Add any other context/screenshots/videos about the feature request here. -->
+### Additional Context
+<!-- Add any context, screenshots, videos, etc. about the feature request here. -->
