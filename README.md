@@ -11,12 +11,16 @@ Note on how to make documentation suggestions/changes? (would be commented out l
 
 
 <!-- PROJECT SHIELDS -->
+[![Discord][discord-shield]][discord-url]
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
+[![Pull Requests][pr-shield]][pr-url]
 [![MIT License][license-shield]][license-url]
-[![Discord][discord-shield]][discord-url]
+![GitHub Repository Size][repo-size-shield]
+[![Latest Release][release-shield]][release-url]
+![Maintenance][maintain-shield]
 
 
 
@@ -224,6 +228,11 @@ Repository Link: [https://github.com/lukadd16/NBC-Boterator](https://github.com/
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+<!-- [discord-shield]: https://img.shields.io/discord/667059292125265941?style=flat-square -->
+<!-- [discord-shield]: https://img.shields.io/discord/667059292125265941?color=7289DA&logo=discord&logoColor=ffffff&style=flat-square -->
+[discord-shield]: https://discord.com/api/guilds/667059292125265941/widget.png
+[discord-url]: https://discord.gg/Wzv2BVQ
 [contributors-shield]: https://img.shields.io/github/contributors/lukadd16/NBC-Boterator.svg?style=flat-square
 [contributors-url]: https://github.com/lukadd16/NBC-Boterator/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/lukadd16/NBC-Boterator.svg?style=flat-square
@@ -232,9 +241,12 @@ Repository Link: [https://github.com/lukadd16/NBC-Boterator](https://github.com/
 [stars-url]: https://github.com/lukadd16/NBC-Boterator/stargazers
 [issues-shield]: https://img.shields.io/github/issues/lukadd16/NBC-Boterator.svg?style=flat-square
 [issues-url]: https://github.com/lukadd16/NBC-Boterator/issues
+[pr-shield]: https://img.shields.io/github/issues-pr/lukadd16/NBC-Boterator?style=flat-square
+[pr-url]: https://github.com/lukadd16/NBC-Boterator/pulls
 [license-shield]: https://img.shields.io/github/license/lukadd16/NBC-Boterator.svg?style=flat-square
-[license-url]: https://github.com/lukadd16/NBC-Boterator/blob/master/LICENSE.txt
-<!-- [discord-shield]: https://img.shields.io/discord/667059292125265941?style=flat-square -->
-<!-- [discord-shield]: https://img.shields.io/discord/667059292125265941?color=7289DA&logo=discord&logoColor=ffffff&style=flat-square -->
-[discord-shield]: https://discord.com/api/guilds/667059292125265941/widget.png
-[discord-url]: https://discord.gg/Wzv2BVQ
+[license-url]: https://github.com/lukadd16/NBC-Boterator/blob/master/LICENSE
+[repo-size-shield]: https://img.shields.io/github/repo-size/lukadd16/NBC-Boterator?style=flat-square
+<!--[repo-url]: https://github.com/lukadd16/NBC-Boterator-->
+[release-shield]: https://img.shields.io/github/v/release/lukadd16/NBC-Boterator?sort=semver&style=flat-square
+[release-url]: https://github.com/lukadd16/NBC-Boterator/releases
+[maintain-shield]: https://img.shields.io/maintenance/yes/2020?style=flat-square
