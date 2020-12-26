@@ -1,24 +1,27 @@
 ---
 name: "📤 Feature request"
-about: Request a feature that you think should be implemented into the bot
+about: Suggest a feature to be implemented into the bot
 title: ''
 labels: 'type: enhancement, status: needs triage'
 assignees: 'lukadd16'
-
 ---
 
-# Feature Request
+## Summary
 
-Provide a summary here, can be as short as the title or longer.
+<!-- Provide a brief summary here, can be as short as the title or longer. -->
 
-### Is your feature request related to a problem? Please describe.
-<!-- A clear and concise description of what the problem is. Ex. I'm always frustrated when... -->
+## The Problem
 
-### Describe the ideal solution
-<!-- A clear and concise description of what you want to happen. -->
+<!-- What problem is your feature trying to solve? What becomes easier or possible when this feature is implemented? -->
 
-### Describe alternatives you've considered
-<!-- A clear and concise description of any alternative solutions or features you've considered. -->
+## The Current Solution
 
-### Additional Context
-<!-- Add any context, screenshots, videos, etc. about the feature request here. -->
+<!-- If applicable, how does the project in its current state handle the problem? -->
+
+## The Ideal Solution
+
+<!-- What is your ideal solution to the problem? What would you like this feature to do? -->
+
+## Additional Context
+
+<!-- Add any screenshots, videos, etc. relating to the feature request here. -->
