@@ -39,9 +39,9 @@ Note on how to make documentation suggestions/changes? (would be commented out l
     <a href="https://github.com/lukadd16/NBC-Boterator"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/lukadd16/NBC-Boterator/issues">Report a Bug</a>
+    <a href="https://github.com/lukadd16/NBC-Boterator/issues/new/choose">Report a Bug</a>
     ·
-    <a href="https://github.com/lukadd16/NBC-Boterator/issues">Request a Feature</a>
+    <a href="https://github.com/lukadd16/NBC-Boterator/issues/new/choose">Request a Feature</a>
     ·
     <a href="https://github.com/lukadd16/NBC-Boterator/compare">Open a Pull Request</a>
   </p>
