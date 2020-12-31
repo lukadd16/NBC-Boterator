@@ -28,7 +28,6 @@ BOT_EMOJI_UPVOTE =
 BOT_EMOJI_DOWNVOTE =
 
 # Embed Constants
-BOT_VERSION = "V1.0.0"
 BOT_FEATURES = "Initial Release"
 BOT_URL = "http://northbridgecafe.tk"
 BOT_AUTHOR_NAME = "NBC Boterator"
