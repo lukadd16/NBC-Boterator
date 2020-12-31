@@ -7,14 +7,11 @@ class NewHelpCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # Change bullet points to code blocks with > arrows?
-
-    # Add prefix+commandname as a title, change author to botname Help Menu (much easier, all sub commands will have this as author and can be changed easily via config.py)
-
-    # NBC Specific Cmd Ideas:
+    # TODO: NBC-specific CMD Ideas
     # - website (sends a link to our website + other socials?)
-    # - (not specific to NBC but) a staff team command or just a "members in @role"
-    # - Make moderation commands more useful and optimized, if I can ever make something as sophisticated as localbot then we would switch over.
+    # - A "list staff team" command or just a "members in @role"
+    # - Make moderation commands more useful and optimized, if I ever make
+    #   something as sophisticated as localbot then we would switch over.
     # - Add simple VC mute and deafen commands
     # - Add simple nickname change command
     # - At some point move custom commands over to this bot
@@ -45,7 +42,8 @@ class NewHelpCog(commands.Cog):
             )
             embed.add_field(
                 name="Utility Commands [6]",
-                value="`about`, `avatar`, `changelog`, `ping`, `suggest`, `whois`",
+                value="`about`, `avatar`, `changelog`, `ping`, `suggest`, "
+                      "`whois`",
                 inline=False
             )
             embed.add_field(
@@ -72,7 +70,8 @@ class NewHelpCog(commands.Cog):
         embed = discord.Embed(
             title=f"{self.bot.config.BOT_PREFIX}{cmd.name}",
             description="Retrieves relevant information about me "
-                        "(uptime, library, etc.)\n\n**Type:** Utility"
+                        "(uptime, library, etc.)"
+                        "\n\n**Type:** Utility"
                         f"\n**Usage:** `{self.bot.config.BOT_PREFIX}about`"
                         f"\n**Aliases:** {cmd_aliases}",
             colour=self.bot.config.BOT_COLOUR
@@ -93,9 +92,11 @@ class NewHelpCog(commands.Cog):
         embed = discord.Embed(
             title=f"{self.bot.config.BOT_PREFIX}{cmd.name}",
             description=f"Outputs an enlarged version of a specified user's "
-                        "profile picture\n\n**Type:** Utility"
+                        "profile picture"
+                        "\n\n**Type:** Utility"
                         f"\n**Usage:** `{self.bot.config.BOT_PREFIX}avatar "
-                        f"<user>`\n**Aliases:** {cmd_aliases}"
+                        f"<user>`"
+                        f"\n**Aliases:** {cmd_aliases}"
                         f"\n{self.bot.config.BOT_HELP_USER_ARG}",
             colour=self.bot.config.BOT_COLOUR
         )
@@ -113,9 +114,10 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
-            description=f"Learn what's new with this version of the bot\n\n"
-                        "**Type:** Utility\n"
-                        f"**Usage:** `{self.bot.config.BOT_PREFIX}{cmd.name}`"
+            description=f"Learn what's new with this version of the bot"
+                        "\n\n**Type:** Utility"
+                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"{cmd.name}`"
                         f"\n**Aliases:** {cmd_aliases}",
             colour=self.bot.config.BOT_COLOUR
         )
@@ -132,9 +134,10 @@ class NewHelpCog(commands.Cog):
         cmd = self.bot.get_command('ping')
 
         embed = discord.Embed(
-            description=f"Tests my connection to Discord\n\n"
-                        "**Type:** Utility\n"
-                        f"**Usage:** `{self.bot.config.BOT_PREFIX}{cmd.name}`",
+            description=f"Tests my connection to Discord"
+                        "\n\n**Type:** Utility"
+                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"{cmd.name}`",
             colour=self.bot.config.BOT_COLOUR
         )
         embed.set_author(
@@ -151,9 +154,10 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
-            description=f"Retrieves information about this server\n\n"
-                        "**Type:** Utility\n"
-                        f"**Usage:** `{self.bot.config.BOT_PREFIX}{cmd.name}`"
+            description=f"Retrieves information about this server"
+                        "\n\n**Type:** Utility"
+                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"{cmd.name}`"
                         f"\n**Aliases:** {cmd_aliases}",
             colour=self.bot.config.BOT_COLOUR
         )
@@ -170,9 +174,12 @@ class NewHelpCog(commands.Cog):
         cmd = self.bot.get_command('suggest')
 
         embed = discord.Embed(
-            description=f"Allows you to report a bug or suggest ideas for new commands/improvements to existing ones. Your response is sent directly to the developer.\n\n"
-                        "**Type:** Utility\n"
-                        f"**Usage:** `{self.bot.config.BOT_PREFIX}{cmd.name} <yoursuggestion>`",
+            description=f"Allows you to report a bug or suggest ideas for new "
+                        "commands/improvements to existing ones. Your "
+                        "response is sent directly to the developer."
+                        "\n\n**Type:** Utility"
+                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"{cmd.name} <yoursuggestion>`",
             colour=self.bot.config.BOT_COLOUR
         )
         embed.set_author(
@@ -189,11 +196,13 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
-            description=f"Retrieves relevant information about a specified user in this server\n\n"
-                        "**Type:** Utility\n"
-                        f"**Usage:** `{self.bot.config.BOT_PREFIX}{cmd.name} <user>`\n"
-                        f"**Aliases:** {cmd_aliases}\n"
-                        f"{self.bot.config.BOT_HELP_USER_ARG}",
+            description=f"Retrieves relevant information about a specified "
+                        "user in the server"
+                        "\n\n**Type:** Utility"
+                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"{cmd.name} <user>`"
+                        f"\n**Aliases:** {cmd_aliases}"
+                        f"\n{self.bot.config.BOT_HELP_USER_ARG}",
             colour=self.bot.config.BOT_COLOUR
         )
         embed.set_author(
@@ -210,11 +219,12 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
-            description=f"Bans a specified user from your server.\n\n"
-                        "**Type:** Moderation\n"
-                        f"**Usage:** `{self.bot.config.BOT_PREFIX}{cmd.name} <userID or mention> <reason> <days>`\n"
-                        f"**Aliases:** {cmd_aliases}\n"
-                        f"{self.bot.config.BOT_HELP_REASON_ARG}"
+            description=f"Bans a specified user from the server."
+                        "\n\n**Type:** Moderation"
+                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"{cmd.name} <userID or mention> <reason> <days>`"
+                        f"\n**Aliases:** {cmd_aliases}"
+                        f"\n{self.bot.config.BOT_HELP_REASON_ARG}"
                         f"{self.bot.config.BOT_HELP_BAN_ARG}",
             colour=self.bot.config.BOT_COLOUR
         )
@@ -232,11 +242,12 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
-            description=f"Kicks a specified user from your server.\n\n"
-                        "**Type:** Moderation\n"
-                        f"**Usage:** `{self.bot.config.BOT_PREFIX}{cmd.name} <userID or mention> <reason>`\n"
-                        f"**Aliases:** {cmd_aliases}\n"
-                        f"{self.bot.config.BOT_HELP_REASON_ARG}",
+            description=f"Kicks a specified user from the server."
+                        "\n\n**Type:** Moderation"
+                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"{cmd.name} <userID or mention> <reason>`"
+                        f"\n**Aliases:** {cmd_aliases}"
+                        f"\n{self.bot.config.BOT_HELP_REASON_ARG}",
             colour=self.bot.config.BOT_COLOUR
         )
         embed.set_author(
@@ -247,7 +258,8 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    # Continue to add moderation help subcommands, include a "usage" thing for perm requirements
+    # TODO: Continue to add moderation help subcommands,
+    #       include a "usage" tag for permission requirements
 
 def setup(bot):
     bot.add_cog(NewHelpCog(bot))
