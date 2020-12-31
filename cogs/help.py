@@ -47,8 +47,8 @@ class NewHelpCog(commands.Cog):
                 inline=False
             )
             embed.add_field(
-                name="Moderation Commands [5]",
-                value="`ban`, `kick`, `purge`, `softban`, `unban`",
+                name="Moderation Commands [4]",
+                value="`ban`, `kick`, `purge`, `unban`",
                 inline=False
             )
             embed.set_footer(text=self.bot.config.BOT_FOOTER)
