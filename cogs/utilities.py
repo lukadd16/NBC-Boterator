@@ -1,13 +1,7 @@
 # Description: Cog that houses utilities commands for NBC Boterator
 
-# Logging ideas:
-# - Log bulk deletes regardless of what bot they are from (if they are from jarvis then log event differently because the perpetrator would be known)
-# - Log role mentions (see link bookmarked in toolbar that refers to discord.Message, see if can intertwine this with on_message event)
-# - Figure out how to handle which channel to send logs to
-
 import discord
 import os
-import logging
 import platform
 import psutil
 import sys
@@ -17,7 +11,8 @@ from datetime import datetime
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
 
-# TODO: figure out how I can get different named loggers for each cog that all use the same file
+# TODO: figure out how can get different named loggers for each cog that
+#       all still use the same file
 # logger = logging.getLogger("JB.main")
 
 class UtilitiesCog(commands.Cog):
@@ -114,7 +109,8 @@ class UtilitiesCog(commands.Cog):
     # they are specifying, then they are allowed to use this command
     @commands.command(aliases=["announcement"], enabled=False)
     @commands.guild_only()
-    async def announce(self, ctx, target_channel: discord.TextChannel, *, user_message: str):
+    async def announce(self, ctx, target_channel: discord.TextChannel, *,
+                       user_message: str):
         embed = discord.Embed(
             description=f'{user_message}',
             colour=self.bot.config.BOT_COLOUR

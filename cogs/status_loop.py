@@ -1,4 +1,4 @@
-# Description: Cog that creates a task which changes the bot's status on a timed interval
+# Description: Cog that creates a task to change bot status on a timed interval
 
 # TODO: Test that the presences are being changed in order
 
@@ -13,7 +13,7 @@ class StatusLoop(commands.Cog):
         self.bot = bot
         self.presence_index = 0  # For use in the counted loop
         self.presence_updater.start()  # Ignore the error, it works
-        # self.home_server = bot.get_guild(bot.config.HOME_SERVER_ID)  # CBA to figure this out
+        # self.home_server = bot.get_guild(bot.config.HOME_SERVER_ID)
 
     async def set_presence(self):
         home_server = self.bot.get_guild(self.bot.config.HOME_SERVER_ID)
@@ -72,33 +72,6 @@ class StatusLoop(commands.Cog):
 
         await asyncio.sleep(5)
         self.bot.logger.debug("Starting presence loop.")
-
-    # Could potentially get rid of this entire cog and replace it with an
-    # events cog (for updating bot's stats to listing sites maybe?)
-    # async def activity_updater(self):
-    #     await self.bot.wait_until_ready()
-    #     while True:
-    #         if self.activity_index + 1 >= len(self.bot.config.activity):
-    #             self.activity_index = 0
-    #         else:
-    #             self.activity_index = self.activity_index + 1
-    #         await self.bot.change_presence(
-    #             activity=discord.Game(
-    #                 name=self.bot.config.activity[self.activity_index]
-    #             )
-    #         )
-    #         await asyncio.sleep(12)
-
-    # def cog_unload(self):
-    #     self.bot.change_status.cancel()
-
-    # @change_status.before_loop
-    # async def before_change_status(self):
-    #     await self.bot.wait_until_ready()
-
-    # @change_status.after_loop
-    # async def after_change_status(self):
-    #     await self.bot.change_status()
 
 def setup(bot):
     bot.add_cog(StatusLoop(bot))
