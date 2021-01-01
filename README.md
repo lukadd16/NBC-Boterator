@@ -249,4 +249,4 @@ Repository Link: [https://github.com/lukadd16/NBC-Boterator](https://github.com/
 <!--[repo-url]: https://github.com/lukadd16/NBC-Boterator-->
 [release-shield]: https://img.shields.io/github/v/release/lukadd16/NBC-Boterator?sort=semver&style=flat-square
 [release-url]: https://github.com/lukadd16/NBC-Boterator/releases
-[maintain-shield]: https://img.shields.io/maintenance/yes/2020?style=flat-square
+[maintain-shield]: https://img.shields.io/maintenance/yes/2021?style=flat-square
