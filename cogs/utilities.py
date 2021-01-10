@@ -133,7 +133,7 @@ class UtilitiesCog(commands.Cog):
         )
 
         embed = discord.Embed(
-            title=f'Avatar – ``{member.name}#{member.discriminator}``',
+            title=f'Avatar – `{member.name}#{member.discriminator}`',
             description=member.mention,
             colour=self.bot.config.BOT_COLOUR
         )
@@ -239,8 +239,8 @@ class UtilitiesCog(commands.Cog):
         # :.2f cuts latency values down to two decimal places
         embed.add_field(
             name="Pong!",
-            value='Message Round Trip: ``{:.2f}ms``'
-                  '\nDiscord Websocket: ``{:.2f}ms``'.format(
+            value='Message Round Trip: `{:.2f}ms`'
+                  '\nDiscord Websocket: `{:.2f}ms`'.format(
                       duration, web_latency
                   )
         )
@@ -321,7 +321,7 @@ class UtilitiesCog(commands.Cog):
         # that has a colour other than the default invisible one
 
         embed = discord.Embed(
-            title=f'User Info – ``{member.name}#{member.discriminator}``'
+            title=f'User Info – `{member.name}#{member.discriminator}`'
                   f'{status_emoji}{bot_identify}',
             description=f'{member.mention}',
             colour=self.bot.config.BOT_COLOUR,
