@@ -81,7 +81,12 @@ class OwnerCog(commands.Cog):
         else:
             await ctx.send('**`SUCCESS`**')
 
-    # Gracefully shutdown the bot; calculate and report uptime
+    # TODO: Add args to this cmd, takes status & reason, displays these
+    #       in an elegant embed that contains status emojis, etc.
+    # TODO: Convert keyboard interrupt event to embed as well
+    # TODO: Then add owner command (name TBD) with same embed structure & args
+    #       but for use in announcing planned downtime, known issues, etc.
+    # Gracefully shutdown the bot; calculate & report uptime
     @commands.command(aliases=["kill", "terminate"])
     @commands.is_owner()
     async def shutdown(self, ctx):
@@ -89,13 +94,12 @@ class OwnerCog(commands.Cog):
         await self.bot.status_channel.send(
             f"`{self.bot.user}` has been disconnected"
         )
-        # Very hacky way of doing it but it'll do for now
+
+        # Calculate time elapsed since boot
         delta_uptime = datetime.utcnow() - self.bot.launch_time
         delta_uptime_seconds = delta_uptime.total_seconds()
 
-        # hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
-        # minutes, seconds = divmod(remainder, 60)
-        # days, hours = divmod(hours, 24)
+        # Call conversion method & report uptime
         await self.bot.status_channel.send(
             'Total Uptime was: '
             f'`{botUtils.convert_seconds_friendly(delta_uptime_seconds)}`'
