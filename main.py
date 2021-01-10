@@ -153,6 +153,9 @@ class NBCBoterator(commands.Bot):
             self.logger.critical(
                 "Keyboard Interrupt Detected"
             )
+            self.loop.run_until_complete(
+                self.bot_close()  # TODO: Test this
+            )
         except discord.LoginFailure:
             self.logger.critical(
                 "Invalid Token"
@@ -201,6 +204,8 @@ class NBCBoterator(commands.Bot):
             activity=self.default_presence
         )
 
+        # TODO: Convert to elegant embed as described in owner cog
+        #       Since connecting, emoji will be "online"
         await self.status_channel.send(
             f"`{self.user}` has successfully connected to Discord"
         )
