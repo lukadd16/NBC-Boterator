@@ -4,8 +4,8 @@
 
 import config
 
-# Used in error_handler.py cooldown calculation, takes seconds as input and
-# converts it into more understandable days, hours, minutes and seconds format
+# Used in cmd cooldown + bot uptime calculation, takes seconds as input and
+# converts it into user friendly DD-HH-MM-SS format
 def convert_seconds_friendly(second):
     minute, second = divmod(second, 60)
     hour, minute = divmod(minute, 60)
