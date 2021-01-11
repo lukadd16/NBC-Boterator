@@ -28,15 +28,19 @@ BOT_EMOJI_UPVOTE =
 BOT_EMOJI_DOWNVOTE =
 
 # Embed Constants
-BOT_FEATURES = "Initial Release"
-BOT_URL = "http://northbridgecafe.tk"
 BOT_AUTHOR_NAME = "NBC Boterator"
 BOT_AUTHOR_CLICK = "Click to visit our website!"
-BOT_OLDFOOTER = "This bot was created by @Lukadd.16#8870, please DM him if you have any bugs or issues to report."
+BOT_FEATURES = "Initial Release"
 BOT_FOOTER = f"Found a bug/have an idea? Send it to the dev with {BOT_PREFIX}suggest"
 BOT_HELP_USER_ARG = "```Argument is optional but if specified must be a: @mention, userID, or username#discriminator```"
 BOT_HELP_REASON_ARG = "```Optional reason argument is a message that will be appended in the server audit log for other moderators to see, if none is provided, a default one will be used.```"
 BOT_HELP_BAN_ARG = "```Optional days argument is how many days prior (to a max of 7) that the bot will delete messages sent by the specified user.```"
+
+# Links
+BOT_GITHUB_HOME = "https://github.com/lukadd16/NBC-Boterator"
+BOT_GITHUB_LATEST = "https://github.com/lukadd16/NBC-Boterator/releases/latest"
+BOT_YOUTUBE_CHANNEL = "https://www.youtube.com/channel/UCg0rmRJpWFPJPVQF6FfgBVw"
+BOT_URL = "http://northbridgecafe.tk"
 
 # Embed Colours
 BOT_COLOUR = 0x1cc2ff
