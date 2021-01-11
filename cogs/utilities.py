@@ -49,11 +49,11 @@ class UtilitiesCog(commands.Cog):
                         "the purpose of making everyone's lives easier. It's "
                         "fairly barebones feature-wise right now, but that'll "
                         "change as development continues."
-                        f"\n{self.bot.config.BOT_EMOJI_GITHUB} **[GitHub]"
+                        f"\n\n{self.bot.config.BOT_EMOJI_GITHUB} **[GitHub]"
                         f"({self.bot.config.BOT_GITHUB_HOME})**"
                         f"\n{self.bot.config.BOT_EMOJI_YOUTUBE} **[YouTube Channel]"
                         f"({self.bot.config.BOT_YOUTUBE_CHANNEL})**"
-                        f"{self.bot.config.BOT_EMOJI_CLOUD} **[Website (WIP)]"
+                        f"\n{self.bot.config.BOT_EMOJI_CLOUD} **[Website (WIP)]"
                         f"({self.bot.config.BOT_URL})**",
             colour=self.bot.config.BOT_COLOUR
         )
