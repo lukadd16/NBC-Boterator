@@ -18,6 +18,9 @@ from discord.ext.commands.cooldowns import BucketType
 class UtilitiesCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.suggest_channel = self.bot.get_channel(
+            self.bot.config.SUGGEST_CHANNEL_ID
+        )
 
     @commands.command(aliases=["botinfo", "info"])
     async def about(self, ctx):
@@ -406,9 +409,6 @@ class UtilitiesCog(commands.Cog):
     @commands.cooldown(1, 30, type=BucketType.user)
     @commands.guild_only()
     async def suggest(self, ctx, *, user_suggestion: str):
-        suggest_channel = self.bot.get_channel(
-            self.bot.config.SUGGEST_CHANNEL_ID
-        )
         if len(user_suggestion) >= 512:
             embed = discord.Embed(
                 title='ERROR',
@@ -477,7 +477,7 @@ class UtilitiesCog(commands.Cog):
             text=f'Suggested by {ctx.author.name}#{ctx.author.discriminator}',
             icon_url=ctx.author.avatar_url
         )
-        suggest_msg = await suggest_channel.send(embed=embed)
+        suggest_msg = await self.suggest_channel.send(embed=embed)
 
         # To allow public participation
         await suggest_msg.add_reaction(self.bot.config.BOT_EMOJI_UPVOTE)
