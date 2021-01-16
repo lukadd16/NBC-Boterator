@@ -89,7 +89,7 @@ class CommandErrorHandler(commands.Cog):
                 missing_perms += f"\n> {perm}"
             await ctx.send(
                 "You are missing the following permissions required to run "
-                f"the command `{ctx.invoked_with}`:\n{missing_perms}"
+                f"the command `{ctx.invoked_with}`:{missing_perms}"
             )
 
         elif isinstance(error, commands.BotMissingPermissions):
@@ -100,7 +100,7 @@ class CommandErrorHandler(commands.Cog):
                 f"Uh oh! I am missing some discord permissions needed to "
                 f"execute the command `{ctx.invoked_with}`. Please ensure "
                 "that the following perms are enabled on my role:"
-                f"\n{missing_perms}"
+                f"{missing_perms}"
             )
 
         elif isinstance(error, commands.DisabledCommand):
