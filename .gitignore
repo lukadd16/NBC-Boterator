@@ -5,7 +5,6 @@ __pycache__
 
 # IDE Files
 .vscode/
-tox.ini
 
 # Config File (we want to hide our token)
 # Example file will be added in the future

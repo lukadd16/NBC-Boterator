@@ -1,0 +1,18 @@
+[flake8]
+count = True
+show-source = True
+statistics = True
+select =
+    E9,
+    F63,
+    F7,
+    F82
+ignore =
+    E226,
+    E302,
+    E41
+exclude =
+    config.py,
+    config.example.py
+max-line-length = 79
+max-complexity = 10
