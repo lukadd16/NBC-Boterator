@@ -41,14 +41,14 @@ class NewHelpCog(commands.Cog):
                 inline=False
             )
             embed.add_field(
-                name="Utility Commands [6]",
-                value="`about`, `avatar`, `changelog`, `ping`, `suggest`, "
-                      "`whois`",
+                name="Utility Commands [7]",
+                value="`about`, `avatar`, `changelog`, `joinpos`, `ping`, "
+                      "`suggest`, `whois`",
                 inline=False
             )
             embed.add_field(
-                name="Moderation Commands [4]",
-                value="`ban`, `kick`, `purge`, `unban`",
+                name="Moderation Commands [1]",
+                value="`purge`",
                 inline=False
             )
             embed.set_footer(text=self.bot.config.BOT_FOOTER)
@@ -62,14 +62,14 @@ class NewHelpCog(commands.Cog):
     async def roll(self, ctx):
         pass
 
-    @help.command(aliases=["botinfo", "info"])
+    @help.command()
     async def about(self, ctx):
-        cmd = self.bot.get_command('about')
+        cmd = self.bot.get_command("about")
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
             title=f"{self.bot.config.BOT_PREFIX}{cmd.name}",
-            description="Retrieves relevant information about me "
+            description="Retrieves relevant information about the bot "
                         "(uptime, library, etc.)"
                         "\n\n**Type:** Utility"
                         f"\n**Usage:** `{self.bot.config.BOT_PREFIX}about`"
@@ -84,9 +84,9 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @help.command(aliases=["av"])
+    @help.command()
     async def avatar(self, ctx):
-        cmd = self.bot.get_command('avatar')
+        cmd = self.bot.get_command("avatar")
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
@@ -108,9 +108,9 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @help.command(aliases=["version", "whatsnew"])
+    @help.command()
     async def changelog(self, ctx):
-        cmd = self.bot.get_command('changelog')
+        cmd = self.bot.get_command("changelog")
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
@@ -131,7 +131,7 @@ class NewHelpCog(commands.Cog):
 
     @help.command()
     async def ping(self, ctx):
-        cmd = self.bot.get_command('ping')
+        cmd = self.bot.get_command("ping")
 
         embed = discord.Embed(
             description=f"Tests my connection to Discord"
@@ -148,9 +148,9 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @help.command(aliases=["sinfo"], enabled=False)
+    @help.command(enabled=False)
     async def serverinfo(self, ctx):
-        cmd = self.bot.get_command('serverinfo')
+        cmd = self.bot.get_command("serverinfo")
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
@@ -171,12 +171,13 @@ class NewHelpCog(commands.Cog):
 
     @help.command()
     async def suggest(self, ctx):
-        cmd = self.bot.get_command('suggest')
+        cmd = self.bot.get_command("suggest")
 
         embed = discord.Embed(
             description=f"Allows you to report a bug or suggest ideas for new "
                         "commands/improvements to existing ones. Your "
-                        "response is sent directly to the developer."
+                        "response will be sent in "
+                        f"{self.bot.config.SUGGEST_CHANNEL_ID}."
                         "\n\n**Type:** Utility"
                         f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
                         f"{cmd.name} <yoursuggestion>`",
@@ -192,7 +193,7 @@ class NewHelpCog(commands.Cog):
 
     @help.command(aliases=["userinfo", "uinfo"])
     async def whois(self, ctx):
-        cmd = self.bot.get_command('whois')
+        cmd = self.bot.get_command("whois")
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
@@ -215,14 +216,14 @@ class NewHelpCog(commands.Cog):
 
     @help.command(enabled=False)
     async def ban(self, ctx):
-        cmd = self.bot.get_command('ban')
+        cmd = self.bot.get_command("ban")
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
             description=f"Bans a specified user from the server."
                         "\n\n**Type:** Moderation"
                         f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
-                        f"{cmd.name} <userID or mention> <reason> <days>`"
+                        f"{cmd.name} [userID or @mention] <reason> <days>`"
                         f"\n**Aliases:** {cmd_aliases}"
                         f"\n{self.bot.config.BOT_HELP_REASON_ARG}"
                         f"{self.bot.config.BOT_HELP_BAN_ARG}",
@@ -236,16 +237,16 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @help.command()
+    @help.command(enabled=False)
     async def kick(self, ctx):
-        cmd = self.bot.get_command('kick')
+        cmd = self.bot.get_command("kick")
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
             description=f"Kicks a specified user from the server."
                         "\n\n**Type:** Moderation"
                         f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
-                        f"{cmd.name} <userID or mention> <reason>`"
+                        f"{cmd.name} <userID or @mention> <reason>`"
                         f"\n**Aliases:** {cmd_aliases}"
                         f"\n{self.bot.config.BOT_HELP_REASON_ARG}",
             colour=self.bot.config.BOT_COLOUR
@@ -258,8 +259,31 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    # TODO: Continue to add moderation help subcommands,
-    #       include a "usage" tag for permission requirements
+    @help.command()
+    async def purge(self, ctx):
+        cmd = self.bot.get_command("purge")
+        cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
+
+        embed = discord.Embed(
+            description=f"Deletes a specified number of messages from the "
+                        "current channel."
+                        "\n\n**Type:** Moderation"
+                        "\n**Permissions:** Manage Messages"
+                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"{cmd.name} <# of messages to delete>`"
+                        f"\n**Aliases:** {cmd_aliases}"
+                        f"\n{self.bot.config.BOT_HELP_REASON_ARG}",
+            colour=self.bot.config.BOT_COLOUR
+        )
+        embed.set_author(
+            name=f"{self.bot.config.BOT_HELP_ANAME}",
+            url=self.bot.config.BOT_URL,
+            icon_url=self.bot.user.avatar_url
+        )
+        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        await ctx.send(embed=embed)
+
+    # TODO: Add a "permissions" tag that mentions requirements
 
 def setup(bot):
     bot.add_cog(NewHelpCog(bot))
