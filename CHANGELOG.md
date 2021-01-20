@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.0.3](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.0.2...v1.0.3) (2021-01-20)
+
+
+### Bug Fixes
+
+* **help:** Add help cmd for joinpos; Remove straggling aliases; Remove mention of reason arg in purge cmd ([ad9fba2](https://www.github.com/lukadd16/NBC-Boterator/commit/ad9fba2a1755d657337cb9f4c10dd5ca4a267ff3))
+
 ### [1.0.2](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.0.1...v1.0.2) (2021-01-16)
 
 
