@@ -130,6 +130,27 @@ class NewHelpCog(commands.Cog):
         await ctx.send(embed=embed)
 
     @help.command()
+    async def joinpos(self, ctx):
+        cmd = self.bot.get_command("joinpos")
+        cmd_alises = f"`{'`, `'.join(cmd.aliases)}`"
+
+        embed = discord.Embed(
+            description=f""
+                        "\n\n**Type:** Utility"
+                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"{cmd.name}`"
+                        f"\n**Aliases:** {cmd.aliases}",
+            colour=self.bot.config.BOT_COLOUR
+        )
+        embed.set_author(
+            name=f"{self.bot.config.BOT_HELP_ANAME}",
+            url=self.bot.config.BOT_URL,
+            icon_url=self.bot.user.avatar_url
+        )
+        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        await ctx.send(embed=embed)
+
+    @help.command()
     async def ping(self, ctx):
         cmd = self.bot.get_command("ping")
 
@@ -191,7 +212,7 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=self.bot.config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
-    @help.command(aliases=["userinfo", "uinfo"])
+    @help.command()
     async def whois(self, ctx):
         cmd = self.bot.get_command("whois")
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
@@ -271,8 +292,7 @@ class NewHelpCog(commands.Cog):
                         "\n**Permissions:** Manage Messages"
                         f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
                         f"{cmd.name} <# of messages to delete>`"
-                        f"\n**Aliases:** {cmd_aliases}"
-                        f"\n{self.bot.config.BOT_HELP_REASON_ARG}",
+                        f"\n**Aliases:** {cmd_aliases}",
             colour=self.bot.config.BOT_COLOUR
         )
         embed.set_author(
