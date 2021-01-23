@@ -96,10 +96,6 @@ class OwnerCog(commands.Cog):
         else:
             await ctx.send("**`SUCCESS`**")
 
-    # TODO: Convert keyboard interrupt event to embed as well
-    # TODO: Add owner command (name TBD) with same embed structure
-    #       & status + reason args but for use in announcing planned downtime,
-    #       known issues, etc.
     # Gracefully shutdown the bot; calculate & report uptime
     @commands.command(aliases=["kill", "terminate"])
     async def shutdown(self, ctx, *, reason: Optional[str] = None):
@@ -143,6 +139,41 @@ class OwnerCog(commands.Cog):
 
         print("\n[BT] Disconnected Gracefully")
         await self.bot.logout()
+
+    # Manually send status embed message for use when announcing planned
+    # downtime, known issues, etc.
+    @commands.command()
+    async def status(self, ctx, status: str, *, reason: str):
+        # TODO: Move to botUtils.py
+        if status.lower() == "online":
+            status = self.bot.config.BOT_EMOJI_ONLINE
+            embed_colour = self.bot.config.DISC_ONLINE_COLOUR
+        elif status.lower() == "idle":
+            status = self.bot.config.BOT_EMOJI_ONLINE
+            embed_colour = self.bot.config.DISC_IDLE_COLOUR
+        elif status.lower() == "dnd":
+            status = self.bot.config.BOT_EMOJI_ONLINE
+            embed_colour = self.bot.config.DISC_DND_COLOUR
+        elif status.lower() == "offline":
+            status = self.bot.config.BOT_EMOJI_ONLINE
+            embed_colour = self.bot.config.DISC_OFFLINE_COLOUR
+        elif status.lower() == "stream":
+            status = self.bot.config.BOT_EMOJI_ONLINE
+            embed_colour = self.bot.config.DISC_STREAM_COLOUR
+        else:
+            raise commands.BadArgument()
+
+        embed = discord.Embed(
+            title=f"Status: {status}",
+            description=f"{reason}",
+            colour=embed_colour,
+            timestamp=ctx.message.created_at
+        )
+        embed.set_footer(
+            text="NBC Boterator Dev Team",
+            icon_url=self.bot.icon_url
+        )
+        await self.bot.status_channel.send(embed=embed)
 
     # If and when DB is added, manual SQL execution command can be put here
 
