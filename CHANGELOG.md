@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.1.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.0.2...v1.1.0) (2021-01-23)
+
+
+### Features
+
+* **owner:** New 'status' cmd that allows bot owner to send embeds in the status channel ([ec4c30e](https://www.github.com/lukadd16/NBC-Boterator/commit/ec4c30e852ce4ff7f4deb374253d125794a79e10))
+* **owner:** Restructure reload cmds using subcmds; rename methods; change owner check to be global to the cog ([f90e4f7](https://www.github.com/lukadd16/NBC-Boterator/commit/f90e4f7c991b1da34b833032fcd68e6bece3b0f6))
+
+
+### Bug Fixes
+
+* **help:** Add help cmd for joinpos; Remove straggling aliases; Remove mention of reason arg in purge cmd ([ad9fba2](https://www.github.com/lukadd16/NBC-Boterator/commit/ad9fba2a1755d657337cb9f4c10dd5ca4a267ff3))
+* **main:** Convert bootup and keyboard interrupt status messages to embeds ([cb627f7](https://www.github.com/lukadd16/NBC-Boterator/commit/cb627f7945a1a0ad9ed2e35c4a0328b20a8653d2))
+* **main:** Fix calling await within non-async function ([ed9802c](https://www.github.com/lukadd16/NBC-Boterator/commit/ed9802c1eb616d1109d6794c6817e3aba51fb3de))
+* **main:** icon_url is an attribute of app_info not the NBCBoterator class ([f2ddf45](https://www.github.com/lukadd16/NBC-Boterator/commit/f2ddf454dd9d5890e8447ee81a0fe4d692c41091))
+* **main:** Use botUtils.py function for calculating uptime in shutdown triggered by keyboard interrupt ([4013369](https://www.github.com/lukadd16/NBC-Boterator/commit/4013369a4271a667cea460e06e2d4421d122a19c))
+* **owner:** *sigh* icon_url is invalid, meant to use avatar_url ([8b19202](https://www.github.com/lukadd16/NBC-Boterator/commit/8b1920296e60ea6b28c2293a1a65355df1672bf8))
+* **owner:** *sighs again* Forgot to name intended emoji after copy-paste ([106ec33](https://www.github.com/lukadd16/NBC-Boterator/commit/106ec339b3cd26a3aeac40ae8b50bb27aae0c1e5))
+* **owner:** Add 'reason' field to shutdown embed ([c160cba](https://www.github.com/lukadd16/NBC-Boterator/commit/c160cba5b7b1664eba98e2597373ca247d8483c7))
+* **owner:** Convert status channel response for shutdowns to embed ([0dcbdbc](https://www.github.com/lukadd16/NBC-Boterator/commit/0dcbdbcb79cfaf0ee08643624bb9fb2edb207fb2))
+* **owner:** Fix stupid mistakes with subcmd decorators; Move cog logic within creload to its own subcmd ([bc967b0](https://www.github.com/lukadd16/NBC-Boterator/commit/bc967b0b2356d1533fdd505531b79314293e091a))
+* **owner:** icon_url is an attribute of user not bot ([8c2965c](https://www.github.com/lukadd16/NBC-Boterator/commit/8c2965c246284fad0463a215bc69c2f9e6d66766))
+
 ### [1.0.2](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.0.1...v1.0.2) (2021-01-16)
 
 
