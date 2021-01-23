@@ -1,5 +1,7 @@
 # Description: Cog that houses owner-only commands (inspired by EvieePy)
 
+import discord
+
 from datetime import datetime
 from discord.ext import commands
 from importlib import reload as importlib_reload
@@ -91,28 +93,46 @@ class OwnerCog(commands.Cog):
         else:
             await ctx.send("**`SUCCESS`**")
 
-    # TODO: Add args to this cmd, takes status & reason, displays these
-    #       in an elegant embed that contains status emojis, etc.
     # TODO: Convert keyboard interrupt event to embed as well
-    # TODO: Then add owner command (name TBD) with same embed structure & args
-    #       but for use in announcing planned downtime, known issues, etc.
+    # TODO: Add owner command (name TBD) with same embed structure
+    #       & status + reason args but for use in announcing planned downtime,
+    #       known issues, etc.
     # Gracefully shutdown the bot; calculate & report uptime
     @commands.command(aliases=["kill", "terminate"])
-    async def shutdown(self, ctx):
+    async def shutdown(self, ctx, reason: Optional[str] = None):
         await ctx.send("Shutting down...")
-        await self.bot.status_channel.send(
-            f"`{self.bot.user}` has been disconnected"
-        )
+
+        if reason is None:
+            reason = "Manual Shutdown Triggered - No reason provided"
 
         # Calculate time elapsed since boot
         delta_uptime = datetime.utcnow() - self.bot.launch_time
         delta_uptime_seconds = delta_uptime.total_seconds()
 
-        # Call conversion method & report uptime
-        await self.bot.status_channel.send(
-            "Total Uptime was: "
-            f"`{botUtils.convert_seconds_friendly(delta_uptime_seconds)}`"
+        # Convert delta into human readable format
+        total_uptime = botUtils.convert_seconds_friendly(delta_uptime_seconds)
+
+        # Report uptime & shutdown
+        embed = discord.Embed(
+            title=f"Status: {self.bot.config.BOT_EMOJI_OFFLINE}",
+            description=f"{reason}",
+            colour=self.bot.config.DISC_OFFLINE_COLOUR,
+            timestamp=ctx.message.created_at
         )
+        # embed.set_thumbnail(
+        #     url=self.bot.avatar_url
+        # )
+        embed.add_field(
+            name="Total Uptime was:",
+            value=f"{total_uptime}",
+            inline=True
+        )
+        embed.set_footer(
+            text="NBC Boterator Dev Team",
+            icon_url=self.bot.icon_url
+        )
+        await ctx.channel.send(embed=embed)
+
         print("\n[BT] Disconnected Gracefully")
         await self.bot.logout()
 
