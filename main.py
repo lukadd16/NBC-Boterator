@@ -1,7 +1,5 @@
 # Project Name: NBC Boterator
 # Author: Lukadd.16#8870
-# Changelog: 1.0.0 - Initial Release, heavily based upon my now defunct
-#                    JARVIS Bot Project
 
 import config
 import discord
@@ -35,10 +33,11 @@ if not os.path.exists(log_dir):
 #       Create new file at each boot up? Or implement "rotating" logger where
 #       new log file is created whenever old one reaches certain size or age.
 
-# Define required Discord API intents
+# Define Discord API intents that the bot needs
 intents = discord.Intents.default()
 intents.members = True
 intents.presences = True
+
 
 class NBCBoterator(commands.Bot):
     def __init__(self):
@@ -129,18 +128,22 @@ class NBCBoterator(commands.Bot):
         # self.connect()
 
     def bot_close(self):
-        self.status_channel.send(
+        await self.status_channel.send(
             f"`{self.user}` has been manually interrupted via keystroke"
         )
+
+        # Calculate time elapsed since boot
         delta_uptime = datetime.utcnow() - self.launch_time
-        hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
-        minutes, seconds = divmod(remainder, 60)
-        days, hours = divmod(hours, 24)
-        self.status_channel.send(
-            f"Total Uptime was: `{days}d, {hours}h, {minutes}m, {seconds}s`"
+        delta_uptime_seconds = delta_uptime.total_seconds()
+
+        # Call conversion method & report uptime
+        await self.bot.status_channel.send(
+            "Total Uptime was: "
+            f"`{botUtils.convert_seconds_friendly(delta_uptime_seconds)}`"
         )
+
         print("\n[BT] Interrupt Shutdown Successful")
-        self.logout()
+        await self.logout()
 
     def run(self):
         try:
