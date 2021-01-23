@@ -118,13 +118,18 @@ class OwnerCog(commands.Cog):
         # Report uptime & shutdown
         embed = discord.Embed(
             title=f"Status: {self.bot.config.BOT_EMOJI_OFFLINE}",
-            description=f"{reason}",
+            description=f"`{self.bot.user}` has been disconnected",
             colour=self.bot.config.DISC_OFFLINE_COLOUR,
             timestamp=ctx.message.created_at
         )
         # embed.set_thumbnail(
         #     url=self.bot.avatar_url
         # )
+        embed.add_field(
+            name="Reason:",
+            value=f"{reason}",
+            inline=True
+        )
         embed.add_field(
             name="Total Uptime was:",
             value=f"{total_uptime}",
@@ -134,7 +139,7 @@ class OwnerCog(commands.Cog):
             text="NBC Boterator Dev Team",
             icon_url=self.bot.icon_url
         )
-        await ctx.channel.send(embed=embed)
+        await self.bot.status_channel.send(embed=embed)
 
         print("\n[BT] Disconnected Gracefully")
         await self.bot.logout()
