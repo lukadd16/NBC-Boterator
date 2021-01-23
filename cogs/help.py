@@ -132,14 +132,14 @@ class NewHelpCog(commands.Cog):
     @help.command()
     async def joinpos(self, ctx):
         cmd = self.bot.get_command("joinpos")
-        cmd_alises = f"`{'`, `'.join(cmd.aliases)}`"
+        cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
             description=f""
                         "\n\n**Type:** Utility"
                         f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
                         f"{cmd.name}`"
-                        f"\n**Aliases:** {cmd.aliases}",
+                        f"\n**Aliases:** {cmd_aliases}",
             colour=self.bot.config.BOT_COLOUR
         )
         embed.set_author(
