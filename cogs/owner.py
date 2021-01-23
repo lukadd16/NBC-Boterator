@@ -149,16 +149,16 @@ class OwnerCog(commands.Cog):
             status = self.bot.config.BOT_EMOJI_ONLINE
             embed_colour = self.bot.config.DISC_ONLINE_COLOUR
         elif status.lower() == "idle":
-            status = self.bot.config.BOT_EMOJI_ONLINE
+            status = self.bot.config.BOT_EMOJI_IDLE
             embed_colour = self.bot.config.DISC_IDLE_COLOUR
         elif status.lower() == "dnd":
-            status = self.bot.config.BOT_EMOJI_ONLINE
+            status = self.bot.config.BOT_EMOJI_DND
             embed_colour = self.bot.config.DISC_DND_COLOUR
         elif status.lower() == "offline":
-            status = self.bot.config.BOT_EMOJI_ONLINE
+            status = self.bot.config.BOT_EMOJI_OFFLINE
             embed_colour = self.bot.config.DISC_OFFLINE_COLOUR
         elif status.lower() == "stream":
-            status = self.bot.config.BOT_EMOJI_ONLINE
+            status = self.bot.config.BOT_EMOJI_STREAM
             embed_colour = self.bot.config.DISC_STREAM_COLOUR
         else:
             raise commands.BadArgument()
