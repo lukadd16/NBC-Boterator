@@ -156,7 +156,7 @@ class NBCBoterator(commands.Bot):
         )
         embed.set_footer(
             text="NBC Boterator Dev Team",
-            icon_url=self.icon_url
+            icon_url=self.app_info.icon_url
         )
         await self.status_channel.send(embed=embed)
 
@@ -234,7 +234,7 @@ class NBCBoterator(commands.Bot):
         )
         embed.set_footer(
             text="NBC Boterator Dev Team",
-            icon_url=self.icon_url
+            icon_url=self.app_info.icon_url
         )
         await self.status_channel.send(embed=embed)
 
