@@ -128,19 +128,37 @@ class NBCBoterator(commands.Bot):
         # self.connect()
 
     async def bot_close(self):
-        await self.status_channel.send(
-            f"`{self.user}` has been manually interrupted via keystroke"
-        )
-
         # Calculate time elapsed since boot
         delta_uptime = datetime.utcnow() - self.launch_time
         delta_uptime_seconds = delta_uptime.total_seconds()
 
-        # Call conversion method & report uptime
-        await self.bot.status_channel.send(
-            "Total Uptime was: "
-            f"`{botUtils.convert_seconds_friendly(delta_uptime_seconds)}`"
+        # Convert delta into human readable format
+        total_uptime = botUtils.convert_seconds_friendly(delta_uptime_seconds)
+
+        reason = "Manual Shutdown Triggered Via Keyboard Interrupt"
+
+        # Report uptime & shutdown
+        embed = discord.Embed(
+            title=f"Status: {self.config.BOT_EMOJI_OFFLINE}",
+            description=f"`{self.user}` has been disconnected",
+            colour=self.config.DISC_OFFLINE_COLOUR,
+            timestamp=datetime.utcnow()
         )
+        embed.add_field(
+            name="Reason:",
+            value=f"{reason}",
+            inline=True
+        )
+        embed.add_field(
+            name="Total Uptime was:",
+            value=f"{total_uptime}",
+            inline=True
+        )
+        embed.set_footer(
+            text="NBC Boterator Dev Team",
+            icon_url=self.icon_url
+        )
+        await self.status_channel.send(embed=embed)
 
         print("\n[BT] Interrupt Shutdown Successful")
         await self.logout()
@@ -207,11 +225,18 @@ class NBCBoterator(commands.Bot):
             activity=self.default_presence
         )
 
-        # TODO: Convert to elegant embed as described in owner cog
-        #       Since connecting, emoji will be "online"
-        await self.status_channel.send(
-            f"`{self.user}` has successfully connected to Discord"
+        # Report bootup to status channel
+        embed = discord.Embed(
+            title=f"Status: {self.config.BOT_EMOJI_ONLINE}",
+            description=f"`{self.user}` has successfully connected to Discord",
+            colour=self.config.DISC_ONLINE_COLOUR,
+            timestamp=datetime.utcnow()
         )
+        embed.set_footer(
+            text="NBC Boterator Dev Team",
+            icon_url=self.icon_url
+        )
+        await self.status_channel.send(embed=embed)
 
         # Connect to DB (refer to MrBot code)
         # try:
