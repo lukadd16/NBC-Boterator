@@ -127,7 +127,7 @@ class NBCBoterator(commands.Bot):
         # self.login(config.BOT_TOKEN)
         # self.connect()
 
-    def bot_close(self):
+    async def bot_close(self):
         await self.status_channel.send(
             f"`{self.user}` has been manually interrupted via keystroke"
         )
