@@ -133,7 +133,7 @@ class OwnerCog(commands.Cog):
         )
         embed.set_footer(
             text="NBC Boterator Dev Team",
-            icon_url=self.bot.icon_url
+            icon_url=self.bot.user.icon_url
         )
         await self.bot.status_channel.send(embed=embed)
 
@@ -171,7 +171,7 @@ class OwnerCog(commands.Cog):
         )
         embed.set_footer(
             text="NBC Boterator Dev Team",
-            icon_url=self.bot.icon_url
+            icon_url=self.bot.user.icon_url
         )
         await self.bot.status_channel.send(embed=embed)
 
