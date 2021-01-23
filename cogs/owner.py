@@ -43,30 +43,33 @@ class OwnerCog(commands.Cog):
 
     # Reload an individual cog, config file or botUtils.py module into memory
     @commands.group(aliases=["reload"])
-    async def creload(self, ctx, *, cog: Optional[str] = None):
+    async def creload(self, ctx):
         # Handle user input
-        if cog is None or ctx.invoked_subcommand is None:
+        if ctx.invoked_subcommand is None:
             await ctx.send(
-                "You did not specify a cog or subcommand. Valid subcommands "
-                "are:\n>>> `all`\n`config`\n`utils`")
-
-        try:
-            self.bot.reload_extension(cog)
-        except Exception as e:
-            await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
-        else:
-            await ctx.send("**`SUCCESS`**")
+                "You did not specify a subcommand. Valid subcommands "
+                "are:\n>>> `all`\n`cog`\n`config`\n`utils`"
+            )
 
     # Reload all cogs + botUtils.py module + config file
     # Useful when pushing non-breaking changes to the production server that
     # span across multiple files
-    @commands.command()
+    @creload.command()
     async def all(self, ctx):
         try:
             for extension in self.bot.config.BOT_EXTENSIONS:
                 self.bot.reload_extension(extension)
             importlib_reload(self.bot.config)
             importlib_reload(botUtils)
+        except Exception as e:
+            await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
+        else:
+            await ctx.send("**`SUCCESS`**")
+
+    @creload.command()
+    async def cog(self, ctx, *, cog: str):
+        try:
+            self.bot.reload_extension(cog)
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
@@ -84,7 +87,7 @@ class OwnerCog(commands.Cog):
             await ctx.send("**`SUCCESS`**")
 
     # Reloads the botUtils.py module into memory
-    @commands.command()
+    @creload.command()
     async def utils(self, ctx):
         try:
             importlib_reload(botUtils)
@@ -99,7 +102,7 @@ class OwnerCog(commands.Cog):
     #       known issues, etc.
     # Gracefully shutdown the bot; calculate & report uptime
     @commands.command(aliases=["kill", "terminate"])
-    async def shutdown(self, ctx, reason: Optional[str] = None):
+    async def shutdown(self, ctx, *, reason: Optional[str] = None):
         await ctx.send("Shutting down...")
 
         if reason is None:
