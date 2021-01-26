@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.1.0...v1.2.0) (2021-01-26)
+
+
+### Features
+
+* **logging:** Overhaul of application logging ([#10](https://www.github.com/lukadd16/NBC-Boterator/issues/10)) ([fb65ca9](https://www.github.com/lukadd16/NBC-Boterator/commit/fb65ca9cff7dcfb147a8b6d994ab0915f1adba31))
+
 ## [1.1.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.0.2...v1.1.0) (2021-01-23)
 
 
