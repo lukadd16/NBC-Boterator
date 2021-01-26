@@ -1,5 +1,6 @@
 # Description: Cog that houses owner-only commands (inspired by EvieePy)
 
+import app_logger
 import discord
 
 from datetime import datetime
@@ -8,11 +9,17 @@ from importlib import reload as importlib_reload
 from typing import Optional
 from utils import botUtils
 
+logger = app_logger.get_logger(__name__)
+
 
 class OwnerCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self._last_result = None
+        # self._last_result = None
+
+    def cog_unload(self):
+        for h in logger.handlers:
+            logger.removeHandler(h)
 
     # Overwrite cog_check method
     # Commands within this cog can only be used by the bot owner
@@ -29,6 +36,7 @@ class OwnerCog(commands.Cog):
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
+            logger.info("Loaded cog (%s)", cog)
             await ctx.send("**`SUCCESS`**")
 
     # Unload an individual cog
@@ -39,6 +47,7 @@ class OwnerCog(commands.Cog):
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
+            logger.info("Unloaded cog (%s)", cog)
             await ctx.send("**`SUCCESS`**")
 
     # Reload an individual cog, config file or botUtils.py module into memory
@@ -64,6 +73,9 @@ class OwnerCog(commands.Cog):
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
+            logger.info(
+                "Reloaded configuration file, botUtils module & all cogs"
+            )
             await ctx.send("**`SUCCESS`**")
 
     @creload.command()
@@ -73,6 +85,7 @@ class OwnerCog(commands.Cog):
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
+            logger.info("Reloaded cog (%s)", cog)
             await ctx.send("**`SUCCESS`**")
 
     # Reloads the bot's config file into memory without needing to restart the
@@ -84,6 +97,7 @@ class OwnerCog(commands.Cog):
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
+            logger.info("Reloaded configuration file")
             await ctx.send("**`SUCCESS`**")
 
     # Reloads the botUtils.py module into memory
@@ -94,6 +108,7 @@ class OwnerCog(commands.Cog):
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
+            logger.info("Reloaded botUtils module")
             await ctx.send("**`SUCCESS`**")
 
     # Gracefully shutdown the bot; calculate & report uptime
@@ -103,6 +118,8 @@ class OwnerCog(commands.Cog):
 
         if reason is None:
             reason = "Manual Shutdown Triggered - No reason provided"
+
+        logger.info("Manual Shutdown Triggered")
 
         # Calculate time elapsed since boot
         delta_uptime = datetime.utcnow() - self.bot.launch_time
@@ -118,9 +135,6 @@ class OwnerCog(commands.Cog):
             colour=self.bot.config.DISC_OFFLINE_COLOUR,
             timestamp=ctx.message.created_at
         )
-        # embed.set_thumbnail(
-        #     url=self.bot.avatar_url
-        # )
         embed.add_field(
             name="Reason:",
             value=f"{reason}",
@@ -174,6 +188,16 @@ class OwnerCog(commands.Cog):
             icon_url=self.bot.user.avatar_url
         )
         await self.bot.status_channel.send(embed=embed)
+
+        logger.info(
+            "Status Report with following details sent:"
+        )
+        logger.info(
+            "> Discord Status: %s", status.upper()
+        )
+        logger.info(
+            "> Reason: %s", reason
+        )
 
     # If and when DB is added, manual SQL execution command can be put here
 
