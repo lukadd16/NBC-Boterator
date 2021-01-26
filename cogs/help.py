@@ -1,11 +1,20 @@
 # Description: Cog that contains the re-designed help command for NBC Boterator
 
+import app_logger
 import discord
+
 from discord.ext import commands
+
+logger = app_logger.get_logger(__name__)
+
 
 class NewHelpCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    def cog_unload(self):
+        for h in logger.handlers:
+            logger.removeHandler(h)
 
     # TODO: NBC-specific CMD Ideas
     # - website (sends a link to our website + other socials?)
@@ -135,11 +144,13 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
-            description=f""
+            description=f"States the position that a specified user joined "
+                        "the server. E.g. Joe is member #50 out of 550"
                         "\n\n**Type:** Utility"
                         f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
-                        f"{cmd.name}`"
-                        f"\n**Aliases:** {cmd_aliases}",
+                        f"{cmd.name} <user>`"
+                        f"\n**Aliases:** {cmd_aliases}"
+                        f"\n{self.bot.config.BOT_HELP_USER_ARG}",
             colour=self.bot.config.BOT_COLOUR
         )
         embed.set_author(
@@ -304,6 +315,7 @@ class NewHelpCog(commands.Cog):
         await ctx.send(embed=embed)
 
     # TODO: Add a "permissions" tag that mentions requirements
+
 
 def setup(bot):
     bot.add_cog(NewHelpCog(bot))
