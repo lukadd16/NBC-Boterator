@@ -1,14 +1,12 @@
 # Description: Cog that creates a task to change bot status on a timed interval
 
-import app_logger
+# TODO: Test that the presences are being changed in order
+
 import asyncio
 import discord
 import discord.utils
 
 from discord.ext import commands, tasks
-
-logger = app_logger.get_logger(__name__)
-
 
 class StatusLoop(commands.Cog):
     def __init__(self, bot):
@@ -16,12 +14,6 @@ class StatusLoop(commands.Cog):
         self.presence_index = 0  # For use in the counted loop
         self.presence_updater.start()  # Ignore the error, it works
         # self.home_server = bot.get_guild(bot.config.HOME_SERVER_ID)
-
-    def cog_unload(self):
-        for h in logger.handlers:
-            logger.removeHandler(h)
-
-        self.presence_updater.cancel()
 
     async def set_presence(self):
         home_server = self.bot.get_guild(self.bot.config.HOME_SERVER_ID)
@@ -56,20 +48,20 @@ class StatusLoop(commands.Cog):
                 name="northbridgecafe.tk"
             )
         ]
-        logger.debug("Bot Presence Set")
+        self.bot.logger.debug("Changing Bot Presence")
 
         if self.presence_index == (len(presences) - 1):
             self.presence_index = 0
-            logger.debug("Resetting counter")
+            self.bot.logger.debug("Resetting counter")
         else:
             self.presence_index += 1
-            logger.debug("Current Presence Index: %s", self.presence_index)
+            # self.bot.logger.debug(self.presence_index)
 
         await self.bot.change_presence(activity=presences[self.presence_index])
 
     @tasks.loop(seconds=900, reconnect=True)
     async def presence_updater(self):
-        logger.info("Switching to next presence")
+        self.bot.logger.debug("Switching to next presence.")
         await self.set_presence()
 
     @presence_updater.before_loop
@@ -79,8 +71,7 @@ class StatusLoop(commands.Cog):
         # await self.set_presence()
 
         await asyncio.sleep(5)
-        logger.debug("Starting presence loop")
-
+        self.bot.logger.debug("Starting presence loop.")
 
 def setup(bot):
     bot.add_cog(StatusLoop(bot))

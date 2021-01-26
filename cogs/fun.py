@@ -4,7 +4,6 @@
 #       Try to find cool, amusing commands from internet, come up with own
 #       ideas or even combine own ideas with online code
 
-import app_logger
 import discord
 import os
 import pathlib
@@ -12,42 +11,22 @@ import random
 
 from discord.ext import commands
 
-logger = app_logger.get_logger(__name__)
-
-abrams_folder_path = os.path.join(
-    pathlib.Path().absolute(), "data\\images\\abrams"
-)
-
+abramsPath = os.path.join(pathlib.Path().absolute(), "data\\images\\abrams")
 
 class FunCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def cog_unload(self):
-        for h in logger.handlers:
-            logger.removeHandler(h)
-
     @commands.command()
     async def abrams(self, ctx):
-        logger.info(
-            "Easter Egg Discovered By %s#%s",
-            ctx.author.name,
-            ctx.author.discriminator
-        )
-
-        random_img_name = random.choice([
-            x for x in os.listdir(abrams_folder_path)
-            if os.path.isfile(os.path.join(abrams_folder_path, x))
+        randImgName = random.choice([
+            x for x in os.listdir(abramsPath)
+            if os.path.isfile(os.path.join(abramsPath, x))
         ])
-        logger.debug(
-            "Selected Image (%s)", random_img_name
-        )
 
         await ctx.send(
             file=discord.File(
-                os.path.join(
-                    abrams_folder_path, random_img_name
-                ), "EasterEgg.jpg"
+                os.path.join(abramsPath, randImgName), "EasterEgg.jpg"
             )
         )
 
@@ -117,7 +96,6 @@ class FunCog(commands.Cog):
                 ]
             )
         )
-
 
 def setup(bot):
     bot.add_cog(FunCog(bot))

@@ -1,7 +1,6 @@
 # Description: Global error handler
 # Adapted from https://gist.github.com/EvieePy/7822af90858ef65012ea500bcecf1612
 
-import app_logger
 import discord
 import sys
 import traceback
@@ -9,21 +8,14 @@ import traceback
 from utils import botUtils
 from discord.ext import commands
 
-logger = app_logger.get_logger(__name__)
-
-
 class CommandErrorHandler(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def cog_unload(self):
-        for h in logger.handlers:
-            logger.removeHandler(h)
-
     @commands.Cog.listener()
     async def on_error(self, event_method, *args, **kwargs):
-        logger.error("Ignoring exception in %s.", event_method)
-        logger.error("Unexpected exception:", exc_info=sys.exc_info())
+        self.bot.logger.error("Ignoring exception in %s.", event_method)
+        self.bot.logger.error("Unexpected exception:", exc_info=sys.exc_info())
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -32,7 +24,7 @@ class CommandErrorHandler(commands.Cog):
             return
 
         # Prevents any cogs with a local cog_command_error() from being
-        # handled by on_command_error()
+        # handled by on_command_error().
         cog = ctx.cog
         if cog:
             if cog._get_overridden_method(cog.cog_command_error) is not None:
@@ -167,27 +159,11 @@ class CommandErrorHandler(commands.Cog):
                     f"{botUtils.convert_seconds_friendly(error.retry_after)}`."
                 )
 
-        # Any errors not explicitly defined above are handled here
+        # Any errors not explicitly defined above are handled here.
+        # TODO: Test this; Switch over to Sentry?
         else:
             print(f"\n[BT] Ignoring exception in command {ctx.command}:")
             traceback.print_exception(type(error), error, error.__traceback__)
-            logger.error(
-                "***Encountered an unforeseen error in a command***"
-            )
-            logger.error(
-                "Offending Command: %s", ctx.command
-            )
-            logger.error(
-                "Error Type: %s", type(error)
-            )
-            logger.error(
-                "The Actual Error: %s", error
-            )
-            logger.error(
-                "Traceback:"
-            )
-            for i in traceback.format_tb(error.__traceback__):
-                logger.error(i)
 
     # An example of command specific errors
     # @commands.command(name='repeat', aliases=['mimic', 'copy'])
@@ -199,7 +175,6 @@ class CommandErrorHandler(commands.Cog):
     #     if isinstance(error, commands.MissingRequiredArgument):
     #         if error.param.name == 'inp':
     #             await ctx.send("You forgot to give me input to repeat!")
-
 
 def setup(bot):
     bot.add_cog(CommandErrorHandler(bot))
