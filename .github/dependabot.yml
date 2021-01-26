@@ -1,0 +1,18 @@
+# Reference:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    # requirements.txt file located in root of repository
+    directory: "/"
+    schedule:
+      interval: "daily"
+    rebase-strategy: "disabled"
+
+  - package-ecosystem: "github-actions"
+    # Search for actions in default .github/workflows directory
+    directory: "/"
+    schedule:
+      interval: "daily"
+    rebase-strategy: "disabled"
