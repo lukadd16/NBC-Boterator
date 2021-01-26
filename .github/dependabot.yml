@@ -8,11 +8,9 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    rebase-strategy: "disabled"
 
   - package-ecosystem: "github-actions"
     # Search for actions in default .github/workflows directory
     directory: "/"
     schedule:
       interval: "daily"
-    rebase-strategy: "disabled"
