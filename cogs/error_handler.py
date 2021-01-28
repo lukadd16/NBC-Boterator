@@ -116,55 +116,77 @@ class CommandErrorHandler(commands.Cog):
                 f"The command `{ctx.command}` is currently disabled."
             )
 
-        # TODO: Get bot to delete the error after cooldown has passed
-        #       Move botUtils.. to variable in outside if statement
-        #       Move return to end of outside if statement (or each inner)
-        #       Assign ctx.send to a variable, asyncio.sleep for {botUtils}
-        #       await variable.delete afterwards
         elif isinstance(error, commands.CommandOnCooldown):
             if error.cooldown.type == commands.BucketType.default:
+                cooldown_left = botUtils.convert_seconds_friendly(
+                    error.retry_after
+                )
+
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for the "
-                    "entire bot, retry in `"
-                    f"{botUtils.convert_seconds_friendly(error.retry_after)}`."
-                    # , delete_after=botUtils...
+                    f"entire bot, retry in `{cooldown_left}`.",
+                    delete_after=cooldown_left
                 )
             elif error.cooldown.type == commands.BucketType.user:
+                cooldown_left = botUtils.convert_seconds_friendly(
+                    error.retry_after
+                )
+
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for you, "
-                    "retry in `"
-                    f"{botUtils.convert_seconds_friendly(error.retry_after)}`."
+                    f"retry in `{cooldown_left}`.",
+                    delete_after=cooldown_left
                 )
             elif error.cooldown.type == commands.BucketType.guild:
+                cooldown_left = botUtils.convert_seconds_friendly(
+                    error.retry_after
+                )
+
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for this "
-                    "server, retry in `"
-                    f"{botUtils.convert_seconds_friendly(error.retry_after)}`."
+                    f"server, retry in `{cooldown_left}`.",
+                    delete_after=cooldown_left
                 )
             elif error.cooldown.type == commands.BucketType.channel:
+                cooldown_left = botUtils.convert_seconds_friendly(
+                    error.retry_after
+                )
+
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for this "
-                    "channel, retry in `"
-                    f"{botUtils.convert_seconds_friendly(error.retry_after)}`."
+                    f"channel, retry in `{cooldown_left}`.",
+                    delete_after=cooldown_left
                 )
             elif error.cooldown.type == commands.BucketType.member:
+                cooldown_left = botUtils.convert_seconds_friendly(
+                    error.retry_after
+                )
+
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for you, "
-                    "retry in `"
-                    f"{botUtils.convert_seconds_friendly(error.retry_after)}`."
+                    f"retry in `{cooldown_left}`.",
+                    delete_after=cooldown_left
                 )
             elif error.cooldown.type == commands.BucketType.category:
+                cooldown_left = botUtils.convert_seconds_friendly(
+                    error.retry_after
+                )
+
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for this "
-                    "category of channels, retry in `"
-                    f"{botUtils.convert_seconds_friendly(error.retry_after)}`."
+                    f"category of channels, retry in `{cooldown_left}`.",
+                    delete_after=cooldown_left
                 )
             # TODO: Fix so that the role on cooldown is mentioned (if possible)
             elif error.cooldown.type == commands.BucketType.role:
+                cooldown_left = botUtils.convert_seconds_friendly(
+                    error.retry_after
+                )
+
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for your "
-                    "role, retry in `"
-                    f"{botUtils.convert_seconds_friendly(error.retry_after)}`."
+                    f"role, retry in `{cooldown_left}`.",
+                    delete_after=cooldown_left
                 )
 
         # Any errors not explicitly defined above are handled here
