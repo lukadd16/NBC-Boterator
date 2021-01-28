@@ -7,7 +7,7 @@ from datetime import datetime
 from discord.ext import commands
 from importlib import reload as importlib_reload
 from typing import Optional
-from utils import botUtils
+from utils import tools
 
 logger = app_logger.get_logger(__name__)
 
@@ -50,7 +50,7 @@ class OwnerCog(commands.Cog):
             logger.info("Unloaded cog (%s)", cog)
             await ctx.send("**`SUCCESS`**")
 
-    # Reload an individual cog, config file or botUtils.py module into memory
+    # Reload an individual cog, config file or tools.py module into memory
     @commands.group(aliases=["reload"])
     async def creload(self, ctx):
         # Handle user input
@@ -60,7 +60,7 @@ class OwnerCog(commands.Cog):
                 "are:\n>>> `all`\n`cog`\n`config`\n`utils`"
             )
 
-    # Reload all cogs + botUtils.py module + config file
+    # Reload all cogs + tools.py module + config file
     # Useful when pushing non-breaking changes to the production server that
     # span across multiple files
     @creload.command()
@@ -69,12 +69,12 @@ class OwnerCog(commands.Cog):
             for extension in self.bot.config.BOT_EXTENSIONS:
                 self.bot.reload_extension(extension)
             importlib_reload(self.bot.config)
-            importlib_reload(botUtils)
+            importlib_reload(tools)
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
             logger.info(
-                "Reloaded configuration file, botUtils module & all cogs"
+                "Reloaded configuration file, tools module & all cogs"
             )
             await ctx.send("**`SUCCESS`**")
 
@@ -100,15 +100,15 @@ class OwnerCog(commands.Cog):
             logger.info("Reloaded configuration file")
             await ctx.send("**`SUCCESS`**")
 
-    # Reloads the botUtils.py module into memory
+    # Reloads the tools.py module into memory
     @creload.command()
     async def utils(self, ctx):
         try:
-            importlib_reload(botUtils)
+            importlib_reload(tools)
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
-            logger.info("Reloaded botUtils module")
+            logger.info("Reloaded tools module")
             await ctx.send("**`SUCCESS`**")
 
     # Gracefully shutdown the bot; calculate & report uptime
@@ -126,7 +126,7 @@ class OwnerCog(commands.Cog):
         delta_uptime_seconds = delta_uptime.total_seconds()
 
         # Convert delta into human readable format
-        total_uptime = botUtils.convert_seconds_friendly(delta_uptime_seconds)
+        total_uptime = tools.convert_seconds_friendly(delta_uptime_seconds)
 
         # Report uptime & shutdown
         embed = discord.Embed(
@@ -158,7 +158,7 @@ class OwnerCog(commands.Cog):
     # downtime, known issues, etc.
     @commands.command()
     async def status(self, ctx, status: str, *, reason: str):
-        # TODO: Move to botUtils.py
+        # TODO: Move to tools.py
         if status.lower() == "online":
             status = self.bot.config.BOT_EMOJI_ONLINE
             embed_colour = self.bot.config.DISC_ONLINE_COLOUR

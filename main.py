@@ -7,7 +7,7 @@ import discord
 
 from discord.ext import commands
 from datetime import datetime
-from utils import botUtils
+from utils import tools
 
 # Bot Logs Guide:
 # BT = Bot status message
@@ -22,8 +22,6 @@ from utils import botUtils
 # CRITICAL = A serious error, indicating that the program itself may be unable
 #            to continue running.
 
-# Instantiate logger for this module
-# TODO: Remove all 'self' references, no point in having a global logger
 logger = app_logger.get_logger(__name__)
 
 # Define Discord API intents that the bot needs
@@ -43,7 +41,6 @@ class NBCBoterator(commands.Bot):
 
         self.app_info = None
         self.config = config
-        self.myutils = botUtils
         self.status_channel = None
         self.log_channel = None
         # self.partners_channel = None
@@ -82,7 +79,7 @@ class NBCBoterator(commands.Bot):
         delta_uptime_seconds = delta_uptime.total_seconds()
 
         # Convert delta into human readable format
-        total_uptime = botUtils.convert_seconds_friendly(delta_uptime_seconds)
+        total_uptime = tools.convert_seconds_friendly(delta_uptime_seconds)
 
         reason = "Manual Shutdown Triggered Via Keyboard Interrupt"
 

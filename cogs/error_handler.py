@@ -6,8 +6,8 @@ import discord
 import sys
 import traceback
 
-from utils import botUtils
 from discord.ext import commands
+from utils import tools
 
 logger = app_logger.get_logger(__name__)
 
@@ -118,7 +118,7 @@ class CommandErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.CommandOnCooldown):
             if error.cooldown.type == commands.BucketType.default:
-                cooldown_left = botUtils.convert_seconds_friendly(
+                cooldown_left = tools.convert_seconds_friendly(
                     error.retry_after
                 )
 
@@ -128,7 +128,7 @@ class CommandErrorHandler(commands.Cog):
                     delete_after=cooldown_left
                 )
             elif error.cooldown.type == commands.BucketType.user:
-                cooldown_left = botUtils.convert_seconds_friendly(
+                cooldown_left = tools.convert_seconds_friendly(
                     error.retry_after
                 )
 
@@ -138,7 +138,7 @@ class CommandErrorHandler(commands.Cog):
                     delete_after=cooldown_left
                 )
             elif error.cooldown.type == commands.BucketType.guild:
-                cooldown_left = botUtils.convert_seconds_friendly(
+                cooldown_left = tools.convert_seconds_friendly(
                     error.retry_after
                 )
 
@@ -148,7 +148,7 @@ class CommandErrorHandler(commands.Cog):
                     delete_after=cooldown_left
                 )
             elif error.cooldown.type == commands.BucketType.channel:
-                cooldown_left = botUtils.convert_seconds_friendly(
+                cooldown_left = tools.convert_seconds_friendly(
                     error.retry_after
                 )
 
@@ -158,7 +158,7 @@ class CommandErrorHandler(commands.Cog):
                     delete_after=cooldown_left
                 )
             elif error.cooldown.type == commands.BucketType.member:
-                cooldown_left = botUtils.convert_seconds_friendly(
+                cooldown_left = tools.convert_seconds_friendly(
                     error.retry_after
                 )
 
@@ -168,7 +168,7 @@ class CommandErrorHandler(commands.Cog):
                     delete_after=cooldown_left
                 )
             elif error.cooldown.type == commands.BucketType.category:
-                cooldown_left = botUtils.convert_seconds_friendly(
+                cooldown_left = tools.convert_seconds_friendly(
                     error.retry_after
                 )
 
@@ -179,7 +179,7 @@ class CommandErrorHandler(commands.Cog):
                 )
             # TODO: Fix so that the role on cooldown is mentioned (if possible)
             elif error.cooldown.type == commands.BucketType.role:
-                cooldown_left = botUtils.convert_seconds_friendly(
+                cooldown_left = tools.convert_seconds_friendly(
                     error.retry_after
                 )
 

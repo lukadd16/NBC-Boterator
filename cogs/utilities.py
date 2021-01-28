@@ -12,6 +12,7 @@ import time
 from datetime import datetime
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
+from utils import tools
 
 logger = app_logger.get_logger(__name__)
 
@@ -73,7 +74,7 @@ class UtilitiesCog(commands.Cog):
 
         # Get bots' total uptime
         delta_uptime = datetime.utcnow() - self.bot.launch_time
-        friendly_uptime = self.bot.myutils.convert_seconds_friendly(
+        friendly_uptime = tools.convert_seconds_friendly(
             delta_uptime.total_seconds()
         )
 
@@ -240,7 +241,7 @@ class UtilitiesCog(commands.Cog):
                 ctx.command
             )
 
-        member_join_position = self.bot.myutils.get_join_position(ctx, member)
+        member_join_position = tools.get_join_position(ctx, member)
         msg = f"*{member.name}* is member `#{member_join_position}` "\
               f"(out of {len(ctx.guild.members)})"
 
@@ -337,7 +338,7 @@ class UtilitiesCog(commands.Cog):
         )
 
         # Convert account creation time to readable format
-        user_createdate_friendly = self.bot.myutils.get_time_friendly(
+        user_createdate_friendly = tools.get_time_friendly(
             user_createdate
         )
         logger.debug(
@@ -345,7 +346,7 @@ class UtilitiesCog(commands.Cog):
         )
 
         # Convert guild join time to readable format
-        member_joindate_friendly = self.bot.myutils.get_time_friendly(
+        member_joindate_friendly = tools.get_time_friendly(
             member.joined_at
         )
         logger.debug(
@@ -354,7 +355,7 @@ class UtilitiesCog(commands.Cog):
         )
 
         # Returns member's join position out of all guild members
-        member_join_position = self.bot.myutils.get_join_position(
+        member_join_position = tools.get_join_position(
             ctx,
             member
         )
@@ -363,13 +364,13 @@ class UtilitiesCog(commands.Cog):
         )
 
         # Returns an emoji if member is a bot
-        bot_identify = self.bot.myutils.do_bot_check(
+        bot_identify = tools.do_bot_check(
             member
         )
         logger.debug("> (botUtils) User is a bot? %s", bot_identify)
 
         # Returns an emoji dynamic to member's online status
-        status_emoji = self.bot.myutils.get_member_status(
+        status_emoji = tools.get_member_status(
             member
         )
         logger.debug("> (botUtils) User Status: %s", status_emoji)

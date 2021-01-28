@@ -2,10 +2,14 @@
 # ping calc, determining user status and returning the appropriate emoji,
 # future guild tasks, etc.
 
+import app_logger
 import config
 
+logger = app_logger.get_logger(__name__)
+
+
 # Used in cmd cooldown + bot uptime calculation, takes seconds as input and
-# converts it into user friendly DD-HH-MM-SS format
+# converts it into user friendly [1d 9h 8m 7s] format
 def convert_seconds_friendly(second):
     minute, second = divmod(second, 60)
     hour, minute = divmod(minute, 60)
@@ -22,36 +26,41 @@ def convert_seconds_friendly(second):
         return "%02dh %02dm %02ds" % (hours, minutes, seconds)
     return "%02dd %02dh %02dm %02ds" % (days, hours, minutes, seconds)
 
+
 # Meant for when passing raw datetimes that include year, month, day, etc.
 # Formatting: Mon, Jul 27, 2020 17:44 PM GMT
 def get_time_friendly(time):
     return time.strftime("%a, %b %d, %Y %H:%M %p")
 
+
 # In weeks format for whois and serverinfo, maybe rename it to something else
 # def get_time_friendly():
 #     pass
 
+
 # Return an emoji defined in the config file depending on the status of the
 # passed user; currently being used in the whois command
 def get_member_status(member):
-    if f'{member.status}'.lower() == "online":
-        return f'{config.BOT_EMOJI_ONLINE}'
-    elif f'{member.status}'.lower() == "idle":
-        return f'{config.BOT_EMOJI_IDLE}'
-    elif f'{member.status}'.lower() == "dnd":
-        return f'{config.BOT_EMOJI_DND}'
-    elif f'{member.status}'.lower() == "offline":
-        return f'{config.BOT_EMOJI_OFFLINE}'
+    if f"{member.status}".lower() == "online":
+        return f"{config.BOT_EMOJI_ONLINE}"
+    elif f"{member.status}".lower() == "idle":
+        return f"{config.BOT_EMOJI_IDLE}"
+    elif f"{member.status}".lower() == "dnd":
+        return f"{config.BOT_EMOJI_DND}"
+    elif f"{member.status}".lower() == "offline":
+        return f"{config.BOT_EMOJI_OFFLINE}"
     else:
-        return f'{config.BOT_EMOJI_STREAM}'
+        return f"{config.BOT_EMOJI_STREAM}"
+
 
 # Return an emoji defined in the config file depending on whether the passed
 # user is a bot or not; currently being used in the whois command
 def do_bot_check(member):
     if member.bot is True:
-        return f'{config.BOT_EMOJI_BTAG}'
+        return f"{config.BOT_EMOJI_BTAG}"
     else:
-        return ''
+        return ""
+
 
 # Calculate a member's join position via comparing their join date to other
 # members; currently being used in the whois and joinpos commands
