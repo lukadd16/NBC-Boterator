@@ -2,6 +2,7 @@
 
 import app_logger
 import asyncio
+import config
 import discord
 import discord.utils
 
@@ -24,16 +25,16 @@ class StatusLoop(commands.Cog):
         self.presence_updater.cancel()
 
     async def set_presence(self):
-        home_server = self.bot.get_guild(self.bot.config.HOME_SERVER_ID)
+        home_server = self.bot.get_guild(config.HOME_SERVER_ID)
 
         presences = [
             discord.Activity(
                 type=discord.ActivityType.listening,
-                name=f"prefix {self.bot.config.BOT_PREFIX}"
+                name=f"prefix {config.BOT_PREFIX}"
             ),
             discord.Activity(
                 type=discord.ActivityType.listening,
-                name=f"{self.bot.config.BOT_PREFIX}help"
+                name=f"{config.BOT_PREFIX}help"
             ),
             discord.Activity(
                 type=discord.ActivityType.watching,

@@ -2,6 +2,7 @@
 
 import app_logger
 import asyncio
+import config
 import discord
 
 from discord.ext import commands
@@ -51,15 +52,15 @@ class ModCog(commands.Cog):
             embed = discord.Embed(
                 title='ERROR',
                 description='You cannot delete 0 messages, nice try.',
-                colour=self.bot.config.BOT_ERR_COLOUR
+                colour=config.BOT_ERR_COLOUR
             )
             embed.set_author(
-                name=self.bot.config.BOT_AUTHOR_NAME,
-                url=self.bot.config.BOT_URL,
+                name=config.BOT_AUTHOR_NAME,
+                url=config.BOT_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
-                text=self.bot.config.BOT_FOOTER
+                text=config.BOT_FOOTER
             )
             zeroerror = await ctx.channel.send(embed=embed)  # TODO: Convert to delete_after
 
@@ -79,15 +80,15 @@ class ModCog(commands.Cog):
                 title='ERROR',
                 description='You cannot delete a negative number of messages, '
                             'nice try.',
-                colour=self.bot.config.BOT_ERR_COLOUR
+                colour=config.BOT_ERR_COLOUR
             )
             embed.set_author(
-                name=self.bot.config.BOT_AUTHOR_NAME,
-                url=self.bot.config.BOT_URL,
+                name=config.BOT_AUTHOR_NAME,
+                url=config.BOT_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
-                text=self.bot.config.BOT_FOOTER
+                text=config.BOT_FOOTER
             )
             negative_error = await ctx.channel.send(embed=embed)
 
@@ -108,11 +109,11 @@ class ModCog(commands.Cog):
                 title='ERROR',
                 description='For security reasons you cannot delete more than '
                             '100 messages at a time, please try again.',
-                colour=self.bot.config.BOT_ERR_COLOUR
+                colour=config.BOT_ERR_COLOUR
             )
             embed.set_author(
-                name=self.bot.config.BOT_AUTHOR_NAME,
-                url=self.bot.config.BOT_URL,
+                name=config.BOT_AUTHOR_NAME,
+                url=config.BOT_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
@@ -130,11 +131,11 @@ class ModCog(commands.Cog):
         else:
             embed = discord.Embed(
                 title='WARNING',
-                colour=self.bot.config.BOT_ERR_COLOUR
+                colour=config.BOT_ERR_COLOUR
             )
             embed.set_author(
-                name=self.bot.config.BOT_AUTHOR_NAME,
-                url=self.bot.config.BOT_URL,
+                name=config.BOT_AUTHOR_NAME,
+                url=config.BOT_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.add_field(
@@ -170,11 +171,11 @@ class ModCog(commands.Cog):
 
                     embed = discord.Embed(
                         title='WARNING',
-                        colour=self.bot.config.BOT_ERR_COLOUR
+                        colour=config.BOT_ERR_COLOUR
                     )
                     embed.set_author(
-                        name=self.bot.config.BOT_AUTHOR_NAME,
-                        url=self.bot.config.BOT_URL,
+                        name=config.BOT_AUTHOR_NAME,
+                        url=config.BOT_URL,
                         icon_url=self.bot.user.avatar_url
                     )
                     embed.add_field(
@@ -213,11 +214,11 @@ class ModCog(commands.Cog):
 
                     complete = discord.Embed(
                         title='SUCCESS',
-                        colour=self.bot.config.BOT_SUCCESS_COLOUR
+                        colour=config.BOT_SUCCESS_COLOUR
                     )
                     complete.set_author(
-                        name=self.bot.config.BOT_AUTHOR_NAME,
-                        url=self.bot.config.BOT_URL,
+                        name=config.BOT_AUTHOR_NAME,
+                        url=config.BOT_URL,
                         icon_url=self.bot.user.avatar_url
                     )
                     complete.add_field(
@@ -244,11 +245,11 @@ class ModCog(commands.Cog):
 
                     embed = discord.Embed(
                         title='WARNING',
-                        colour=self.bot.config.BOT_ERR_COLOUR
+                        colour=config.BOT_ERR_COLOUR
                     )
                     embed.set_author(
-                        name=self.bot.config.BOT_AUTHOR_NAME,
-                        url=self.bot.config.BOT_URL,
+                        name=config.BOT_AUTHOR_NAME,
+                        url=config.BOT_URL,
                         icon_url=self.bot.user.avatar_url
                     )
                     embed.add_field(
@@ -274,11 +275,11 @@ class ModCog(commands.Cog):
 
                 embed = discord.Embed(
                     title='WARNING',
-                    colour=self.bot.config.BOT_ERR_COLOUR
+                    colour=config.BOT_ERR_COLOUR
                 )
                 embed.set_author(
-                    name=self.bot.config.BOT_AUTHOR_NAME,
-                    url=self.bot.config.BOT_URL,
+                    name=config.BOT_AUTHOR_NAME,
+                    url=config.BOT_URL,
                     icon_url=self.bot.user.avatar_url
                 )
                 embed.add_field(
@@ -322,11 +323,11 @@ class ModCog(commands.Cog):
 
         embed = discord.Embed(
             title='SUCCESS',
-            colour=self.bot.config.BOT_SUCCESS_COLOUR
+            colour=config.BOT_SUCCESS_COLOUR
         )
         embed.set_author(
-            name=self.bot.config.BOT_AUTHOR_NAME,
-            url=self.bot.config.BOT_URL,
+            name=config.BOT_AUTHOR_NAME,
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_thumbnail(
@@ -350,11 +351,11 @@ class ModCog(commands.Cog):
     async def kick_handler(self, ctx, error, members):
         embed = discord.Embed(
             title='ERROR',
-            colour=self.bot.config.BOT_ERR_COLOUR
+            colour=config.BOT_ERR_COLOUR
         )
         embed.set_author(
-            name=self.bot.config.BOT_AUTHOR_NAME,
-            url=self.bot.config.BOT_URL,
+            name=config.BOT_AUTHOR_NAME,
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
@@ -431,11 +432,11 @@ class ModCog(commands.Cog):
 
         embed = discord.Embed(
             title='SUCCESS',
-            colour=self.bot.config.BOT_SUCCESS_COLOUR
+            colour=config.BOT_SUCCESS_COLOUR
         )
         embed.set_author(
-            name=self.bot.config.BOT_AUTHOR_NAME,
-            url=self.bot.config.BOT_URL,
+            name=config.BOT_AUTHOR_NAME,
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_thumbnail(
@@ -493,11 +494,11 @@ class ModCog(commands.Cog):
 
         embed = discord.Embed(
             title='SUCCESS',
-            colour=self.bot.config.BOT_SUCCESS_COLOUR
+            colour=config.BOT_SUCCESS_COLOUR
         )
         embed.set_author(
-            name=self.bot.config.BOT_AUTHOR_NAME,
-            url=self.bot.config.BOT_URL,
+            name=config.BOT_AUTHOR_NAME,
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_thumbnail(

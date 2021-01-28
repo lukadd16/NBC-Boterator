@@ -1,6 +1,7 @@
 # Description: Cog that houses owner-only commands (inspired by EvieePy)
 
 import app_logger
+import config
 import discord
 
 from datetime import datetime
@@ -66,9 +67,9 @@ class OwnerCog(commands.Cog):
     @creload.command()
     async def all(self, ctx):
         try:
-            for extension in self.bot.config.BOT_EXTENSIONS:
+            for extension in config.BOT_EXTENSIONS:
                 self.bot.reload_extension(extension)
-            importlib_reload(self.bot.config)
+            importlib_reload(config)
             importlib_reload(tools)
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
@@ -93,7 +94,7 @@ class OwnerCog(commands.Cog):
     @creload.command()
     async def config(self, ctx):
         try:
-            importlib_reload(self.bot.config)
+            importlib_reload(config)
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
@@ -130,9 +131,9 @@ class OwnerCog(commands.Cog):
 
         # Report uptime & shutdown
         embed = discord.Embed(
-            title=f"Status: {self.bot.config.BOT_EMOJI_OFFLINE}",
+            title=f"Status: {config.BOT_EMOJI_OFFLINE}",
             description=f"`{self.bot.user}` has been disconnected",
-            colour=self.bot.config.DISC_OFFLINE_COLOUR,
+            colour=config.DISC_OFFLINE_COLOUR,
             timestamp=ctx.message.created_at
         )
         embed.add_field(
@@ -160,20 +161,20 @@ class OwnerCog(commands.Cog):
     async def status(self, ctx, status: str, *, reason: str):
         # TODO: Move to tools.py
         if status.lower() == "online":
-            status = self.bot.config.BOT_EMOJI_ONLINE
-            embed_colour = self.bot.config.DISC_ONLINE_COLOUR
+            status = config.BOT_EMOJI_ONLINE
+            embed_colour = config.DISC_ONLINE_COLOUR
         elif status.lower() == "idle":
-            status = self.bot.config.BOT_EMOJI_IDLE
-            embed_colour = self.bot.config.DISC_IDLE_COLOUR
+            status = config.BOT_EMOJI_IDLE
+            embed_colour = config.DISC_IDLE_COLOUR
         elif status.lower() == "dnd":
-            status = self.bot.config.BOT_EMOJI_DND
-            embed_colour = self.bot.config.DISC_DND_COLOUR
+            status = config.BOT_EMOJI_DND
+            embed_colour = config.DISC_DND_COLOUR
         elif status.lower() == "offline":
-            status = self.bot.config.BOT_EMOJI_OFFLINE
-            embed_colour = self.bot.config.DISC_OFFLINE_COLOUR
+            status = config.BOT_EMOJI_OFFLINE
+            embed_colour = config.DISC_OFFLINE_COLOUR
         elif status.lower() == "stream":
-            status = self.bot.config.BOT_EMOJI_STREAM
-            embed_colour = self.bot.config.DISC_STREAM_COLOUR
+            status = config.BOT_EMOJI_STREAM
+            embed_colour = config.DISC_STREAM_COLOUR
         else:
             raise commands.BadArgument()
 

@@ -1,6 +1,7 @@
 # Description: Cog that contains the re-designed help command for NBC Boterator
 
 import app_logger
+import config
 import discord
 
 from discord.ext import commands
@@ -30,18 +31,18 @@ class NewHelpCog(commands.Cog):
     async def help(self, ctx):
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(
-                description=f"Run `{self.bot.config.BOT_PREFIX}help "
+                description=f"Run `{config.BOT_PREFIX}help "
                             "<commandname>` to view detailed help on a "
                             "specific command"
                             "\n`[] Required Args`"
                             "\n`<> Optional Args`"
                             "\n\nClick the header of any of my commands to "
                             "visit the server's website",
-                colour=self.bot.config.BOT_COLOUR
+                colour=config.BOT_COLOUR
             )
             embed.set_author(
                 name="NBC Boterator Command List",
-                url=self.bot.config.BOT_URL,
+                url=config.BOT_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.add_field(
@@ -60,7 +61,7 @@ class NewHelpCog(commands.Cog):
                 value="`purge`",
                 inline=False
             )
-            embed.set_footer(text=self.bot.config.BOT_FOOTER)
+            embed.set_footer(text=config.BOT_FOOTER)
             await ctx.send(embed=embed)
 
     @help.command(enabled=False)
@@ -77,20 +78,20 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
-            title=f"{self.bot.config.BOT_PREFIX}{cmd.name}",
+            title=f"{config.BOT_PREFIX}{cmd.name}",
             description="Retrieves relevant information about the bot "
                         "(uptime, library, etc.)"
                         "\n\n**Type:** Utility"
-                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}about`"
+                        f"\n**Usage:** `{config.BOT_PREFIX}about`"
                         f"\n**Aliases:** {cmd_aliases}",
-            colour=self.bot.config.BOT_COLOUR
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=f"{self.bot.config.BOT_HELP_ANAME}",
-            url=self.bot.config.BOT_URL,
+            name=f"{config.BOT_HELP_ANAME}",
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
-        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
     @help.command()
@@ -99,22 +100,22 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
-            title=f"{self.bot.config.BOT_PREFIX}{cmd.name}",
+            title=f"{config.BOT_PREFIX}{cmd.name}",
             description=f"Outputs an enlarged version of a specified user's "
                         "profile picture"
                         "\n\n**Type:** Utility"
-                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}avatar "
+                        f"\n**Usage:** `{config.BOT_PREFIX}avatar "
                         f"<user>`"
                         f"\n**Aliases:** {cmd_aliases}"
-                        f"\n{self.bot.config.BOT_HELP_USER_ARG}",
-            colour=self.bot.config.BOT_COLOUR
+                        f"\n{config.BOT_HELP_USER_ARG}",
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=f"{self.bot.config.BOT_HELP_ANAME}",
-            url=self.bot.config.BOT_URL,
+            name=f"{config.BOT_HELP_ANAME}",
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
-        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
     @help.command()
@@ -125,17 +126,17 @@ class NewHelpCog(commands.Cog):
         embed = discord.Embed(
             description=f"Learn what's new with this version of the bot"
                         "\n\n**Type:** Utility"
-                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"\n**Usage:** `{config.BOT_PREFIX}"
                         f"{cmd.name}`"
                         f"\n**Aliases:** {cmd_aliases}",
-            colour=self.bot.config.BOT_COLOUR
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=f"{self.bot.config.BOT_HELP_ANAME}",
-            url=self.bot.config.BOT_URL,
+            name=f"{config.BOT_HELP_ANAME}",
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
-        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
     @help.command()
@@ -147,18 +148,18 @@ class NewHelpCog(commands.Cog):
             description=f"States the position that a specified user joined "
                         "the server. E.g. Joe is member #50 out of 550"
                         "\n\n**Type:** Utility"
-                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"\n**Usage:** `{config.BOT_PREFIX}"
                         f"{cmd.name} <user>`"
                         f"\n**Aliases:** {cmd_aliases}"
-                        f"\n{self.bot.config.BOT_HELP_USER_ARG}",
-            colour=self.bot.config.BOT_COLOUR
+                        f"\n{config.BOT_HELP_USER_ARG}",
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=f"{self.bot.config.BOT_HELP_ANAME}",
-            url=self.bot.config.BOT_URL,
+            name=f"{config.BOT_HELP_ANAME}",
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
-        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
     @help.command()
@@ -168,16 +169,16 @@ class NewHelpCog(commands.Cog):
         embed = discord.Embed(
             description=f"Tests my connection to Discord"
                         "\n\n**Type:** Utility"
-                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"\n**Usage:** `{config.BOT_PREFIX}"
                         f"{cmd.name}`",
-            colour=self.bot.config.BOT_COLOUR
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=f"{self.bot.config.BOT_HELP_ANAME}",
-            url=self.bot.config.BOT_URL,
+            name=f"{config.BOT_HELP_ANAME}",
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
-        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
     @help.command(enabled=False)
@@ -188,17 +189,17 @@ class NewHelpCog(commands.Cog):
         embed = discord.Embed(
             description=f"Retrieves information about this server"
                         "\n\n**Type:** Utility"
-                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"\n**Usage:** `{config.BOT_PREFIX}"
                         f"{cmd.name}`"
                         f"\n**Aliases:** {cmd_aliases}",
-            colour=self.bot.config.BOT_COLOUR
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=f"{self.bot.config.BOT_HELP_ANAME}",
-            url=self.bot.config.BOT_URL,
+            name=f"{config.BOT_HELP_ANAME}",
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
-        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
     @help.command()
@@ -209,18 +210,18 @@ class NewHelpCog(commands.Cog):
             description=f"Allows you to report a bug or suggest ideas for new "
                         "commands/improvements to existing ones. Your "
                         "response will be sent in "
-                        f"{self.bot.config.SUGGEST_CHANNEL_ID}."
+                        f"{config.SUGGEST_CHANNEL_ID}."
                         "\n\n**Type:** Utility"
-                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"\n**Usage:** `{config.BOT_PREFIX}"
                         f"{cmd.name} <yoursuggestion>`",
-            colour=self.bot.config.BOT_COLOUR
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=f"{self.bot.config.BOT_HELP_ANAME}",
-            url=self.bot.config.BOT_URL,
+            name=f"{config.BOT_HELP_ANAME}",
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
-        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
     @help.command()
@@ -232,18 +233,18 @@ class NewHelpCog(commands.Cog):
             description=f"Retrieves relevant information about a specified "
                         "user in the server"
                         "\n\n**Type:** Utility"
-                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"\n**Usage:** `{config.BOT_PREFIX}"
                         f"{cmd.name} <user>`"
                         f"\n**Aliases:** {cmd_aliases}"
-                        f"\n{self.bot.config.BOT_HELP_USER_ARG}",
-            colour=self.bot.config.BOT_COLOUR
+                        f"\n{config.BOT_HELP_USER_ARG}",
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=f"{self.bot.config.BOT_HELP_ANAME}",
-            url=self.bot.config.BOT_URL,
+            name=f"{config.BOT_HELP_ANAME}",
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
-        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
     @help.command(enabled=False)
@@ -254,19 +255,19 @@ class NewHelpCog(commands.Cog):
         embed = discord.Embed(
             description=f"Bans a specified user from the server."
                         "\n\n**Type:** Moderation"
-                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"\n**Usage:** `{config.BOT_PREFIX}"
                         f"{cmd.name} [userID or @mention] <reason> <days>`"
                         f"\n**Aliases:** {cmd_aliases}"
-                        f"\n{self.bot.config.BOT_HELP_REASON_ARG}"
-                        f"{self.bot.config.BOT_HELP_BAN_ARG}",
-            colour=self.bot.config.BOT_COLOUR
+                        f"\n{config.BOT_HELP_REASON_ARG}"
+                        f"{config.BOT_HELP_BAN_ARG}",
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=f"{self.bot.config.BOT_HELP_ANAME}",
-            url=self.bot.config.BOT_URL,
+            name=f"{config.BOT_HELP_ANAME}",
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
-        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
     @help.command(enabled=False)
@@ -277,18 +278,18 @@ class NewHelpCog(commands.Cog):
         embed = discord.Embed(
             description=f"Kicks a specified user from the server."
                         "\n\n**Type:** Moderation"
-                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"\n**Usage:** `{config.BOT_PREFIX}"
                         f"{cmd.name} <userID or @mention> <reason>`"
                         f"\n**Aliases:** {cmd_aliases}"
-                        f"\n{self.bot.config.BOT_HELP_REASON_ARG}",
-            colour=self.bot.config.BOT_COLOUR
+                        f"\n{config.BOT_HELP_REASON_ARG}",
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=f"{self.bot.config.BOT_HELP_ANAME}",
-            url=self.bot.config.BOT_URL,
+            name=f"{config.BOT_HELP_ANAME}",
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
-        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
     @help.command()
@@ -301,17 +302,17 @@ class NewHelpCog(commands.Cog):
                         "current channel."
                         "\n\n**Type:** Moderation"
                         "\n**Permissions:** Manage Messages"
-                        f"\n**Usage:** `{self.bot.config.BOT_PREFIX}"
+                        f"\n**Usage:** `{config.BOT_PREFIX}"
                         f"{cmd.name} <# of messages to delete>`"
                         f"\n**Aliases:** {cmd_aliases}",
-            colour=self.bot.config.BOT_COLOUR
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=f"{self.bot.config.BOT_HELP_ANAME}",
-            url=self.bot.config.BOT_URL,
+            name=f"{config.BOT_HELP_ANAME}",
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
-        embed.set_footer(text=self.bot.config.BOT_FOOTER)
+        embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
     # TODO: Add a "permissions" tag that mentions requirements

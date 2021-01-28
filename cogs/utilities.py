@@ -1,6 +1,7 @@
 # Description: Cog that houses utilities commands for NBC Boterator
 
 import app_logger
+import config
 import discord
 import platform
 import os
@@ -21,7 +22,7 @@ class UtilitiesCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.suggest_channel = self.bot.get_channel(
-            self.bot.config.SUGGEST_CHANNEL_ID
+            config.SUGGEST_CHANNEL_ID
         )
 
     def cog_unload(self):
@@ -87,22 +88,22 @@ class UtilitiesCog(commands.Cog):
         bot_memory_usage = round(py.memory_info()[0]/(10**6), 2)
 
         embed = discord.Embed(
-            title=f"About - {self.bot.config.BOT_AUTHOR_NAME}",
+            title=f"About - {config.BOT_AUTHOR_NAME}",
             description="This is the server's custom discord bot, created for "
                         "the purpose of making everyone's lives easier. It's "
                         "fairly barebones feature-wise right now, but that'll "
                         "change as development continues."
-                        f"\n\n{self.bot.config.BOT_EMOJI_GITHUB} **[GitHub]"
-                        f"({self.bot.config.BOT_GITHUB_HOME})**"
-                        f"\n{self.bot.config.BOT_EMOJI_YOUTUBE} **[YouTube Channel]"
-                        f"({self.bot.config.BOT_YOUTUBE_CHANNEL})**"
-                        f"\n{self.bot.config.BOT_EMOJI_CLOUD} **[Website (WIP)]"
-                        f"({self.bot.config.BOT_URL})**",
-            colour=self.bot.config.BOT_COLOUR
+                        f"\n\n{config.BOT_EMOJI_GITHUB} **[GitHub]"
+                        f"({config.BOT_GITHUB_HOME})**"
+                        f"\n{config.BOT_EMOJI_YOUTUBE} **[YouTube Channel]"
+                        f"({config.BOT_YOUTUBE_CHANNEL})**"
+                        f"\n{config.BOT_EMOJI_CLOUD} **[Website (WIP)]"
+                        f"({config.BOT_URL})**",
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=self.bot.config.BOT_AUTHOR_CLICK,
-            url=self.bot.config.BOT_URL,
+            name=config.BOT_AUTHOR_CLICK,
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
@@ -151,7 +152,7 @@ class UtilitiesCog(commands.Cog):
             inline=True
         )
         embed.set_footer(
-            text=self.bot.config.BOT_FOOTER
+            text=config.BOT_FOOTER
         )
         await ctx.channel.send(embed=embed)
 
@@ -164,7 +165,7 @@ class UtilitiesCog(commands.Cog):
                        user_message: str):
         embed = discord.Embed(
             description=f"{user_message}",
-            colour=self.bot.config.BOT_COLOUR
+            colour=config.BOT_COLOUR
         )
         embed.set_footer(
             text=f"{ctx.author.name}#{ctx.author.discriminator}",
@@ -190,11 +191,11 @@ class UtilitiesCog(commands.Cog):
         embed = discord.Embed(
             title=f"Avatar – `{member.name}#{member.discriminator}`",
             description=member.mention,
-            colour=self.bot.config.BOT_COLOUR
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=self.bot.config.BOT_AUTHOR_CLICK,
-            url=self.bot.config.BOT_URL,
+            name=config.BOT_AUTHOR_CLICK,
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_image(
@@ -216,18 +217,18 @@ class UtilitiesCog(commands.Cog):
 
         embed = discord.Embed(
             description=f"**Local Version:** [{bot_version}]"
-                        f"({self.bot.config.BOT_GITHUB_LATEST})\n"
+                        f"({config.BOT_GITHUB_LATEST})\n"
                         "> A full changelog can be viewed via the above "
                         "hyperlink.",
-            colour=self.bot.config.BOT_COLOUR
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=self.bot.config.BOT_AUTHOR_CLICK,
-            url=self.bot.config.BOT_URL,
+            name=config.BOT_AUTHOR_CLICK,
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(
-            text=self.bot.config.BOT_FOOTER
+            text=config.BOT_FOOTER
         )
         await ctx.send(embed=embed)
 
@@ -254,11 +255,11 @@ class UtilitiesCog(commands.Cog):
         logger.debug("Ping timer started")
 
         embed = discord.Embed(
-            colour=self.bot.config.BOT_COLOUR
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=self.bot.config.BOT_AUTHOR_CLICK,
-            url=self.bot.config.BOT_URL,
+            name=config.BOT_AUTHOR_CLICK,
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_thumbnail(
@@ -270,7 +271,7 @@ class UtilitiesCog(commands.Cog):
                   "\nDiscord Websocket: "
         )
         embed.set_footer(
-            text=self.bot.config.BOT_FOOTER
+            text=config.BOT_FOOTER
         )
         message = await ctx.channel.send(embed=embed)
 
@@ -281,11 +282,11 @@ class UtilitiesCog(commands.Cog):
         web_latency = self.bot.latency * 1000
 
         embed = discord.Embed(
-            colour=self.bot.config.BOT_COLOUR
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=self.bot.config.BOT_AUTHOR_CLICK,
-            url=self.bot.config.BOT_URL,
+            name=config.BOT_AUTHOR_CLICK,
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_thumbnail(
@@ -300,7 +301,7 @@ class UtilitiesCog(commands.Cog):
                   )
         )
         embed.set_footer(
-            text=self.bot.config.BOT_FOOTER
+            text=config.BOT_FOOTER
         )
         await message.edit(embed=embed)
 
@@ -401,12 +402,12 @@ class UtilitiesCog(commands.Cog):
             title=f"User Info – `{member.name}#{member.discriminator}`"
                   f"{status_emoji}{bot_identify}",
             description=f"{member.mention}",
-            colour=self.bot.config.BOT_COLOUR,
+            colour=config.BOT_COLOUR,
             timestamp=ctx.message.created_at
         )
         embed.set_author(
-            name=self.bot.config.BOT_AUTHOR_CLICK,
-            url=self.bot.config.BOT_URL,
+            name=config.BOT_AUTHOR_CLICK,
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_thumbnail(
@@ -454,11 +455,11 @@ class UtilitiesCog(commands.Cog):
     async def serverinfo(self, ctx):
         embed = discord.Embed(
             title=f"Server Info - `{ctx.guild.name}`",
-            colour=self.bot.config.BOT_COLOUR
+            colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=self.bot.config.BOT_AUTHOR_CLICK,
-            url=self.bot.config.BOT_URL,
+            name=config.BOT_AUTHOR_CLICK,
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
         # Set thumbnail to be the server's icon
@@ -495,15 +496,15 @@ class UtilitiesCog(commands.Cog):
                 title="ERROR",
                 description="Your suggestion cannot be more than 512 "
                             "characters in length, please try to shorten it.",
-                colour=self.bot.config.BOT_ERR_COLOUR
+                colour=config.BOT_ERR_COLOUR
             )
             embed.set_author(
-                name=self.bot.config.BOT_AUTHOR_CLICK,
-                url=self.bot.config.BOT_URL,
+                name=config.BOT_AUTHOR_CLICK,
+                url=config.BOT_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
-                text=self.bot.config.BOT_FOOTER
+                text=config.BOT_FOOTER
             )
             await ctx.channel.send(embed=embed)
 
@@ -519,11 +520,11 @@ class UtilitiesCog(commands.Cog):
                 title="SUCCESS",
                 description="Your suggestion for the developer has been "
                             "received!\nThank you for your input.",
-                colour=self.bot.config.BOT_SUCCESS_COLOUR,
+                colour=config.BOT_SUCCESS_COLOUR,
             )
             embed.set_author(
-                name=self.bot.config.BOT_AUTHOR_CLICK,
-                url=self.bot.config.BOT_URL,
+                name=config.BOT_AUTHOR_CLICK,
+                url=config.BOT_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
@@ -539,12 +540,12 @@ class UtilitiesCog(commands.Cog):
         # Send suggestion to appropriate channel along with relevant data
         embed = discord.Embed(
             title="NEW SUGGESTION",
-            colour=self.bot.config.BOT_COLOUR,
+            colour=config.BOT_COLOUR,
             timestamp=ctx.message.created_at
         )
         embed.set_author(
-            name=self.bot.config.BOT_AUTHOR_NAME,
-            url=self.bot.config.BOT_URL,
+            name=config.BOT_AUTHOR_NAME,
+            url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
@@ -568,8 +569,8 @@ class UtilitiesCog(commands.Cog):
         logger.debug("Suggestion Sent To Channel")
 
         # Add reactions to allow public participation
-        await suggest_msg.add_reaction(self.bot.config.BOT_EMOJI_UPVOTE)
-        await suggest_msg.add_reaction(self.bot.config.BOT_EMOJI_DOWNVOTE)
+        await suggest_msg.add_reaction(config.BOT_EMOJI_UPVOTE)
+        await suggest_msg.add_reaction(config.BOT_EMOJI_DOWNVOTE)
         logger.debug("Reactions Added")
 
 

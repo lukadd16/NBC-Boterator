@@ -40,7 +40,6 @@ class NBCBoterator(commands.Bot):
         )
 
         self.app_info = None
-        self.config = config
         self.status_channel = None
         self.log_channel = None
         # self.partners_channel = None
@@ -51,7 +50,7 @@ class NBCBoterator(commands.Bot):
 
         self.default_presence = discord.Activity(
             type=discord.ActivityType.listening,
-            name=f"{self.config.BOT_PREFIX}help"
+            name=f"{config.BOT_PREFIX}help"
         )
 
         # TODO: Add db_connect() method call here
@@ -61,7 +60,7 @@ class NBCBoterator(commands.Bot):
         logger.debug("Loading cogs...")
 
         # Load cogs defined in our config file
-        for extension in self.config.BOT_EXTENSIONS:
+        for extension in config.BOT_EXTENSIONS:
             try:
                 self.load_extension(extension)
                 print(f"[COG] SUCCESS - {extension}")
@@ -85,9 +84,9 @@ class NBCBoterator(commands.Bot):
 
         # Report uptime & shutdown
         embed = discord.Embed(
-            title=f"Status: {self.config.BOT_EMOJI_OFFLINE}",
+            title=f"Status: {config.BOT_EMOJI_OFFLINE}",
             description=f"`{self.user}` has been disconnected",
-            colour=self.config.DISC_OFFLINE_COLOUR,
+            colour=config.DISC_OFFLINE_COLOUR,
             timestamp=datetime.utcnow()
         )
         embed.add_field(
@@ -113,7 +112,7 @@ class NBCBoterator(commands.Bot):
         try:
             self.loop.run_until_complete(
                 self.start(
-                    self.config.BOT_TOKEN
+                    config.BOT_TOKEN
                 )
             )
         except KeyboardInterrupt:
@@ -150,8 +149,8 @@ class NBCBoterator(commands.Bot):
 
         # Retrieve the IDs for the discord logging and status channels from our
         # config file and assign them to previously declared class variables
-        self.status_channel = self.get_channel(self.config.STATUS_CHANNEL_ID)
-        self.log_channel = self.get_channel(self.config.EVENTS_CHANNEL_ID)
+        self.status_channel = self.get_channel(config.STATUS_CHANNEL_ID)
+        self.log_channel = self.get_channel(config.EVENTS_CHANNEL_ID)
 
         logger.info(" - ")
         logger.info("Client is ready.")
@@ -162,7 +161,7 @@ class NBCBoterator(commands.Bot):
             self.app_info.owner.name,
             self.app_info.owner.discriminator
         )
-        logger.info(f"Prefix - {self.config.BOT_PREFIX}")
+        logger.info(f"Prefix - {config.BOT_PREFIX}")
         logger.info(" - ")
 
         print(f"\n[BT] Logged in as: {self.user.name} - {self.user.id}")
@@ -179,9 +178,9 @@ class NBCBoterator(commands.Bot):
 
         # Report bootup to status channel
         embed = discord.Embed(
-            title=f"Status: {self.config.BOT_EMOJI_ONLINE}",
+            title=f"Status: {config.BOT_EMOJI_ONLINE}",
             description=f"`{self.user}` has successfully connected to Discord",
-            colour=self.config.DISC_ONLINE_COLOUR,
+            colour=config.DISC_ONLINE_COLOUR,
             timestamp=datetime.utcnow()
         )
         embed.set_footer(
