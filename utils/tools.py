@@ -8,9 +8,9 @@ import config
 logger = app_logger.get_logger(__name__)
 
 
-# Used in cmd cooldown + bot uptime calculation, takes seconds as input and
-# converts it into user friendly [1d 9h 8m 7s] format
-def convert_seconds_friendly(second):
+# Used in cmd cooldown + bot uptime calculation, takes seconds value as arg.
+# Returned Formatting: 1d 9h 8m 7s
+def fmt_seconds_friendly(second):
     minute, second = divmod(second, 60)
     hour, minute = divmod(minute, 60)
     day, hour = divmod(hour, 24)
@@ -28,9 +28,9 @@ def convert_seconds_friendly(second):
 
 
 # Meant for when passing raw datetimes that include year, month, day, etc.
-# Formatting: Mon, Jul 27, 2020 17:44 PM GMT
-def get_time_friendly(time):
-    return time.strftime("%a, %b %d, %Y %H:%M %p")
+# Returned Formatting: Wed, Jul 1, 1987 17:44 PM GMT
+def fmt_time_friendly(time):
+    return time.strftime("%a, %b %-d, %Y %H:%M %p")
 
 
 # In weeks format for whois and serverinfo, maybe rename it to something else
