@@ -13,6 +13,7 @@ import time
 from datetime import datetime
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
+from typing import Optional
 from utils import tools
 
 logger = app_logger.get_logger(__name__)
@@ -75,7 +76,7 @@ class UtilitiesCog(commands.Cog):
 
         # Get bots' total uptime
         delta_uptime = datetime.utcnow() - self.bot.launch_time
-        friendly_uptime = tools.convert_seconds_friendly(
+        friendly_uptime = tools.fmt_seconds_friendly(
             delta_uptime.total_seconds()
         )
 
@@ -101,11 +102,10 @@ class UtilitiesCog(commands.Cog):
                         f"({config.BOT_URL})**",
             colour=config.BOT_COLOUR
         )
-        embed.set_author(
-            name=config.BOT_AUTHOR_CLICK,
-            url=config.BOT_URL,
-            icon_url=self.bot.user.avatar_url
+        embed.set_thumbnail(
+            url=self.bot.user.avatar_url
         )
+        embed.set
         embed.add_field(
             name="Developer: ",
             value="`Lukadd.16#8870`",
@@ -154,24 +154,7 @@ class UtilitiesCog(commands.Cog):
         embed.set_footer(
             text=config.BOT_FOOTER
         )
-        await ctx.channel.send(embed=embed)
-
-    # WIP, scraping admin idea instead for if the staff member
-    # (defined as kick+ban perms basically) also has send perms to the channel
-    # they are specifying, then they are allowed to use this command
-    @commands.command(aliases=["announcement"], enabled=False)
-    @commands.guild_only()
-    async def announce(self, ctx, target_channel: discord.TextChannel, *,
-                       user_message: str):
-        embed = discord.Embed(
-            description=f"{user_message}",
-            colour=config.BOT_COLOUR
-        )
-        embed.set_footer(
-            text=f"{ctx.author.name}#{ctx.author.discriminator}",
-            icon_url=ctx.author.avatar_url
-        )
-        await target_channel.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=["av"])
     async def avatar(self, ctx, *, member: discord.Member = None):
@@ -191,7 +174,8 @@ class UtilitiesCog(commands.Cog):
         embed = discord.Embed(
             title=f"Avatar – `{member.name}#{member.discriminator}`",
             description=member.mention,
-            colour=config.BOT_COLOUR
+            colour=config.BOT_COLOUR,
+            timestamp=ctx.message.created_at
         )
         embed.set_author(
             name=config.BOT_AUTHOR_CLICK,
@@ -206,7 +190,7 @@ class UtilitiesCog(commands.Cog):
             icon_url=f"{ctx.author.avatar_url}"
         )
 
-        await ctx.channel.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=["version", "whatsnew"])
     async def changelog(self, ctx):
@@ -223,7 +207,7 @@ class UtilitiesCog(commands.Cog):
             colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=config.BOT_AUTHOR_CLICK,
+            name="NBC Boterator Changelog",
             url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
         )
@@ -246,7 +230,7 @@ class UtilitiesCog(commands.Cog):
         msg = f"*{member.name}* is member `#{member_join_position}` "\
               f"(out of {len(ctx.guild.members)})"
 
-        await ctx.channel.send(msg)
+        await ctx.send(msg)
 
     @commands.command()
     async def ping(self, ctx):
@@ -258,12 +242,9 @@ class UtilitiesCog(commands.Cog):
             colour=config.BOT_COLOUR
         )
         embed.set_author(
-            name=config.BOT_AUTHOR_CLICK,
+            name="NBC Boterator Response Times",
             url=config.BOT_URL,
             icon_url=self.bot.user.avatar_url
-        )
-        embed.set_thumbnail(
-            url=self.bot.user.avatar_url
         )
         embed.add_field(
             name="Ping...",
@@ -273,7 +254,7 @@ class UtilitiesCog(commands.Cog):
         embed.set_footer(
             text=config.BOT_FOOTER
         )
-        message = await ctx.channel.send(embed=embed)
+        message = await ctx.send(embed=embed)
 
         # End stopwatch; Calculate cmd round-trip and websocket latencies
         end = time.perf_counter()
@@ -304,6 +285,94 @@ class UtilitiesCog(commands.Cog):
             text=config.BOT_FOOTER
         )
         await message.edit(embed=embed)
+
+    # TODO: Bot currently does not handle 403 Missing Access error
+    #       (which occurs when the bot can't see the mentioned channel)
+    @commands.command(aliases=["pins", "pinfo"])
+    async def pinned(self, ctx, channel: Optional[discord.TextChannel] = None):
+        if channel is None:
+            channel = ctx.channel
+
+        # Retrieve all pinned messages as a List[Message]
+        pinned_messages = await channel.pins()
+
+        # Count # of pinned messages in the channel
+        total_pins = len(pinned_messages)
+
+        # Create response embed
+        embed = discord.Embed(
+            title=f"Pinned Messages - `#{channel.name}`",
+            description=channel.mention,
+            colour=config.BOT_COLOUR,
+            timestamp=ctx.message.created_at
+        )
+        embed.set_author(
+            name=config.BOT_AUTHOR_CLICK,
+            url=config.BOT_URL,
+            icon_url=self.bot.user.avatar_url
+        )
+        embed.add_field(
+            name="Channel ID:",
+            value=f"{channel.id}",
+            inline=False
+        )
+        embed.add_field(
+            name="# of Pinned Messages:",
+            value=f"{total_pins} (max permitted is 50)",
+            inline=False
+        )
+        embed.set_footer(
+            text=f"Requested by {ctx.author.name}#{ctx.author.discriminator}",
+            icon_url=f"{ctx.author.avatar_url}"
+        )
+
+        # Retrieve most recent pinned message & relevant details about it
+        # Embed field will be different depending on the existance of a
+        # pinned message
+        try:
+            recent_pin = pinned_messages[0]
+
+            # Retrieve first few characters from message
+            recent_pin_brief = recent_pin.content[0:40]
+
+            if recent_pin_brief == "":
+                # Message string is empty, which means the actual message
+                # contains an embed or attachment
+                recent_pin_brief = "Cannot preview, message is an embed/attachment"
+            else:
+                recent_pin_brief += " (...)"
+
+            # Retrieve message author
+            recent_pin_author = (
+                recent_pin.author.mention
+                + f" ({recent_pin.author.id})"
+            )
+
+            # Retrieve date message was created
+            recent_pin_date = recent_pin.created_at
+            friendly_recent_pin_date = tools.fmt_time_friendly(
+                recent_pin_date
+            )
+
+            # Get discord.com/channels/ link to the message
+            recent_pin_url = recent_pin.jump_url
+
+            embed.add_field(
+                name="Most Recent Pin:",
+                value=f"**Author:** {recent_pin_author}"
+                      f"\n**Created:** {friendly_recent_pin_date} GMT"  # TODO: Add "# days ago"?
+                      f"\n**Content:** {recent_pin_brief}"
+                      f"\n> [Jump To Message]({recent_pin_url})",
+                inline=False
+            )
+        except IndexError:  # Channel has no pinned messages
+            embed.add_field(
+                name="Most Recent Pin:",
+                value="The specified channel has no pinned messages",
+                inline=False
+            )
+
+        await ctx.send(embed=embed)
 
     # Deprecated, remove entirely in a future release
     @commands.command()
@@ -339,20 +408,20 @@ class UtilitiesCog(commands.Cog):
         )
 
         # Convert account creation time to readable format
-        user_createdate_friendly = tools.get_time_friendly(
+        friendly_user_createdate = tools.fmt_time_friendly(
             user_createdate
         )
         logger.debug(
-            "> (botUtils) Account Created On: %s", user_createdate
+            "> (tools) Account Created On: %s", friendly_user_createdate
         )
 
         # Convert guild join time to readable format
-        member_joindate_friendly = tools.get_time_friendly(
+        friendly_member_joindate = tools.fmt_time_friendly(
             member.joined_at
         )
         logger.debug(
-            "> (botUtils) Joined Guild On: %s",
-            member_joindate_friendly
+            "> (tools) Joined Guild On: %s",
+            friendly_member_joindate
         )
 
         # Returns member's join position out of all guild members
@@ -361,20 +430,20 @@ class UtilitiesCog(commands.Cog):
             member
         )
         logger.debug(
-            "> (botUtils) Join Position in Guild: %s", member_join_position
+            "> (tools) Join Position in Guild: %s", member_join_position
         )
 
         # Returns an emoji if member is a bot
         bot_identify = tools.do_bot_check(
             member
         )
-        logger.debug("> (botUtils) User is a bot? %s", bot_identify)
+        logger.debug("> (tools) User is a bot? %s", bot_identify)
 
         # Returns an emoji dynamic to member's online status
         status_emoji = tools.get_member_status(
             member
         )
-        logger.debug("> (botUtils) User Status: %s", status_emoji)
+        logger.debug("> (tools) User Status: %s", status_emoji)
 
         # Subtract by 1 to omit the @everyone role
         member_role_sum = len(member.roles) - 1
@@ -411,16 +480,16 @@ class UtilitiesCog(commands.Cog):
             icon_url=self.bot.user.avatar_url
         )
         embed.set_thumbnail(
-            url=(member.avatar_url)
+            url=member.avatar_url
         )
         embed.add_field(
-            name="Account Created:",
-            value=f"{user_createdate_friendly} GMT",
+            name="Account Created (GMT):",
+            value=f"{friendly_user_createdate}",
             inline=True
         )
         embed.add_field(
-            name="Joined Guild:",
-            value=f"{member_joindate_friendly} GMT",
+            name="Joined Guild (GMT):",
+            value=f"{friendly_member_joindate}",
             inline=True
         )
         embed.add_field(
@@ -447,7 +516,7 @@ class UtilitiesCog(commands.Cog):
             text=f"Requested by {ctx.author.name}#{ctx.author.discriminator}",
             icon_url=(ctx.author.avatar_url)
         )
-        await ctx.channel.send(embed=embed)
+        await ctx.send(embed=embed)
 
     # WIP
     @commands.command(aliases=["sinfo"], enabled=False)
@@ -473,7 +542,7 @@ class UtilitiesCog(commands.Cog):
             text=f"Requested by {ctx.author.name}#{ctx.author.discriminator}",
             icon_url=(ctx.author.avatar_url)
         )
-        await ctx.channel.send(embed=embed)
+        await ctx.send(embed=embed)
 
     # Users are only allowed to use this command once every 30 seconds
     # TODO: Should add JSON file + ability to blacklist users from sending
@@ -506,7 +575,7 @@ class UtilitiesCog(commands.Cog):
             embed.set_footer(
                 text=config.BOT_FOOTER
             )
-            await ctx.channel.send(embed=embed)
+            await ctx.send(embed=embed)
 
             # Reset cmd cooldown for user to allow another attempt
             ctx.command.reset_cooldown(ctx)
@@ -533,7 +602,7 @@ class UtilitiesCog(commands.Cog):
                 icon_url=ctx.author.avatar_url
             )
             await ctx.message.delete()
-            await ctx.channel.send(embed=embed)
+            await ctx.send(embed=embed)
 
         logger.info("Processing New Suggestion")
 

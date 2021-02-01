@@ -30,7 +30,7 @@ def fmt_seconds_friendly(second):
 # Meant for when passing raw datetimes that include year, month, day, etc.
 # Returned Formatting: Wed, Jul 1, 1987 17:44 PM GMT
 def fmt_time_friendly(time):
-    return time.strftime("%a, %b %-d, %Y %H:%M %p")
+    return time.strftime("%a, %b X%d, %Y %H:%M %p").replace("X0", "X").replace("X", "")
 
 
 # In weeks format for whois and serverinfo, maybe rename it to something else

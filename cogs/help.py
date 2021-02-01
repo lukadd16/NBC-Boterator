@@ -18,14 +18,16 @@ class NewHelpCog(commands.Cog):
             logger.removeHandler(h)
 
     # TODO: NBC-specific CMD Ideas
-    # - website (sends a link to our website + other socials?)
     # - A "list staff team" command or just a "members in @role"
     # - Make moderation commands more useful and optimized, if I ever make
     #   something as sophisticated as localbot then we would switch over.
-    # - Add simple VC mute and deafen commands
     # - Add simple nickname change command
     # - At some point move custom commands over to this bot
     # - Auto response? Like in PCMR
+
+    # TODO: Where needed...
+    #       Add a "Permissions" tag that mentions requirements
+    #       Add "Cooldown" tag that describes ratelimits (1 per 30, etc.)
 
     @commands.group()
     async def help(self, ctx):
@@ -51,9 +53,9 @@ class NewHelpCog(commands.Cog):
                 inline=False
             )
             embed.add_field(
-                name="Utility Commands [7]",
+                name="Utility Commands [8]",
                 value="`about`, `avatar`, `changelog`, `joinpos`, `ping`, "
-                      "`suggest`, `whois`",
+                      "`pinned`, `suggest`, `whois`",
                 inline=False
             )
             embed.add_field(
@@ -124,6 +126,7 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
+            title=f"{config.BOT_PREFIX}{cmd.name}",
             description=f"Learn what's new with this version of the bot"
                         "\n\n**Type:** Utility"
                         f"\n**Usage:** `{config.BOT_PREFIX}"
@@ -145,6 +148,7 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
+            title=f"{config.BOT_PREFIX}{cmd.name}",
             description=f"States the position that a specified user joined "
                         "the server. E.g. Joe is member #50 out of 550"
                         "\n\n**Type:** Utility"
@@ -167,10 +171,34 @@ class NewHelpCog(commands.Cog):
         cmd = self.bot.get_command("ping")
 
         embed = discord.Embed(
+            title=f"{config.BOT_PREFIX}{cmd.name}",
             description=f"Tests my connection to Discord"
                         "\n\n**Type:** Utility"
                         f"\n**Usage:** `{config.BOT_PREFIX}"
                         f"{cmd.name}`",
+            colour=config.BOT_COLOUR
+        )
+        embed.set_author(
+            name=f"{config.BOT_HELP_ANAME}",
+            url=config.BOT_URL,
+            icon_url=self.bot.user.avatar_url
+        )
+        embed.set_footer(text=config.BOT_FOOTER)
+        await ctx.send(embed=embed)
+
+    @help.command()
+    async def pinned(self, ctx):
+        cmd = self.bot.get_command("pinned")
+        cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
+
+        embed = discord.Embed(
+            title=f"{config.BOT_PREFIX}{cmd.name}",
+            description=f"Retrieves information about a channel's pinned "
+                        "messages"
+                        "\n\n**Type:** Utility"
+                        f"\n**Usage:** `{config.BOT_PREFIX}"
+                        f"{cmd.name} <channel>`"
+                        f"\n**Aliases:** {cmd_aliases}",
             colour=config.BOT_COLOUR
         )
         embed.set_author(
@@ -187,6 +215,7 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
+            title=f"{config.BOT_PREFIX}{cmd.name}",
             description=f"Retrieves information about this server"
                         "\n\n**Type:** Utility"
                         f"\n**Usage:** `{config.BOT_PREFIX}"
@@ -207,13 +236,14 @@ class NewHelpCog(commands.Cog):
         cmd = self.bot.get_command("suggest")
 
         embed = discord.Embed(
-            description=f"Allows you to report a bug or suggest ideas for new "
-                        "commands/improvements to existing ones. Your "
-                        "response will be sent in "
-                        f"{config.SUGGEST_CHANNEL_ID}."
+            title=f"{config.BOT_PREFIX}{cmd.name}",
+            description=f"Allows you to report a bug, suggest ideas for new "
+                        "commands or suggest improvements for existing ones. "
+                        "Your response will be sent in "
+                        f"<#{config.SUGGEST_CHANNEL_ID}>."
                         "\n\n**Type:** Utility"
                         f"\n**Usage:** `{config.BOT_PREFIX}"
-                        f"{cmd.name} <yoursuggestion>`",
+                        f"{cmd.name} <suggestion-text-here>`",
             colour=config.BOT_COLOUR
         )
         embed.set_author(
@@ -230,6 +260,7 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
+            title=f"{config.BOT_PREFIX}{cmd.name}",
             description=f"Retrieves relevant information about a specified "
                         "user in the server"
                         "\n\n**Type:** Utility"
@@ -253,6 +284,7 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
+            title=f"{config.BOT_PREFIX}{cmd.name}",
             description=f"Bans a specified user from the server."
                         "\n\n**Type:** Moderation"
                         f"\n**Usage:** `{config.BOT_PREFIX}"
@@ -276,6 +308,7 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
+            title=f"{config.BOT_PREFIX}{cmd.name}",
             description=f"Kicks a specified user from the server."
                         "\n\n**Type:** Moderation"
                         f"\n**Usage:** `{config.BOT_PREFIX}"
@@ -298,12 +331,13 @@ class NewHelpCog(commands.Cog):
         cmd_aliases = f"`{'`, `'.join(cmd.aliases)}`"
 
         embed = discord.Embed(
+            title=f"{config.BOT_PREFIX}{cmd.name}",
             description=f"Deletes a specified number of messages from the "
                         "current channel."
                         "\n\n**Type:** Moderation"
                         "\n**Permissions:** Manage Messages"
                         f"\n**Usage:** `{config.BOT_PREFIX}"
-                        f"{cmd.name} <# of messages to delete>`"
+                        f"{cmd.name} <#-of-messages-to-delete>`"
                         f"\n**Aliases:** {cmd_aliases}",
             colour=config.BOT_COLOUR
         )
@@ -314,8 +348,6 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
-
-    # TODO: Add a "permissions" tag that mentions requirements
 
 
 def setup(bot):
