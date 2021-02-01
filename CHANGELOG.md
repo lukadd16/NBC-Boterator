@@ -1,5 +1,20 @@
 # Changelog
 
+### [1.2.1](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.2.0...v1.2.1) (2021-02-01)
+
+
+### Bug Fixes
+
+* **errorhandler:** Cooldown error msgs now auto-delete after the mentioned cooldown has expired ([b226421](https://www.github.com/lukadd16/NBC-Boterator/commit/b2264210e6725fc08a976239c8817417f3ca87c3))
+* **owner:** Rename utils subcommand to tools ([38e74d0](https://www.github.com/lukadd16/NBC-Boterator/commit/38e74d008e7147113e8ba34c4e0595e3ecd18383))
+* Rename botUtils.py module to tools.py; Correct all references to botUtils in the codebase to point to tools ([5f002bb](https://www.github.com/lukadd16/NBC-Boterator/commit/5f002bb727da1ee94695769c71ff26f88dfcc1c1))
+* Replace all references to self.bot.config with config, import config file locally if needed ([d43c938](https://www.github.com/lukadd16/NBC-Boterator/commit/d43c938af3001338710d4ca0a5ab664abcf8aa51))
+
+
+### Reverts
+
+* **deps:** Revert bumping multidict to 5.1.0 ([a42c998](https://www.github.com/lukadd16/NBC-Boterator/commit/a42c9980bfb3e3b24f4fa1b5194611f58ee82048))
+
 ## [1.2.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.1.0...v1.2.0) (2021-01-26)
 
 
