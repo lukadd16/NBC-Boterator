@@ -58,7 +58,7 @@ class OwnerCog(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send(
                 "You did not specify a subcommand. Valid subcommands "
-                "are:\n>>> `all`\n`cog`\n`config`\n`utils`"
+                "are:\n>>> `all`\n`cog`\n`config`\n`tools`"
             )
 
     # Reload all cogs + tools.py module + config file
@@ -103,7 +103,7 @@ class OwnerCog(commands.Cog):
 
     # Reloads the tools.py module into memory
     @creload.command()
-    async def utils(self, ctx):
+    async def tools(self, ctx):
         try:
             importlib_reload(tools)
         except Exception as e:
