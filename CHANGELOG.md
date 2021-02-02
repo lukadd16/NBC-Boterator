@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.1](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.3.0...v1.3.1) (2021-02-01)
+
+
+### Bug Fixes
+
+* **errorhandler:** Fix bug preventing cooldown error msgs from being deleted after cooldown has elapsed ([67f2d78](https://www.github.com/lukadd16/NBC-Boterator/commit/67f2d7867e3376b2ce0cdf5b9aa1517f51b61382))
+
 ## [1.3.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.2.0...v1.3.0) (2021-02-01)
 
 
