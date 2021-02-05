@@ -38,7 +38,7 @@ class StatusLoop(commands.Cog):
             ),
             discord.Activity(
                 type=discord.ActivityType.watching,
-                name="Dyno kinda sus"
+                name="You"
             ),
             discord.Activity(
                 type=discord.ActivityType.watching,

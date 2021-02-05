@@ -105,7 +105,6 @@ class UtilitiesCog(commands.Cog):
         embed.set_thumbnail(
             url=self.bot.user.avatar_url
         )
-        embed.set
         embed.add_field(
             name="Developer: ",
             value="`Lukadd.16#8870`",
