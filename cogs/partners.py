@@ -37,9 +37,9 @@ logger.info("JSON File Path: {}".format(db_file_path))
 class Partners(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.partner_channel = self.bot.get_channel(
-            config.PARTNERS_CHANNEL_ID
-        )
+        # self.partner_channel = self.bot.get_channel(
+        #     config.PARTNERS_CHANNEL_ID
+        # )
         # self.partner_msg = self.partner_channel.fetch_message(
         #     config.PARTNERS_MSG_ID
         # )
@@ -89,16 +89,45 @@ class Partners(commands.Cog):
             icon_url=ctx.guild.icon_url
         )
 
-        msg = await self.partner_channel.send(embed=embed)
-        await ctx.send(
-            "**`SUCCESS`**` (ID: {})".format(msg.id)  # Copy this + logger format for official.py commands where need the ID of the embeds sent
+        # Get object of the channel we want to send to
+        guild = discord.utils.get(
+            self.bot.guilds,
+            name=ctx.guild.name
         )
+        channel = discord.utils.get(
+            guild.text_channels,
+            id=config.PARTNERS_CHANNEL_ID
+        )
+        msg = await channel.send(embed=embed)
 
         logger.info(
             "Partnership Requirements Embed Sent (MSG ID: {})".format(
                 msg.id
             )
         )
+
+        embed = discord.Embed(
+            title="SUCCESS",
+            colour=config.BOT_SUCCESS_COLOUR
+        )
+        embed.set_author(
+            name=config.BOT_AUTHOR_NAME,
+            url=config.BOT_URL,
+            icon_url=self.bot.user.avatar_url
+        )
+        embed.add_field(
+            name="Partnership Requirements Sent",
+            value="**MSG ID:** {}".format(msg.id),
+            inline=False
+        )
+        embed.set_footer(
+            text="Actioned by {}#{}".format(
+                ctx.author.name,
+                ctx.author.discriminator
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+        await ctx.channel.send(embed=embed)
 
     @partner.command(aliases=["refresh", "ereq"])
     @commands.has_guild_permissions(administrator=True)
@@ -134,10 +163,10 @@ class Partners(commands.Cog):
             icon_url=ctx.guild.icon_url
         )
 
-        # Retrieve necessary details about the message we want to edit
+        # Get object of the message we want to edit
         guild = discord.utils.get(
             self.bot.guilds,
-            name=ctx.guild.name  # TODO: Test
+            name=ctx.guild.name
         )
         channel = discord.utils.get(
             guild.text_channels,
@@ -146,9 +175,7 @@ class Partners(commands.Cog):
         msg = await channel.fetch_message(
             config.PARTNERS_MSG_ID
         )
-
         await msg.edit(embed=new_embed)
-        await ctx.send("**`SUCCESS`**")
 
         logger.info(
             "Partnership Requirements Embed Edited (MSG ID: {})".format(
@@ -156,16 +183,42 @@ class Partners(commands.Cog):
             )
         )
 
+        embed = discord.Embed(
+            title="SUCCESS",
+            colour=config.BOT_SUCCESS_COLOUR
+        )
+        embed.set_author(
+            name=config.BOT_AUTHOR_NAME,
+            url=config.BOT_URL,
+            icon_url=self.bot.user.avatar_url
+        )
+        embed.add_field(
+            name="Partnership Requirements Edited",
+            value="**MSG ID:** {}".format(msg.id),
+            inline=False
+        )
+        embed.set_footer(
+            text="Actioned by {}#{}".format(
+                ctx.author.name,
+                ctx.author.discriminator
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+        await ctx.channel.send(embed=embed)
+
     # For now going to lock to admins only
     # After/together with this I should create an inviteinfo command (alias = ii)
     @partner.command()
     @commands.has_guild_permissions(administrator=True)
-    async def add(self, ctx, invite: discord.Invite, rep: discord.Member, banner: str = None, colour: str = None):  # Remember that colour codes need to be 0x...
+    async def add(self, ctx, invite: discord.Invite, rep: discord.Member, colour: str = None, banner: str = None):  # Remember that colour codes need to be 0x...
         # Handle NoneType attributes
         if banner is None:
             banner = discord.Embed.Empty
         if colour is None:
-            colour = discord.Embed.Empty
+            colour = discord.Embed.Empty  # Or discord.Colour.dark_theme() which would blend in with dark mode
+        else:  # Convert string to valid integer type
+            colour = int(colour, 16)
+
 
         # Will resolve guild name, server icon, etc. from the invite itself
         # Handle various errors appropriately in own local err handler
@@ -184,14 +237,14 @@ class Partners(commands.Cog):
         # Embed footer: Northbridge Cafe Partnership Program, timestamp=datetime.utcnow()
 
         # Retrieve guild that the invite points to
-        guild = invite.guild
+        # invite_guild = invite.guild
 
         # Confirm invite returns a valid guild
-        if guild is None:
+        if invite.guild is None:
             embed = discord.Embed(
                 title="ERROR",
                 description="A guild object could not be obtained from the "
-                            "provided invite, perhaps it's for a Group DM?",
+                            "provided invite, perhaps it was for a Group DM?",
                 colour=config.BOT_ERR_COLOUR,
                 timestamp=datetime.utcnow()
             )
@@ -237,15 +290,35 @@ class Partners(commands.Cog):
 
         # In theory discord.Member type should already attempt to use MemberConverter() to get the proper type
 
+        embed = discord.Embed(
+            title="PARTNERSHIP MENU",
+            colour=config.BOT_COLOUR
+        )
+        embed.set_author(
+            name=config.BOT_AUTHOR_NAME,
+            url=config.BOT_URL,
+            icon_url=self.bot.user.avatar_url
+        )
+        embed.add_field(
+            name="Server Description",
+            value="Please enter the accompanying server description/ad for this partner.",
+            inline=False
+        )
+        embed.set_footer(
+            text="Actioned by {}#{}".format(
+                ctx.author.name,
+                ctx.author.discriminator
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+        desc_embed = await ctx.channel.send(embed=embed)
+
         def check(m):
             return m.author == ctx.author
 
-        # Delete invokation cmd only if sucessfully get description, else don't delete so that author need not have to retype everything again
-
         # Get partner server description
-        # TODO: Need to test how it handles newlines and other markdown elements
         try:
-            desc = await self.bot.wait_for(
+            provided_desc = await self.bot.wait_for(
                 "message",
                 timeout=60.0,
                 check=check
@@ -266,29 +339,32 @@ class Partners(commands.Cog):
                 inline=False
             )
             embed.set_footer(
-                text=f"Actioned by {ctx.author}",
+                text="Actioned by {}".format(ctx.author),
                 icon_url=ctx.author.avatar_url
             )
-            await ctx.send(embed=embed)
+            await desc_embed.edit(embed=embed)
             return
 
+        # TODO: Could provide option to link related website in the embed's title
         # Construct embed object
         embed = discord.Embed(
-            title="{}".format(guild.name),
-            description="{}".format(desc),
+            title="{}".format(invite.guild.name),
+            description="{}".format(provided_desc.content),
             colour=colour,
             timestamp=datetime.utcnow()
         )
         embed.add_field(
-            name="Representative:",
-            value=rep.mention
+            name="{} Representative".format("\U0001f465"),
+            # value="{} {}".format("\U0001f465", rep.mention)
+            value="{}".format(rep.mention)
         )
         embed.add_field(
-            name="Invite:",
-            value=invite.url
+            name="{} Invite".format("\U0001f517"),
+            # value="{} **{}**".format("\U0001f517", invite.url)  # TODO: Experiment with the spacing
+            value="**{}**".format(invite.url)
         )
         embed.set_thumbnail(
-            url=guild.icon_url
+            url=invite.guild.icon_url
         )
         embed.set_image(
             url=banner
@@ -298,12 +374,19 @@ class Partners(commands.Cog):
             icon_url=ctx.guild.icon_url
         )
 
+        await provided_desc.delete()  # Delete author message containing server description
         await ctx.message.delete()  # Delete command invokation
 
-        msg = await self.partner_channel.send(embed=embed)
-        await ctx.send(
-            "**`SUCCESS`**` (ID: {})".format(msg.id)
+        # Get object of the channel we want to send to
+        guild = discord.utils.get(
+            self.bot.guilds,
+            name=ctx.guild.name
         )
+        channel = discord.utils.get(
+            guild.text_channels,
+            id=config.PARTNERS_CHANNEL_ID
+        )
+        msg = await channel.send(embed=embed)
 
         logger.info(
             "New Partner Added By {} (MSG ID: {})".format(
@@ -312,9 +395,34 @@ class Partners(commands.Cog):
             )
         )
 
+        embed = discord.Embed(
+            title="SUCCESS",
+            colour=config.BOT_SUCCESS_COLOUR
+        )
+        embed.set_author(
+            name=config.BOT_AUTHOR_NAME,
+            url=config.BOT_URL,
+            icon_url=self.bot.user.avatar_url
+        )
+        embed.add_field(
+            name="Partner Added",
+            value="**MSG ID:** {}".format(msg.id),
+            inline=False
+        )
+        embed.set_footer(
+            text="Actioned by {}#{}".format(
+                ctx.author.name,
+                ctx.author.discriminator
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+        await desc_embed.edit(
+            embed=embed
+        )
+
     @partner.command()
     @commands.has_guild_permissions(administrator=True)
-    async def edit(self, ctx):
+    async def edit(self, ctx, message: discord.Message, invite: discord.Invite, rep: discord.Member, colour: str = None, banner: str = None):
         pass
 
 
