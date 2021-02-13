@@ -37,12 +37,6 @@ logger.info("JSON File Path: {}".format(db_file_path))
 class Partners(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        # self.partner_channel = self.bot.get_channel(
-        #     config.PARTNERS_CHANNEL_ID
-        # )
-        # self.partner_msg = self.partner_channel.fetch_message(
-        #     config.PARTNERS_MSG_ID
-        # )
 
     def cog_unload(self):
         for h in logger.handlers:
@@ -208,6 +202,7 @@ class Partners(commands.Cog):
 
     # For now going to lock to admins only
     # After/together with this I should create an inviteinfo command (alias = ii)
+    # TODO: Do I need a local error handler at all? Or have I already convered most cases within each command?
     @partner.command()
     @commands.has_guild_permissions(administrator=True)
     async def add(self, ctx, invite: discord.Invite, rep: discord.Member, colour: str = None, banner: str = None):  # Remember that colour codes need to be 0x...
@@ -218,26 +213,6 @@ class Partners(commands.Cog):
             colour = discord.Embed.Empty  # Or discord.Colour.dark_theme() which would blend in with dark mode
         else:  # Convert string to valid integer type
             colour = int(colour, 16)
-
-
-        # Will resolve guild name, server icon, etc. from the invite itself
-        # Handle various errors appropriately in own local err handler
-
-        # Args using invite method: self, ctx, invite, description (or type this in an interactive menu later?), banner = None (which can be different from server banner), colour: str = discord.Embed.empty (when asking in interactive menu, either say default or type the hex code), ???
-
-        # Embed description will be for the description blurb I was provided with
-        # And on second thought, desc as a param isn't feasible considering that descriptions will be more than just sentences.
-
-        # Banner param should be provided as a URL (ideally a cdn.discordapp.com one)
-
-        # Embed fields: Representative, Invite
-        # Embed thumbnail will be the guild icon
-        # Embed image will be the guild banner (that I am provided with)
-
-        # Embed footer: Northbridge Cafe Partnership Program, timestamp=datetime.utcnow()
-
-        # Retrieve guild that the invite points to
-        # invite_guild = invite.guild
 
         # Confirm invite returns a valid guild
         if invite.guild is None:
@@ -259,36 +234,6 @@ class Partners(commands.Cog):
             await ctx.message.delete()  # Delete command invokation
             await ctx.channel.send(embed=embed)
             return
-
-        # Retrieve other information about the guild
-        # guild_name = guild.name
-        # guild_icon = guild.icon_url
-
-        # Retrieve partnership representative member
-        # rep_member = discord.utils.get(ctx.guild.members, id=rep_id)
-
-        # utils.get() will return None if could not find a member with that ID
-        # if rep_member is None:
-        #     embed = discord.Embed(
-        #         title="ERROR",
-        #         description="I could not find a member with a matching uID, "
-        #                     "please try again.",
-        #         colour=config.BOT_ERR_COLOUR,
-        #         timestamp=datetime.utcnow()
-        #     )
-        #     embed.set_author(
-        #         name=config.BOT_AUTHOR_NAME,
-        #         url=config.BOT_URL,
-        #         icon_url=self.bot.user.avatar_url
-        #     )
-        #     embed.set_footer(
-        #         text="Offending uID: {}".format(rep_id)
-        #     )
-        #     await ctx.message.delete()  # Delete command invokation
-        #     await ctx.channel.send(embed=embed)
-        #     return
-
-        # In theory discord.Member type should already attempt to use MemberConverter() to get the proper type
 
         embed = discord.Embed(
             title="PARTNERSHIP MENU",
@@ -355,12 +300,10 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="{} Representative".format("\U0001f465"),
-            # value="{} {}".format("\U0001f465", rep.mention)
             value="{}".format(rep.mention)
         )
         embed.add_field(
             name="{} Invite".format("\U0001f517"),
-            # value="{} **{}**".format("\U0001f517", invite.url)  # TODO: Experiment with the spacing
             value="**{}**".format(invite.url)
         )
         embed.set_thumbnail(
