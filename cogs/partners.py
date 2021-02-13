@@ -301,7 +301,7 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="Server Description",
-            value="Please enter the accompanying server description/ad for this partner.",
+            value="Please enter the accompanying server description/ad for {}.".format(invite.guild.name),
             inline=False
         )
         embed.set_footer(
@@ -422,8 +422,167 @@ class Partners(commands.Cog):
 
     @partner.command()
     @commands.has_guild_permissions(administrator=True)
-    async def edit(self, ctx, message: discord.Message, invite: discord.Invite, rep: discord.Member, colour: str = None, banner: str = None):
-        pass
+    async def edit(self, ctx, message: int, invite: discord.Invite, rep: discord.Member, colour: str = None, banner: str = None):
+        # Handle NoneType attributes
+        if banner is None:
+            banner = discord.Embed.Empty
+        if colour is None:
+            colour = discord.Embed.Empty  # Or discord.Colour.dark_theme() which would blend in with dark mode
+        else:  # Convert string to valid integer type
+            colour = int(colour, 16)
+
+        # Confirm invite returns a valid guild
+        if invite.guild is None:
+            embed = discord.Embed(
+                title="ERROR",
+                description="A guild object could not be obtained from the "
+                            "provided invite, perhaps it was for a Group DM?",
+                colour=config.BOT_ERR_COLOUR,
+                timestamp=datetime.utcnow()
+            )
+            embed.set_author(
+                name=config.BOT_AUTHOR_NAME,
+                url=config.BOT_URL,
+                icon_url=self.bot.user.avatar_url
+            )
+            embed.set_footer(
+                text="Offending Invite: {}".format(invite.url)
+            )
+            await ctx.message.delete()  # Delete command invokation
+            await ctx.channel.send(embed=embed)
+            return
+
+        embed = discord.Embed(
+            title="PARTNERSHIP MENU",
+            colour=config.BOT_COLOUR
+        )
+        embed.set_author(
+            name=config.BOT_AUTHOR_NAME,
+            url=config.BOT_URL,
+            icon_url=self.bot.user.avatar_url
+        )
+        embed.add_field(
+            name="Server Description",
+            value="Please enter the accompanying server description/ad for {}.".format(invite.guild.name),
+            inline=False
+        )
+        embed.set_footer(
+            text="Actioned by {}#{}".format(
+                ctx.author.name,
+                ctx.author.discriminator
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+        desc_embed = await ctx.channel.send(embed=embed)
+
+        def check(m):
+            return m.author == ctx.author
+
+        # Get partner server description
+        try:
+            provided_desc = await self.bot.wait_for(
+                "message",
+                timeout=60.0,
+                check=check
+            )
+        except asyncio.TimeoutError:
+            embed = discord.Embed(
+                title="WARNING",
+                colour=config.BOT_ERR_COLOUR
+            )
+            embed.set_author(
+                name=config.BOT_AUTHOR_NAME,
+                url=config.BOT_URL,
+                icon_url=self.bot.user.avatar_url
+            )
+            embed.add_field(
+                name="Partner Edit Cancelled",
+                value="This action timed-out",
+                inline=False
+            )
+            embed.set_footer(
+                text="Actioned by {}".format(ctx.author),
+                icon_url=ctx.author.avatar_url
+            )
+            await desc_embed.edit(embed=embed)
+            return
+
+        # TODO: Could provide option to link related website in the embed's title
+        # Construct embed object
+        new_embed = discord.Embed(
+            title="{}".format(invite.guild.name),
+            description="{}".format(provided_desc.content),
+            colour=colour,
+            timestamp=datetime.utcnow()
+        )
+        new_embed.add_field(
+            name="{} Representative".format("\U0001f465"),
+            value="{}".format(rep.mention)
+        )
+        new_embed.add_field(
+            name="{} Invite".format("\U0001f517"),
+            value="**{}**".format(invite.url)
+        )
+        new_embed.set_thumbnail(
+            url=invite.guild.icon_url
+        )
+        new_embed.set_image(
+            url=banner
+        )
+        new_embed.set_footer(
+            text="Northbridge Café Partnership Program",
+            icon_url=ctx.guild.icon_url
+        )
+
+        await provided_desc.delete()  # Delete author message containing server description
+        await ctx.message.delete()  # Delete command invokation
+
+        # Get object of the channel we want to send to
+        guild = discord.utils.get(
+            self.bot.guilds,
+            name=ctx.guild.name
+        )
+        channel = discord.utils.get(
+            guild.text_channels,
+            id=config.PARTNERS_CHANNEL_ID
+        )
+        msg = await channel.fetch_message(
+            message
+        )
+        await msg.edit(embed=new_embed)
+
+        logger.info(
+            "Partner '{}' Edited By {} (MSG ID: {})".format(
+                invite.guild.name,
+                ctx.author,
+                msg.id
+            )
+        )
+
+        embed = discord.Embed(
+            title="SUCCESS",
+            colour=config.BOT_SUCCESS_COLOUR
+        )
+        embed.set_author(
+            name=config.BOT_AUTHOR_NAME,
+            url=config.BOT_URL,
+            icon_url=self.bot.user.avatar_url
+        )
+        embed.add_field(
+            name="Partner Edited",
+            value="**MSG ID:** {}".format(msg.id),
+            inline=False
+        )
+        embed.set_footer(
+            text="Actioned by {}#{}".format(
+                ctx.author.name,
+                ctx.author.discriminator
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+        await desc_embed.edit(
+            embed=embed
+        )
 
 
 def setup(bot):
