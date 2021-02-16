@@ -61,8 +61,5 @@ HOME_SERVER_ID =
 # Status Channel (successful login, successful shutdown, etc.)
 STATUS_CHANNEL_ID =
 
-# Event Logging Channel (joined new server, critical errors, etc.)
-EVENTS_CHANNEL_ID =
-
 # Suggestion Channel
 SUGGEST_CHANNEL_ID =

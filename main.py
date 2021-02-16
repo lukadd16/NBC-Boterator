@@ -209,17 +209,14 @@ class NBCBoterator(commands.Bot):
 
     # Guild events that we respond to
     async def on_guild_join(self, guild):
-        await self.log_channel.send(
-            f"`{self.user}` has been added to `{guild}` with"
-            "`{guild.member_count} members`"
+        logger.info(
+            f"I have been added to {guild} with {guild.member_count} members"
         )
-        logger.info("on_guild_join event triggered")
 
     async def on_guild_remove(self, guild):
-        await self.log_channel.send(
-            f"`{self.user}` has been removed from `{guild}` :("
+        logger.info(
+            f"I have been removed from {guild} :("
         )
-        logger.info("on_guild_remove event triggered")
 
 
 NBCBoterator().run()
