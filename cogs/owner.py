@@ -32,29 +32,34 @@ class OwnerCog(commands.Cog):
     # Load an individual cog; use dot path notation -> Ex: jj load cogs.help
     @commands.command(aliases=["load", "loadcog"])
     async def cload(self, ctx, *, cog: str):
+        # Convert input to proper path.of.cog format
+        # In our case the root folder is named cogs
+        cog = "cogs.{}".format(cog)
+
         try:
             self.bot.load_extension(cog)
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
-            logger.info("Loaded cog (%s)", cog)
+            logger.info(f"Loaded cog ({cog})")
             await ctx.send("**`SUCCESS`**")
 
     # Unload an individual cog
     @commands.command(aliases=["unload", "unloadcog"])
     async def cunload(self, ctx, *, cog: str):
+        cog = "cogs.{}".format(cog)
+
         try:
             self.bot.unload_extension(cog)
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
-            logger.info("Unloaded cog (%s)", cog)
+            logger.info(f"Unloaded cog ({cog})")
             await ctx.send("**`SUCCESS`**")
 
     # Reload an individual cog, config file or tools.py module into memory
     @commands.group(aliases=["reload"])
     async def creload(self, ctx):
-        # Handle user input
         if ctx.invoked_subcommand is None:
             await ctx.send(
                 "You did not specify a subcommand. Valid subcommands "
@@ -81,12 +86,14 @@ class OwnerCog(commands.Cog):
 
     @creload.command()
     async def cog(self, ctx, *, cog: str):
+        cog = "cogs.{}".format(cog)
+
         try:
             self.bot.reload_extension(cog)
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
         else:
-            logger.info("Reloaded cog (%s)", cog)
+            logger.info(f"Reloaded cog ({cog})")
             await ctx.send("**`SUCCESS`**")
 
     # Reloads the bot's config file into memory without needing to restart the
@@ -189,15 +196,16 @@ class OwnerCog(commands.Cog):
             icon_url=self.bot.user.avatar_url
         )
         await self.bot.status_channel.send(embed=embed)
+        await ctx.send("**`SUCCESS`**")
 
         logger.info(
             "Status Report with following details sent:"
         )
         logger.info(
-            "> Discord Status: %s", status.upper()
+            f"> Discord Status: {status.upper()}"
         )
         logger.info(
-            "> Reason: %s", reason
+            f"> Reason: {reason}"
         )
 
     # If and when DB is added, manual SQL execution command can be put here
