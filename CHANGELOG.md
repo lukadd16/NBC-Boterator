@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.2](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.3.1...v1.3.2) (2021-02-11)
+
+
+### Bug Fixes
+
+* **main:** Fix method call that referenced an outdated method name from tools module ([3f20d26](https://www.github.com/lukadd16/NBC-Boterator/commit/3f20d265269092486fb75464245d043efcff778f))
+
 ### [1.3.1](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.3.0...v1.3.1) (2021-02-01)
 
 
