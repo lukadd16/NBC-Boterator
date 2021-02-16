@@ -9,24 +9,11 @@ import os
 
 from datetime import datetime
 from discord.ext import commands
+from typing import Optional
 
 logger = app_logger.get_logger(__name__)
 
-# Two commands: addpartner, editpartner
-#   - Haven't decided but would make more sense that addpartner resolves server name, server icon, those things from the provided invite
-#   --> Args using invite method: self, ctx, invite, description (or type this in an interactive menu later?), banner = None (which can be different from server banner), colour: str = discord.Embed.empty (when asking in interactive menu, either say default or type the hex code), ???
-#   --> Args using manual method: self, ctx, title, description, banner, colour, invite, ???
-#
-#   - editpartner would take msgID as an arg, then interactive menu will ask which part want to edit (type 1 for all, 2 for title, 3 for desc, etc.)
-#   --> Remember, not sending a new embed, merely editing the one that is already there (figure out how retrieving the embed will work)
-
-# Reference "refresh" command for how to edit an existing embed
-
-# Could integrate ext.Menus reaction menu functionality into the confirmation at the end (e.g. "Here is a preview of the embed, does everything look good? Please react below.")
-# Didn't work last time I tried, but will attempt to use emoji check for final confirmation (not sure what want behaviour to be yet though)
-
-# Add logger events where necessary
-
+# Database configuration
 db_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../data")
 db_dir = os.path.join(db_dir, "db")
 db_file_name = "partners.json"
@@ -61,7 +48,7 @@ class Partners(commands.Cog):
             title="{}".format(data['requirementsEmbed']['title']),
             description="{}".format(data['requirementsEmbed']['description']),
             colour=config.BOT_COLOUR,
-            timestamp=datetime.utcnow()  # This attr is timezone aware
+            timestamp=datetime.utcnow()  # This attribute is timezone aware
         )
         embed.add_field(
             name="{}".format(data['requirementsEmbed']['fields']['partnerReq']['name']),
@@ -205,14 +192,23 @@ class Partners(commands.Cog):
     # TODO: Do I need a local error handler at all? Or have I already convered most cases within each command?
     @partner.command()
     @commands.has_guild_permissions(administrator=True)
-    async def add(self, ctx, invite: discord.Invite, rep: discord.Member, colour: str = None, banner: str = None):  # Remember that colour codes need to be 0x...
-        # Handle NoneType attributes
+    async def add(self, ctx, invite: discord.Invite, rep: discord.Member, colour: Optional[str] = None, banner: Optional[str] = None):  # Remember that colour codes need to be 0x...
+        # Handle optional attributes
         if banner is None:
             banner = discord.Embed.Empty
+            logger.info(
+                "No banner specified, setting default discord.Embed.Empty value."
+            )
         if colour is None:
             colour = discord.Embed.Empty  # Or discord.Colour.dark_theme() which would blend in with dark mode
+            logger.info(
+                "No colour specified, setting default discord.Embed.Empty value."
+            )
         else:  # Convert string to valid integer type
             colour = int(colour, 16)
+            logger.debug(
+                "Colour as Base-16 Integer: {}".format(colour)
+            )
 
         # Confirm invite returns a valid guild
         if invite.guild is None:
@@ -233,6 +229,12 @@ class Partners(commands.Cog):
             )
             await ctx.message.delete()  # Delete command invokation
             await ctx.channel.send(embed=embed)
+            logger.info(
+                "No guild found, terminating command execution."
+            )
+            logger.info(
+                "Offending Invite: {}".format(invite.url)
+            )
             return
 
         embed = discord.Embed(
@@ -246,7 +248,8 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="Server Description",
-            value="Please enter the accompanying server description/ad for {}.".format(invite.guild.name),
+            value="Please enter the accompanying server description/"
+                  "advertisement for {}.".format(invite.guild.name),
             inline=False
         )
         embed.set_footer(
@@ -258,11 +261,15 @@ class Partners(commands.Cog):
         )
         desc_embed = await ctx.channel.send(embed=embed)
 
+        # We only want a response from the user who invoked this command
         def check(m):
             return m.author == ctx.author
 
-        # Get partner server description
+        # Get the server partner's description/advertisement
         try:
+            logger.debug(
+                "Awaiting input from author for partner description"
+            )
             provided_desc = await self.bot.wait_for(
                 "message",
                 timeout=60.0,
@@ -288,6 +295,9 @@ class Partners(commands.Cog):
                 icon_url=ctx.author.avatar_url
             )
             await desc_embed.edit(embed=embed)
+            logger.debug(
+                "Action timed out"
+            )
             return
 
         # TODO: Could provide option to link related website in the embed's title
@@ -317,8 +327,14 @@ class Partners(commands.Cog):
             icon_url=ctx.guild.icon_url
         )
 
-        await provided_desc.delete()  # Delete author message containing server description
-        await ctx.message.delete()  # Delete command invokation
+        await provided_desc.delete()
+        await ctx.message.delete()
+        logger.debug(
+            "Deleted message containing server description"
+        )
+        logger.debug(
+            "Deleted command invokation"
+        )
 
         # Get object of the channel we want to send to
         guild = discord.utils.get(
@@ -329,8 +345,15 @@ class Partners(commands.Cog):
             guild.text_channels,
             id=config.PARTNERS_CHANNEL_ID
         )
-        msg = await channel.send(embed=embed)
-
+        logger.debug(
+            "Fetched channel {}({}) from guild {}({})".format(
+                channel.name,
+                channel.id,
+                guild.name,
+                guild.id
+            )
+        )
+        msg = await channel.send(embed=embed)  # Send the given information about the new partner to our public #partners channel
         logger.info(
             "New Partner Added By {} (MSG ID: {})".format(
                 ctx.author,
@@ -365,14 +388,23 @@ class Partners(commands.Cog):
 
     @partner.command()
     @commands.has_guild_permissions(administrator=True)
-    async def edit(self, ctx, message: int, invite: discord.Invite, rep: discord.Member, colour: str = None, banner: str = None):
-        # Handle NoneType attributes
+    async def edit(self, ctx, message: int, invite: discord.Invite, rep: discord.Member, colour: Optional[str] = None, banner: Optional[str] = None):
+        # Handle optional attributes
         if banner is None:
             banner = discord.Embed.Empty
+            logger.info(
+                "No banner specified, setting default discord.Embed.Empty value."
+            )
         if colour is None:
             colour = discord.Embed.Empty  # Or discord.Colour.dark_theme() which would blend in with dark mode
+            logger.info(
+                "No colour specified, setting default discord.Embed.Empty value."
+            )
         else:  # Convert string to valid integer type
             colour = int(colour, 16)
+            logger.debug(
+                "Colour as Base-16 Integer: {}".format(colour)
+            )
 
         # Confirm invite returns a valid guild
         if invite.guild is None:
@@ -393,6 +425,12 @@ class Partners(commands.Cog):
             )
             await ctx.message.delete()  # Delete command invokation
             await ctx.channel.send(embed=embed)
+            logger.info(
+                "No guild found, terminating command execution."
+            )
+            logger.info(
+                "Offending Invite: {}".format(invite.url)
+            )
             return
 
         embed = discord.Embed(
@@ -406,7 +444,8 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="Server Description",
-            value="Please enter the accompanying server description/ad for {}.".format(invite.guild.name),
+            value="Please enter the accompanying server description/"
+                  "advertisement for {}.".format(invite.guild.name),
             inline=False
         )
         embed.set_footer(
@@ -418,11 +457,15 @@ class Partners(commands.Cog):
         )
         desc_embed = await ctx.channel.send(embed=embed)
 
+        # We only want a response from the user who invoked this command
         def check(m):
             return m.author == ctx.author
 
-        # Get partner server description
+        # Get the updated description/advertisement for the specified server partner
         try:
+            logger.debug(
+                "Awaiting input from author for updated partner description"
+            )
             provided_desc = await self.bot.wait_for(
                 "message",
                 timeout=60.0,
@@ -448,6 +491,9 @@ class Partners(commands.Cog):
                 icon_url=ctx.author.avatar_url
             )
             await desc_embed.edit(embed=embed)
+            logger.debug(
+                "Action timed out"
+            )
             return
 
         # TODO: Could provide option to link related website in the embed's title
@@ -477,10 +523,16 @@ class Partners(commands.Cog):
             icon_url=ctx.guild.icon_url
         )
 
-        await provided_desc.delete()  # Delete author message containing server description
-        await ctx.message.delete()  # Delete command invokation
+        await provided_desc.delete()
+        await ctx.message.delete()
+        logger.debug(
+            "Deleted message containing server description"
+        )
+        logger.debug(
+            "Deleted command invokation"
+        )
 
-        # Get object of the channel we want to send to
+        # Get object of the message we want to edit
         guild = discord.utils.get(
             self.bot.guilds,
             name=ctx.guild.name
@@ -492,8 +544,16 @@ class Partners(commands.Cog):
         msg = await channel.fetch_message(
             message
         )
-        await msg.edit(embed=new_embed)
-
+        logger.debug(
+            "Fetched message with ID {} from channel {}({}) in guild {}({})".format(
+                msg.id,
+                channel.name,
+                channel.id,
+                guild.name,
+                guild.id
+            )
+        )
+        await msg.edit(embed=new_embed)  # Edit the specified partner from our public #partners channel with the updated information
         logger.info(
             "Partner '{}' Edited By {} (MSG ID: {})".format(
                 invite.guild.name,
