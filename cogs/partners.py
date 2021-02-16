@@ -39,6 +39,9 @@ class Partners(commands.Cog):
     @partner.command(aliases=["send", "sreq"])
     @commands.has_guild_permissions(administrator=True)
     async def send_requirements(self, ctx):
+        # Open DB file in Binary Read-Only mode
+        # Binary mode is needed so that special characters (e.g. é)
+        # will display properly
         with open(db_file_path, "rb") as f:
             data = json.load(f)
             logger.debug("JSON Data Loaded")
@@ -79,8 +82,8 @@ class Partners(commands.Cog):
             guild.text_channels,
             id=config.PARTNERS_CHANNEL_ID
         )
-        msg = await channel.send(embed=embed)
 
+        msg = await channel.send(embed=embed)
         logger.info(
             "Partnership Requirements Embed Sent (MSG ID: {})".format(
                 msg.id
@@ -113,6 +116,9 @@ class Partners(commands.Cog):
     @partner.command(aliases=["refresh", "ereq"])
     @commands.has_guild_permissions(administrator=True)
     async def edit_requirements(self, ctx):
+        # Open DB file in Binary Read-Only mode
+        # Binary mode is needed so that special characters (e.g. é)
+        # will display properly
         with open(db_file_path, "rb") as f:
             data = json.load(f)
             logger.debug("JSON Data Loaded")
@@ -156,8 +162,8 @@ class Partners(commands.Cog):
         msg = await channel.fetch_message(
             config.PARTNERS_MSG_ID
         )
-        await msg.edit(embed=new_embed)
 
+        await msg.edit(embed=new_embed)
         logger.info(
             "Partnership Requirements Embed Edited (MSG ID: {})".format(
                 msg.id
@@ -189,26 +195,30 @@ class Partners(commands.Cog):
 
     # For now going to lock to admins only
     # After/together with this I should create an inviteinfo command (alias = ii)
-    # TODO: Do I need a local error handler at all? Or have I already convered most cases within each command?
+    # TODO: Local error handler? Or have I already covered most cases?
     @partner.command()
     @commands.has_guild_permissions(administrator=True)
-    async def add(self, ctx, invite: discord.Invite, rep: discord.Member, colour: Optional[str] = None, banner: Optional[str] = None):  # Remember that colour codes need to be 0x...
+    async def add(self, ctx, invite: discord.Invite, rep: discord.Member,
+                  colour: Optional[str] = None, banner: Optional[str] = None,
+                  web: Optional[str] = None):
         # Handle optional attributes
-        if banner is None:
-            banner = discord.Embed.Empty
-            logger.info(
-                "No banner specified, setting default discord.Embed.Empty value."
-            )
         if colour is None:
             colour = discord.Embed.Empty  # Or discord.Colour.dark_theme() which would blend in with dark mode
             logger.info(
                 "No colour specified, setting default discord.Embed.Empty value."
             )
-        else:  # Convert string to valid integer type
+        else:  # Convert string to desired base-16 integer
             colour = int(colour, 16)
             logger.debug(
                 "Colour as Base-16 Integer: {}".format(colour)
             )
+        if banner is None:
+            banner = discord.Embed.Empty
+            logger.info(
+                "No banner specified, setting default discord.Embed.Empty value."
+            )
+        if web is None:
+            web = discord.Embed.Empty
 
         # Confirm invite returns a valid guild
         if invite.guild is None:
@@ -300,12 +310,12 @@ class Partners(commands.Cog):
             )
             return
 
-        # TODO: Could provide option to link related website in the embed's title
         # Construct embed object
         embed = discord.Embed(
             title="{}".format(invite.guild.name),
             description="{}".format(provided_desc.content),
             colour=colour,
+            url=web,
             timestamp=datetime.utcnow()
         )
         embed.add_field(
@@ -353,7 +363,10 @@ class Partners(commands.Cog):
                 guild.id
             )
         )
-        msg = await channel.send(embed=embed)  # Send the given information about the new partner to our public #partners channel
+
+        # Send the given information about the new partner to our
+        # public #partners channel
+        msg = await channel.send(embed=embed)
         logger.info(
             "New Partner Added By {} (MSG ID: {})".format(
                 ctx.author,
@@ -388,23 +401,27 @@ class Partners(commands.Cog):
 
     @partner.command()
     @commands.has_guild_permissions(administrator=True)
-    async def edit(self, ctx, message: int, invite: discord.Invite, rep: discord.Member, colour: Optional[str] = None, banner: Optional[str] = None):
+    async def edit(self, ctx, message: int, invite: discord.Invite,
+                   rep: discord.Member, colour: Optional[str] = None,
+                   banner: Optional[str] = None, web: Optional[str] = None):
         # Handle optional attributes
-        if banner is None:
-            banner = discord.Embed.Empty
-            logger.info(
-                "No banner specified, setting default discord.Embed.Empty value."
-            )
         if colour is None:
             colour = discord.Embed.Empty  # Or discord.Colour.dark_theme() which would blend in with dark mode
             logger.info(
                 "No colour specified, setting default discord.Embed.Empty value."
             )
-        else:  # Convert string to valid integer type
+        else:  # Convert string to desired base-16 integer
             colour = int(colour, 16)
             logger.debug(
                 "Colour as Base-16 Integer: {}".format(colour)
             )
+        if banner is None:
+            banner = discord.Embed.Empty
+            logger.info(
+                "No banner specified, setting default discord.Embed.Empty value."
+            )
+        if web is None:
+            web = discord.Embed.Empty
 
         # Confirm invite returns a valid guild
         if invite.guild is None:
@@ -461,7 +478,8 @@ class Partners(commands.Cog):
         def check(m):
             return m.author == ctx.author
 
-        # Get the updated description/advertisement for the specified server partner
+        # Get the updated description/advertisement for the specified
+        # server partner
         try:
             logger.debug(
                 "Awaiting input from author for updated partner description"
@@ -496,12 +514,12 @@ class Partners(commands.Cog):
             )
             return
 
-        # TODO: Could provide option to link related website in the embed's title
         # Construct embed object
         new_embed = discord.Embed(
             title="{}".format(invite.guild.name),
             description="{}".format(provided_desc.content),
             colour=colour,
+            url=web,
             timestamp=datetime.utcnow()
         )
         new_embed.add_field(
@@ -553,7 +571,10 @@ class Partners(commands.Cog):
                 guild.id
             )
         )
-        await msg.edit(embed=new_embed)  # Edit the specified partner from our public #partners channel with the updated information
+
+        # Edit the specified partner from our public #partners channel
+        # with the updated information
+        await msg.edit(embed=new_embed)
         logger.info(
             "Partner '{}' Edited By {} (MSG ID: {})".format(
                 invite.guild.name,
