@@ -34,9 +34,7 @@ Note on how to make documentation suggestions/changes? (would be commented out l
   <h3 align="center">NBC-Boterator</h3>
 
   <p align="center">
-    Custom Discord Bot for Northbridge Café
-    <br />
-    <a href="https://github.com/lukadd16/NBC-Boterator"><strong>Explore the docs »</strong></a>
+    Custom Bot for the Northbridge Café Discord Server
     <br />
     <br />
     <a href="https://github.com/lukadd16/NBC-Boterator/issues/new/choose">Report a Bug</a>
@@ -50,48 +48,47 @@ Note on how to make documentation suggestions/changes? (would be commented out l
 
 
 <!-- TABLE OF CONTENTS -->
-## Table of Contents
+## Table of Contents :bookmark_tabs:
 
-* [About the Project](#about-the-project)
-  * [Fair Use](#fair-use)
-  * [Built With](#built-with)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-  * [Running](#running)
-* [Usage](#usage)
-* [Roadmap](#roadmap)
-* [Contributing](#contributing)
-* [License](#license)
-* [Contact](#contact)
-* [Acknowledgements](#acknowledgements)
+* [About the Project](#about-the-project-wave)
+  * [Fair Use](#fair-use-bangbang)
+  * [Built With](#built-with-hammer_and_wrench)
+* [Getting Started](#getting-started-gear)
+  * [Prerequisites](#prerequisites-toolbox)
+  * [Installation](#installation-computer)
+  * [Running](#running-runner)
+* [Usage](#usage-mag)
+* [Roadmap](#roadmap-construction)
+* [Contributing](#contributing-handshake)
+* [License](#license-page_facing_up)
+* [Contact](#contact-dart)
+* [Acknowledgements](#acknowledgements-loudspeaker)
 
 
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
+## About The Project :wave:
 
-This is a simple but tailored discord bot created for the purpose of enhancing user experience within a [tech server][discord-url] that I own (but also because programming is a hobby of mine).
+This is a simple but tailored discord bot created for the purpose of enhancing user experience within a [tech server][discord-url] that I own (and also because programming is a hobby of mine).
 
-### Fair Use
+### Fair Use :bangbang:
 
 I don't mind if you run this bot locally and use it in a private discord server with the intention of testing code contributions or learning/experimenting with the discord<span>.py<span> library. In fact, I encourage this (which is why I provide setup instructions below).
 
 What I do not appreciate is anyone who runs a one-to-one copy of this bot with the intention of using it publically, advertising this copy on sites like [top.gg](https://top.gg) and/or claiming it as their own work.
 
-### Built With
+### Built With :hammer_and_wrench:
 
 * [Discord.py](https://pypi.org/project/discord.py/)
-  * Documentation for this library can be found [here](https://discordpy.readthedocs.io/en/latest/#)
 
 
 
 <!-- GETTING STARTED -->
-## Getting Started
+## Getting Started :gear:
 
 Here's what you need to do to get a local instance of NBC Boterator up and running:
 
-### Prerequisites
+### Prerequisites :toolbox:
 
 * [Python 3.6+](https://www.python.org/downloads/)
 * Git
@@ -101,7 +98,7 @@ Here's what you need to do to get a local instance of NBC Boterator up and runni
 * [Discord Application Token](https://discordpy.readthedocs.io/en/latest/discord.html)
 <!-- https://git-scm.com/book/en/v2/Getting-Started-Installing-Git -->
 
-### Installation
+### Installation :computer:
 
 1. Open a terminal
 2. Switch to the directory that you want the source code to be located in
@@ -135,13 +132,13 @@ source env/bin/activate
 pip install -r requirements.txt
 ```
 
-### Running
+### Running :runner:
 
 1. Set up the configuration file
 * Rename `config.example.py` located in the root directory to `config.py`
 <!-- If ever decide to make a proper wiki, create own guide for how to make a discord app & bot account -->
 * Populate the `BOT_TOKEN` field with your [discord application token](https://discordpy.readthedocs.io/en/latest/discord.html).
-> _**Note:** Support for fields such as `BOT_EMOJI` or `CHANNEL_ID` will not be provided_
+> _:warning:**Note:** Support for fields such as `BOT_EMOJI` or `CHANNEL_ID` will not be provided_
 ```py
 # Discord Application Token
 BOT_TOKEN = "your-token-here"
@@ -162,12 +159,12 @@ py main.py
 python3 main.py
 ```
 4. Success!
-> At this point you should see some output to the terminal telling you that the bot has established a connection to discord.
+> :tada: At this point you should see some output to the terminal telling you that the bot has established a connection to discord.
 
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## Usage :mag:
 
 Run the help command `jj help` for information on how to use each of the bot's commands (minus owner-only commands).
 
@@ -176,7 +173,7 @@ I may add GIFs/screenshots in the future to demonstrate how to use certain comma
 
 
 <!-- ROADMAP -->
-## Roadmap
+## Roadmap :construction:
 
 See the [open issues](https://github.com/lukadd16/NBC-Boterator/issues) for a list of proposed features (and known issues).
 
@@ -186,7 +183,7 @@ See the [open issues](https://github.com/lukadd16/NBC-Boterator/issues) for a li
 <!--
 Add a proper CONTRIBUTING.md file down the line with sections on conduct, issue/PR title format (to match automation), etc.
 -->
-## Contributing
+## Contributing :handshake:
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -200,29 +197,30 @@ Contributions are what make the open source community such an amazing place to b
 
 
 <!-- LICENSE -->
-## License
+## License :page_facing_up:
 
 Distributed under the BSD 3-Clause License. See [`LICENSE`](https://github.com/lukadd16/NBC-Boterator/blob/master/LICENSE) for more information.
 
 
 
 <!-- CONTACT -->
-## Contact
+## Contact :dart:
 
 Discord - `Lukadd.16#8870`
 
-Northbridge Café Discord Server (where this bot is solely used) - [Click to join][discord-url]
+Northbridge Café Discord Server (where this bot is solely used) - [Click to join][discord-url] :sunglasses:
 
 Repository Link: [https://github.com/lukadd16/NBC-Boterator](https://github.com/lukadd16/NBC-Boterator)
 
 
 
 <!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
+## Acknowledgements :loudspeaker:
 
 * [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
+* Discord.py's [amazing documentation](https://discordpy.readthedocs.io/en/latest/)
+* Stack Overflow, a programmer's best friend :pray:
 * [emoji-cheat-sheet](https://github.com/ikatyang/emoji-cheat-sheet)
-* 
 
 
 
