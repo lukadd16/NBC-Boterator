@@ -42,22 +42,22 @@ def fmt_time_friendly(time):
 # passed user; currently being used in the whois command
 def get_member_status(member):
     if f"{member.status}".lower() == "online":
-        return f"{config.BOT_EMOJI_ONLINE}"
+        return f"{config.EMOJI_ONLINE}"
     elif f"{member.status}".lower() == "idle":
-        return f"{config.BOT_EMOJI_IDLE}"
+        return f"{config.EMOJI_IDLE}"
     elif f"{member.status}".lower() == "dnd":
-        return f"{config.BOT_EMOJI_DND}"
+        return f"{config.EMOJI_DND}"
     elif f"{member.status}".lower() == "offline":
-        return f"{config.BOT_EMOJI_OFFLINE}"
+        return f"{config.EMOJI_OFFLINE}"
     else:
-        return f"{config.BOT_EMOJI_STREAM}"
+        return f"{config.EMOJI_STREAM}"
 
 
 # Return an emoji defined in the config file depending on whether the passed
 # user is a bot or not; currently being used in the whois command
 def do_bot_check(member):
     if member.bot is True:
-        return f"{config.BOT_EMOJI_BTAG}"
+        return f"{config.EMOJI_BOT_TAG}"
     else:
         return ""
 

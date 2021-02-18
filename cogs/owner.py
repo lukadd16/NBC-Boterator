@@ -138,7 +138,7 @@ class OwnerCog(commands.Cog):
 
         # Report uptime & shutdown
         embed = discord.Embed(
-            title=f"Status: {config.BOT_EMOJI_OFFLINE}",
+            title=f"Status: {config.EMOJI_OFFLINE}",
             description=f"`{self.bot.user}` has been disconnected",
             colour=config.DISC_OFFLINE_COLOUR,
             timestamp=ctx.message.created_at
@@ -168,19 +168,19 @@ class OwnerCog(commands.Cog):
     async def status(self, ctx, status: str, *, reason: str):
         # TODO: Move to tools.py
         if status.lower() == "online":
-            status = config.BOT_EMOJI_ONLINE
+            status = config.EMOJI_ONLINE
             embed_colour = config.DISC_ONLINE_COLOUR
         elif status.lower() == "idle":
-            status = config.BOT_EMOJI_IDLE
+            status = config.EMOJI_IDLE
             embed_colour = config.DISC_IDLE_COLOUR
         elif status.lower() == "dnd":
-            status = config.BOT_EMOJI_DND
+            status = config.EMOJI_DND
             embed_colour = config.DISC_DND_COLOUR
         elif status.lower() == "offline":
-            status = config.BOT_EMOJI_OFFLINE
+            status = config.EMOJI_OFFLINE
             embed_colour = config.DISC_OFFLINE_COLOUR
         elif status.lower() == "stream":
-            status = config.BOT_EMOJI_STREAM
+            status = config.EMOJI_STREAM
             embed_colour = config.DISC_STREAM_COLOUR
         else:
             raise commands.BadArgument()
