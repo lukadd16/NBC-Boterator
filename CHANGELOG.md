@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.3](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.3.2...v1.3.3) (2021-02-16)
+
+
+### Bug Fixes
+
+* **owner:** Add confirmation of status cmd completing; No longer need to specify 'cogs.' in cog-related cmds ([e2a10fc](https://www.github.com/lukadd16/NBC-Boterator/commit/e2a10fcbb81342cfbc4e81e425133a4556c36d2d))
+
 ### [1.3.2](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.3.1...v1.3.2) (2021-02-11)
 
 
