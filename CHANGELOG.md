@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.4](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.3.3...v1.3.4) (2021-02-18)
+
+
+### Bug Fixes
+
+* Add two new links in 'about' command description field ([6ce0c90](https://www.github.com/lukadd16/NBC-Boterator/commit/6ce0c902fb4b7e42d48e138200ba49f8fd19399e))
+
 ### [1.3.3](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.3.2...v1.3.3) (2021-02-16)
 
 
