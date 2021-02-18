@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.4.2](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.4.1...v1.4.2) (2021-02-18)
+
+
+### Bug Fixes
+
+* Hotfix to address references to outdated config variable names ([c7a0302](https://www.github.com/lukadd16/NBC-Boterator/commit/c7a030243818849c64ec8d48dc0c656cf9825091))
+
 ### [1.4.1](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.4.0...v1.4.1) (2021-02-18)
 
 
