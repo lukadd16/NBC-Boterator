@@ -1,0 +1,47 @@
+{
+    "requirementsEmbed": {
+        "title": "<:partneredServer:806200535518019585> Northbridge Café Partnership Program <:partneredServer:806200535518019585>",
+        "description": "Hey! This channel is home to partners of Northbridge Café. If you are interested in becoming a partner with us, please make sure that you read and understand everything outlined below.\n\u200B",
+        "fields": {
+            "partnerReq": {
+                "name": "📜 | __**Requirements**__ | 📜",
+                "value": [
+                    "> ` • ` Server must follow + enforce Discord **[TOS](https://discord.com/terms)** & **[Guidelines](https://discord.com/guidelines)** in their entirety",
+                    "> ` • ` Server must not revolve around pornographic/sexual content",
+                    "> ` • ` 250+ members (excluding bots)",
+                    "> ` • ` 15k+ messages sent in the primary/general text channel",
+                    "> ` • ` 2500+ messages sent every two weeks (we use <@491769129318088714> to track this)",
+                    "> <:uFXimportant:790336567217750028> **Note:** Meeting the above requirements *does not guarantee* partnership.",
+                    "\u200B"
+                ]
+            },
+            "howApply": {
+                "name": "📩 | __**How To Apply**__ | 📩",
+                "value":[
+                    "> Once you have read this message **in its entirety**, DM <@243319767040131072> or open up a ModMail Ticket (preferably the former).",
+                    "\u200B"
+                ]
+            },
+            "miscNotes": {
+                "name": "📚 | __**Miscellaneous Notes**__ | 📚",
+                "value": [
+                    "> ` • ` Partnership is open to servers of all topics (not just tech-related ones).",
+                    "> ` • ` We do not ping \\@everyone or \\@here for partners. There are no exceptions to this rule!",
+                    "> ` • ` You must have one member of your staff team join this server. They will act as a representative of your server, and as a form of recognition will be given the <@&669376302188331068> role.",
+                    "\u200B",
+                    "> <:uFXimportant:790336567217750028> **Important:** If your server's representative leaves without declaring a sucessor, your partnership status will be suspended and server advertisement subsequently deleted.",
+                    "\n*If you have any questions, please direct them to <@243319767040131072>.*"
+                ]
+            },
+            "blank": {
+                "name": "\u200B",
+                "value": [
+                    "*If you have any questions, please direct them to <@243319767040131072>.*"
+                ]
+            }
+        },
+        "footer": {
+            "text": "Northbridge Café Executive Team"
+        }
+    }
+}
