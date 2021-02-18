@@ -150,7 +150,6 @@ class NBCBoterator(commands.Bot):
         # Retrieve the IDs for the discord logging and status channels from our
         # config file and assign them to previously declared class variables
         self.status_channel = self.get_channel(config.STATUS_CHANNEL_ID)
-        self.log_channel = self.get_channel(config.EVENTS_CHANNEL_ID)
 
         logger.info(" - ")
         logger.info("Client is ready.")
