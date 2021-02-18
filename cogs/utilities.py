@@ -94,12 +94,16 @@ class UtilitiesCog(commands.Cog):
                         "the purpose of making everyone's lives easier. It's "
                         "fairly barebones feature-wise right now, but that'll "
                         "change as development continues."
-                        f"\n\n{config.BOT_EMOJI_GITHUB} **[GitHub]"
-                        f"({config.BOT_GITHUB_HOME})**"
-                        f"\n{config.BOT_EMOJI_YOUTUBE} **[YouTube Channel]"
-                        f"({config.BOT_YOUTUBE_CHANNEL})**"
-                        f"\n{config.BOT_EMOJI_CLOUD} **[Website (WIP)]"
-                        f"({config.BOT_URL})**",
+                        f"\n\n{config.EMOJI_GITHUB} **[GitHub]"
+                        f"({config.GITHUB_URL})**"
+                        f"\n{config.EMOJI_YOUTUBE} **[YouTube Channel]"
+                        f"({config.YT_CHANNEL_URL})**"
+                        f"\n{config.EMOJI_CLOUD} **[Website (WIP)]"
+                        f"({config.WEBSITE_URL})**"
+                        f"{config.EMOJI_PLACARD} **[Bump us on disboard.org]**"
+                        f"({config.DISBOARD_URL})"
+                        f"{config.EMOJI_PLACARD} **[Vote for us on top.gg]**"
+                        f"({config.TOPGG_URL})",
             colour=config.BOT_COLOUR
         )
         embed.set_thumbnail(
@@ -178,7 +182,7 @@ class UtilitiesCog(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_CLICK,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_image(
@@ -200,14 +204,14 @@ class UtilitiesCog(commands.Cog):
 
         embed = discord.Embed(
             description=f"**Local Version:** [{bot_version}]"
-                        f"({config.BOT_GITHUB_LATEST})\n"
+                        f"({config.GITHUB_LATEST_URL})\n"
                         "> A full changelog can be viewed via the above "
                         "hyperlink.",
             colour=config.BOT_COLOUR
         )
         embed.set_author(
             name="NBC Boterator Changelog",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(
@@ -242,7 +246,7 @@ class UtilitiesCog(commands.Cog):
         )
         embed.set_author(
             name="NBC Boterator Response Times",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
@@ -266,7 +270,7 @@ class UtilitiesCog(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_CLICK,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_thumbnail(
@@ -307,7 +311,7 @@ class UtilitiesCog(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_CLICK,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
@@ -475,7 +479,7 @@ class UtilitiesCog(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_CLICK,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_thumbnail(
@@ -527,7 +531,7 @@ class UtilitiesCog(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_CLICK,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         # Set thumbnail to be the server's icon
@@ -568,7 +572,7 @@ class UtilitiesCog(commands.Cog):
             )
             embed.set_author(
                 name=config.BOT_AUTHOR_CLICK,
-                url=config.BOT_URL,
+                url=config.WEBSITE_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
@@ -592,7 +596,7 @@ class UtilitiesCog(commands.Cog):
             )
             embed.set_author(
                 name=config.BOT_AUTHOR_CLICK,
-                url=config.BOT_URL,
+                url=config.WEBSITE_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
@@ -613,7 +617,7 @@ class UtilitiesCog(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_NAME,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
@@ -637,8 +641,8 @@ class UtilitiesCog(commands.Cog):
         logger.debug("Suggestion Sent To Channel")
 
         # Add reactions to allow public participation
-        await suggest_msg.add_reaction(config.BOT_EMOJI_UPVOTE)
-        await suggest_msg.add_reaction(config.BOT_EMOJI_DOWNVOTE)
+        await suggest_msg.add_reaction(config.EMOJI_UPVOTE)
+        await suggest_msg.add_reaction(config.EMOJI_DOWNVOTE)
         logger.debug("Reactions Added")
 
 
