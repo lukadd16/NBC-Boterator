@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.4.3](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.4.2...v1.4.3) (2021-02-18)
+
+
+### Bug Fixes
+
+* Missing newlines to separate the description links in 'about' command ([959efee](https://www.github.com/lukadd16/NBC-Boterator/commit/959efee32cfe78d36de9cf5af7a5616c66a9dbf1))
+
 ### [1.4.2](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.4.1...v1.4.2) (2021-02-18)
 
 
