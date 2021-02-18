@@ -67,7 +67,7 @@ class NBCBoterator(commands.Bot):
 
             except commands.ExtensionNotFound:
                 print(f"[COG] FAILED - {extension}")
-                logger.error("Failed to load cog (%s)", extension)
+                logger.error(f"Failed to load cog ({extension})")
 
         # self.login(config.BOT_TOKEN)
         # self.connect()
@@ -84,7 +84,7 @@ class NBCBoterator(commands.Bot):
 
         # Report uptime & shutdown
         embed = discord.Embed(
-            title=f"Status: {config.BOT_EMOJI_OFFLINE}",
+            title=f"Status: {config.EMOJI_OFFLINE}",
             description=f"`{self.user}` has been disconnected",
             colour=config.DISC_OFFLINE_COLOUR,
             timestamp=datetime.utcnow()
@@ -112,7 +112,7 @@ class NBCBoterator(commands.Bot):
         try:
             self.loop.run_until_complete(
                 self.start(
-                    config.BOT_TOKEN
+                    config.APP_TOKEN
                 )
             )
         except KeyboardInterrupt:
@@ -178,7 +178,7 @@ class NBCBoterator(commands.Bot):
 
         # Report bootup to status channel
         embed = discord.Embed(
-            title=f"Status: {config.BOT_EMOJI_ONLINE}",
+            title=f"Status: {config.EMOJI_ONLINE}",
             description=f"`{self.user}` has successfully connected to Discord",
             colour=config.DISC_ONLINE_COLOUR,
             timestamp=datetime.utcnow()

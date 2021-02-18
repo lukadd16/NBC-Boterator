@@ -44,7 +44,7 @@ class NewHelpCog(commands.Cog):
             )
             embed.set_author(
                 name="NBC Boterator Command List",
-                url=config.BOT_URL,
+                url=config.WEBSITE_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.add_field(
@@ -90,7 +90,7 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_author(
             name=f"{config.BOT_HELP_ANAME}",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(text=config.BOT_FOOTER)
@@ -114,7 +114,7 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_author(
             name=f"{config.BOT_HELP_ANAME}",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(text=config.BOT_FOOTER)
@@ -136,7 +136,7 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_author(
             name=f"{config.BOT_HELP_ANAME}",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(text=config.BOT_FOOTER)
@@ -160,7 +160,7 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_author(
             name=f"{config.BOT_HELP_ANAME}",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(text=config.BOT_FOOTER)
@@ -180,7 +180,7 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_author(
             name=f"{config.BOT_HELP_ANAME}",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(text=config.BOT_FOOTER)
@@ -203,7 +203,7 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_author(
             name=f"{config.BOT_HELP_ANAME}",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(text=config.BOT_FOOTER)
@@ -225,7 +225,7 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_author(
             name=f"{config.BOT_HELP_ANAME}",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(text=config.BOT_FOOTER)
@@ -248,7 +248,7 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_author(
             name=f"{config.BOT_HELP_ANAME}",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(text=config.BOT_FOOTER)
@@ -272,7 +272,7 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_author(
             name=f"{config.BOT_HELP_ANAME}",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(text=config.BOT_FOOTER)
@@ -296,7 +296,7 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_author(
             name=f"{config.BOT_HELP_ANAME}",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(text=config.BOT_FOOTER)
@@ -319,7 +319,7 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_author(
             name=f"{config.BOT_HELP_ANAME}",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(text=config.BOT_FOOTER)
@@ -343,7 +343,7 @@ class NewHelpCog(commands.Cog):
         )
         embed.set_author(
             name=f"{config.BOT_HELP_ANAME}",
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_footer(text=config.BOT_FOOTER)

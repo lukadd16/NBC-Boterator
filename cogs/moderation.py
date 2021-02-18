@@ -56,7 +56,7 @@ class ModCog(commands.Cog):
             )
             embed.set_author(
                 name=config.BOT_AUTHOR_NAME,
-                url=config.BOT_URL,
+                url=config.WEBSITE_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
@@ -84,7 +84,7 @@ class ModCog(commands.Cog):
             )
             embed.set_author(
                 name=config.BOT_AUTHOR_NAME,
-                url=config.BOT_URL,
+                url=config.WEBSITE_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
@@ -113,7 +113,7 @@ class ModCog(commands.Cog):
             )
             embed.set_author(
                 name=config.BOT_AUTHOR_NAME,
-                url=config.BOT_URL,
+                url=config.WEBSITE_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
@@ -135,7 +135,7 @@ class ModCog(commands.Cog):
             )
             embed.set_author(
                 name=config.BOT_AUTHOR_NAME,
-                url=config.BOT_URL,
+                url=config.WEBSITE_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.add_field(
@@ -175,7 +175,7 @@ class ModCog(commands.Cog):
                     )
                     embed.set_author(
                         name=config.BOT_AUTHOR_NAME,
-                        url=config.BOT_URL,
+                        url=config.WEBSITE_URL,
                         icon_url=self.bot.user.avatar_url
                     )
                     embed.add_field(
@@ -218,7 +218,7 @@ class ModCog(commands.Cog):
                     )
                     complete.set_author(
                         name=config.BOT_AUTHOR_NAME,
-                        url=config.BOT_URL,
+                        url=config.WEBSITE_URL,
                         icon_url=self.bot.user.avatar_url
                     )
                     complete.add_field(
@@ -249,7 +249,7 @@ class ModCog(commands.Cog):
                     )
                     embed.set_author(
                         name=config.BOT_AUTHOR_NAME,
-                        url=config.BOT_URL,
+                        url=config.WEBSITE_URL,
                         icon_url=self.bot.user.avatar_url
                     )
                     embed.add_field(
@@ -279,7 +279,7 @@ class ModCog(commands.Cog):
                 )
                 embed.set_author(
                     name=config.BOT_AUTHOR_NAME,
-                    url=config.BOT_URL,
+                    url=config.WEBSITE_URL,
                     icon_url=self.bot.user.avatar_url
                 )
                 embed.add_field(
@@ -327,7 +327,7 @@ class ModCog(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_NAME,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_thumbnail(
@@ -355,7 +355,7 @@ class ModCog(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_NAME,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
@@ -436,7 +436,7 @@ class ModCog(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_NAME,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_thumbnail(
@@ -498,7 +498,7 @@ class ModCog(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_NAME,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.set_thumbnail(
