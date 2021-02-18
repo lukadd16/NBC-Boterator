@@ -96,7 +96,7 @@ class Partners(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_NAME,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
@@ -176,7 +176,7 @@ class Partners(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_NAME,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
@@ -231,7 +231,7 @@ class Partners(commands.Cog):
             )
             embed.set_author(
                 name=config.BOT_AUTHOR_NAME,
-                url=config.BOT_URL,
+                url=config.WEBSITE_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
@@ -253,7 +253,7 @@ class Partners(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_NAME,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
@@ -292,7 +292,7 @@ class Partners(commands.Cog):
             )
             embed.set_author(
                 name=config.BOT_AUTHOR_NAME,
-                url=config.BOT_URL,
+                url=config.WEBSITE_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.add_field(
@@ -380,7 +380,7 @@ class Partners(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_NAME,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
@@ -434,7 +434,7 @@ class Partners(commands.Cog):
             )
             embed.set_author(
                 name=config.BOT_AUTHOR_NAME,
-                url=config.BOT_URL,
+                url=config.WEBSITE_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.set_footer(
@@ -456,7 +456,7 @@ class Partners(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_NAME,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
@@ -496,7 +496,7 @@ class Partners(commands.Cog):
             )
             embed.set_author(
                 name=config.BOT_AUTHOR_NAME,
-                url=config.BOT_URL,
+                url=config.WEBSITE_URL,
                 icon_url=self.bot.user.avatar_url
             )
             embed.add_field(
@@ -589,7 +589,7 @@ class Partners(commands.Cog):
         )
         embed.set_author(
             name=config.BOT_AUTHOR_NAME,
-            url=config.BOT_URL,
+            url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
