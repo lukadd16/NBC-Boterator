@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.3.3...v1.4.0) (2021-02-18)
+
+
+### Features
+
+* New Partners Cog ([#40](https://www.github.com/lukadd16/NBC-Boterator/issues/40)) ([c29ceba](https://www.github.com/lukadd16/NBC-Boterator/commit/c29ceba7c2e07990c2af8de3b06f018875a8d28d))
+
+
+### Bug Fixes
+
+* Add two new links in 'about' command description field ([6ce0c90](https://www.github.com/lukadd16/NBC-Boterator/commit/6ce0c902fb4b7e42d48e138200ba49f8fd19399e))
+
 ### [1.3.3](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.3.2...v1.3.3) (2021-02-16)
 
 
