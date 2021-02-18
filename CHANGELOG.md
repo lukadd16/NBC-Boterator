@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.4.1](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.4.0...v1.4.1) (2021-02-18)
+
+
+### Bug Fixes
+
+* Remove unused get_channel() call for deprecated events channel functionality ([720dade](https://www.github.com/lukadd16/NBC-Boterator/commit/720dade34043681e7129bd2c9171b03d68cee1cc))
+
 ## [1.4.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.3.3...v1.4.0) (2021-02-18)
 
 
