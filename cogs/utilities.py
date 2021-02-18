@@ -100,9 +100,9 @@ class UtilitiesCog(commands.Cog):
                         f"({config.YT_CHANNEL_URL})**"
                         f"\n{config.EMOJI_CLOUD} **[Website (WIP)]"
                         f"({config.WEBSITE_URL})**"
-                        f"{config.EMOJI_PLACARD} **[Bump us on disboard.org]**"
+                        f"\n{config.EMOJI_PLACARD} **[Bump us on disboard.org]**"
                         f"({config.DISBOARD_URL})"
-                        f"{config.EMOJI_PLACARD} **[Vote for us on top.gg]**"
+                        f"\n{config.EMOJI_PLACARD} **[Vote for us on top.gg]**"
                         f"({config.TOPGG_URL})",
             colour=config.BOT_COLOUR
         )
