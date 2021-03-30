@@ -9,7 +9,7 @@ discord.py==1.6.0
 flake8==3.9.0
 idna==3.1
 idna-ssl==1.1.0
-importlib-metadata==3.5.0
+importlib-metadata==3.10.0
 jishaku==1.20.0.220
 mccabe==0.6.1
 multidict==4.7.6
