@@ -50,14 +50,21 @@ class StatusLoop(commands.Cog):
             ),
             discord.Activity(
                 type=discord.ActivityType.playing,
-                name="Plague Inc."
+                name="AI Overlord Simulator"
+            ),
+            discord.Activity(
+                type=discord.ActivityType.watching,
+                name="The Matrix"
             ),
             discord.Activity(
                 type=discord.ActivityType.playing,
                 name="northbridgecafe.tk"
+            ),
+            discord.Activity(
+                type=discord.ActivityType.listening,
+                name="Never Gonna Give You Up"
             )
         ]
-        logger.debug("Bot Presence Set")
 
         if self.presence_index == (len(presences) - 1):
             self.presence_index = 0
@@ -67,6 +74,7 @@ class StatusLoop(commands.Cog):
             logger.debug("Current Presence Index: %s", self.presence_index)
 
         await self.bot.change_presence(activity=presences[self.presence_index])
+        logger.debug("Bot Presence Set")
 
     @tasks.loop(seconds=900, reconnect=True)
     async def presence_updater(self):
