@@ -1,21 +1,21 @@
 ﻿# Create this file via: pip freeze > requirements.txt
 # Install required dependencies via: pip install -r requirements.txt
 
-aiohttp==3.6.2
+aiohttp==3.7.4.post0
 async-timeout==3.0.1
 attrs==20.3.0
 chardet==3.0.4
 discord.py==1.6.0
-flake8==3.8.4
+flake8==3.9.0
 idna==3.1
 idna-ssl==1.1.0
-importlib-metadata==3.4.0
+importlib-metadata==3.5.0
 jishaku==1.20.0.220
 mccabe==0.6.1
 multidict==4.7.6
 psutil==5.8.0
-pycodestyle==2.6.0
-pyflakes==2.2.0
+pycodestyle==2.7.0
+pyflakes==2.3.1
 typing-extensions==3.7.4.3
 websockets==6.0
 yarl==1.6.3
