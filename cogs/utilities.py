@@ -76,7 +76,7 @@ class UtilitiesCog(commands.Cog):
 
         # Get bots' total uptime
         delta_uptime = datetime.utcnow() - self.bot.launch_time
-        friendly_uptime = tools.fmt_seconds_friendly(
+        str_uptime = tools.seconds_to_str(
             delta_uptime.total_seconds()
         )
 
@@ -121,7 +121,7 @@ class UtilitiesCog(commands.Cog):
         )
         embed.add_field(
             name="Uptime: ",
-            value=f"`{friendly_uptime}`",
+            value=f"`{str_uptime}`",
             inline=True
         )
         embed.add_field(
@@ -304,15 +304,16 @@ class UtilitiesCog(commands.Cog):
 
         # Create response embed
         embed = discord.Embed(
+            title="Pinned Messages In:",
             description=channel.mention,
             colour=config.BOT_COLOUR,
             timestamp=ctx.message.created_at
         )
-        embed.set_author(
-            name="Pinned Messages In:",
-            url=config.WEBSITE_URL,
-            icon_url=self.bot.user.avatar_url
-        )
+        # embed.set_author(
+        #     name="Pinned Messages In:",
+        #     url=config.WEBSITE_URL,
+        #     icon_url=self.bot.user.avatar_url
+        # )
         embed.add_field(
             name="__Channel ID__",
             value=f"{channel.id}",
@@ -361,11 +362,11 @@ class UtilitiesCog(commands.Cog):
             # Get info related to when this message was created
             pin_created = "{0} GMT `({1})`".format(
                 # Date message was created
-                tools.fmt_time_friendly(
+                tools.datetime_to_str(
                     recent_pin.created_at
                     ),
                 # String describing how long ago this message was created
-                tools.fmt_time_delta_friendly(
+                tools.delta_datetime_to_str(
                     recent_pin.created_at
                     )
             )
@@ -375,11 +376,11 @@ class UtilitiesCog(commands.Cog):
                 # Get info related to when this message was edited
                 pin_edited = "{0} GMT `({1})`".format(
                     # Date message was edited
-                    tools.fmt_time_friendly(
+                    tools.datetime_to_str(
                         recent_pin.edited_at
                         ),
                     # String describing how long ago this message was edited
-                    tools.fmt_time_delta_friendly(
+                    tools.delta_datetime_to_str(
                         recent_pin.edited_at
                         )
                 )
@@ -431,30 +432,23 @@ class UtilitiesCog(commands.Cog):
 
         logger.debug("Debug Stack:")
 
-        # Get various information about user
-        # snowflake_time is outputted in the form of datetime.datetime
-        user_createdate = discord.utils.snowflake_time(
-            member.id
+        # snowflake_time is outputted as a datetime.datetime object
+        # Call helper method to convert time to readable format
+        user_createdate = tools.datetime_to_str(
+            discord.utils.snowflake_time(
+                member.id
+            )
         )
         logger.debug(
-            "> (datetime.datetime) Account Created On: %s", user_createdate
-        )
-
-        # Convert account creation time to readable format
-        friendly_user_createdate = tools.fmt_time_friendly(
-            user_createdate
-        )
-        logger.debug(
-            "> (tools) Account Created On: %s", friendly_user_createdate
+            "> (tools) Account Created On: %s", user_createdate
         )
 
         # Convert guild join time to readable format
-        friendly_member_joindate = tools.fmt_time_friendly(
+        member_joindate = tools.datetime_to_str(
             member.joined_at
         )
         logger.debug(
-            "> (tools) Joined Guild On: %s",
-            friendly_member_joindate
+            "> (tools) Joined Guild On: %s", member_joindate
         )
 
         # Returns member's join position out of all guild members
@@ -466,7 +460,7 @@ class UtilitiesCog(commands.Cog):
             "> (tools) Join Position in Guild: %s", member_join_position
         )
 
-        # Returns an emoji if member is a bot
+        # Variable will store an emoji if the member is a bot
         bot_identify = tools.do_bot_check(
             member
         )
@@ -496,14 +490,14 @@ class UtilitiesCog(commands.Cog):
             )
         logger.debug("> List of Roles: %s", member_role_list)
 
-        # Now that I understand how to get roles, make a system that loops
+        # TODO: Now that I understand how to get roles, make a system that loops
         # through user's roles (from highest to lowest) finding the first one
         # that has a colour other than the default invisible one
 
         embed = discord.Embed(
-            title=f"User Info – `{member.name}#{member.discriminator}`"
-                  f"{status_emoji}{bot_identify}",
-            description=f"{member.mention}",
+            title=f"User Info – `{member.name}#{member.discriminator}`",
+                  # f"{status_emoji}{bot_identify}",
+            description=f"{member.mention}{status_emoji}{bot_identify}",
             colour=config.BOT_COLOUR,
             timestamp=ctx.message.created_at
         )
@@ -517,16 +511,16 @@ class UtilitiesCog(commands.Cog):
         )
         embed.add_field(
             name="Account Created (GMT):",
-            value=f"{friendly_user_createdate}",
+            value=f"{user_createdate}",
             inline=True
         )
         embed.add_field(
             name="Joined Guild (GMT):",
-            value=f"{friendly_member_joindate}",
+            value=f"{member_joindate}",
             inline=True
         )
         embed.add_field(
-            name="Join Position:",
+            name="Member #:",
             value=f"{member_join_position} of {len(ctx.guild.members)}",
             inline=True
         )
