@@ -5,19 +5,21 @@
 import app_logger
 import config
 
+from datetime import datetime
+
 logger = app_logger.get_logger(__name__)
 
 
 # Used in cmd cooldown + bot uptime calculation, takes seconds value as arg.
 # Returned Formatting: 1d 9h 8m 7s
-def fmt_seconds_friendly(second):
-    minute, second = divmod(second, 60)
-    hour, minute = divmod(minute, 60)
-    day, hour = divmod(hour, 24)
-    days = round(day)
-    hours = round(hour)
-    minutes = round(minute)
-    seconds = round(second)
+def fmt_seconds_friendly(seconds):
+    days, remainder = divmod(seconds, 86400)
+    hours, remainder = divmod(remainder, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    days = round(days)
+    hours = round(hours)
+    minutes = round(minutes)
+    seconds = round(seconds)
     if minutes == 0:
         return "%02ds" % (seconds)
     if hours == 0:
@@ -29,13 +31,38 @@ def fmt_seconds_friendly(second):
 
 # Meant for when passing raw datetimes that include year, month, day, etc.
 # Returned Formatting: Wed, Jul 1, 1987 17:44 PM GMT
-def fmt_time_friendly(time):
+def fmt_time_friendly(time: datetime):
     return time.strftime("%a, %b X%d, %Y %H:%M %p").replace("X0", "X").replace("X", "")
 
 
 # In weeks format for whois and serverinfo, maybe rename it to something else
 # def get_time_friendly():
 #     pass
+
+
+# Returns how long ago this a datetime.datetime object occurred
+# Example: Sat, Apr 3, 2021 16:25 PM GMT (3 days ago)
+def fmt_time_delta_friendly(start_time: datetime):
+    time_delta = datetime.utcnow() - start_time
+    time_delta_seconds = time_delta.total_seconds()
+
+    days, remainder = divmod(time_delta_seconds, 86400)
+    hours, remainder = divmod(remainder, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    days = round(days)
+    hours = round(hours)
+    minutes = round(minutes)
+    seconds = round(seconds)
+
+    if minutes == 0:
+        return f"{seconds}s ago"
+    if hours == 0:
+        return f"{minutes}m ago"
+    if days == 0:
+        return f"{hours}h ago"
+
+    return f"{days}d ago"
 
 
 # Return an emoji defined in the config file depending on the status of the
