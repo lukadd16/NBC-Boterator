@@ -10,9 +10,9 @@ from datetime import datetime
 logger = app_logger.get_logger(__name__)
 
 
-# Used in cmd cooldown + bot uptime calculation, takes seconds value as arg.
+# Converts a time in seconds to a string with a specific format
 # Returned Formatting: 1d 9h 8m 7s
-def fmt_seconds_friendly(seconds):
+def seconds_to_str(seconds):
     days, remainder = divmod(seconds, 86400)
     hours, remainder = divmod(remainder, 3600)
     minutes, seconds = divmod(remainder, 60)
@@ -29,20 +29,15 @@ def fmt_seconds_friendly(seconds):
     return "%02dd %02dh %02dm %02ds" % (days, hours, minutes, seconds)
 
 
-# Meant for when passing raw datetimes that include year, month, day, etc.
-# Returned Formatting: Wed, Jul 1, 1987 17:44 PM GMT
-def fmt_time_friendly(time: datetime):
-    return time.strftime("%a, %b X%d, %Y %H:%M %p").replace("X0", "X").replace("X", "")
+# Converts a datetime object to a human-readable string
+# Returned Formatting: Wed, Jul 1, 1987 05:44 PM UTC+0
+def datetime_to_str(time: datetime):
+    return time.strftime("%a, %b X%d, %Y %I:%M %p").replace("X0", "X").replace("X", "")
 
 
-# In weeks format for whois and serverinfo, maybe rename it to something else
-# def get_time_friendly():
-#     pass
-
-
-# Returns how long ago this a datetime.datetime object occurred
-# Example: Sat, Apr 3, 2021 16:25 PM GMT (3 days ago)
-def fmt_time_delta_friendly(start_time: datetime):
+# Returns how long ago a particular datetime object occurred
+# Example: Sat, Apr 3, 2021 04:25 PM UTC+0 (3 days ago)
+def delta_datetime_to_str(start_time: datetime):
     time_delta = datetime.utcnow() - start_time
     time_delta_seconds = time_delta.total_seconds()
 
@@ -65,8 +60,8 @@ def fmt_time_delta_friendly(start_time: datetime):
     return f"{days}d ago"
 
 
-# Return an emoji defined in the config file depending on the status of the
-# passed user; currently being used in the whois command
+# Returns the emoji (defined in the config file) that corresponds to the
+# status of a passed in discord.Member object
 def get_member_status(member):
     if f"{member.status}".lower() == "online":
         return f"{config.EMOJI_ONLINE}"
@@ -80,8 +75,8 @@ def get_member_status(member):
         return f"{config.EMOJI_STREAM}"
 
 
-# Return an emoji defined in the config file depending on whether the passed
-# user is a bot or not; currently being used in the whois command
+# Returns either an emoji or an empty string to indicate whether or not
+# the passed in discord.Member object is a bot
 def do_bot_check(member):
     if member.bot is True:
         return f"{config.EMOJI_BOT_TAG}"
