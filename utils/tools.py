@@ -96,4 +96,4 @@ def get_join_position(ctx, member):
         m.joined_at < member.joined_at
         for m in ctx.guild.members
         if m.joined_at is not None
-    )
+    ) + 1  # Add +1 to prevent 0 of X situation when user is the "zeroth" member (server creator)
