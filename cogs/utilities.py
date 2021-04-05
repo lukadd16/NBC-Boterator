@@ -304,23 +304,22 @@ class UtilitiesCog(commands.Cog):
 
         # Create response embed
         embed = discord.Embed(
-            title=f"Pinned Messages - `#{channel.name}`",
             description=channel.mention,
             colour=config.BOT_COLOUR,
             timestamp=ctx.message.created_at
         )
         embed.set_author(
-            name=config.BOT_AUTHOR_CLICK,
+            name="Pinned Messages In:",
             url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
-            name="Channel ID:",
+            name="__Channel ID__",
             value=f"{channel.id}",
             inline=False
         )
         embed.add_field(
-            name="# of Pinned Messages:",
+            name="__# of Pinned Messages__",
             value=f"{total_pins} (max permitted is 50)",
             inline=False
         )
@@ -335,42 +334,73 @@ class UtilitiesCog(commands.Cog):
         try:
             recent_pin = pinned_messages[0]
 
-            # Retrieve first few characters from message
-            recent_pin_brief = recent_pin.content[0:40]
+            # Escape markdown and channel/user/role mentions
+            escaped = discord.utils.remove_markdown(recent_pin.clean_content)
 
-            if recent_pin_brief == "":
+            # Retrieve first few characters from message
+            pin_brief = escaped[0:40]
+
+            if pin_brief == "":
                 # Message string is empty, which means the actual message
                 # contains an embed or attachment
-                recent_pin_brief = "Cannot preview, message is an embed/attachment"
+                pin_brief = "Cannot preview, message is an embed/attachment"
+            elif len(escaped) > 40:
+                # Message content is too long to display so we will
+                # inform the user by tacking on (...)
+                pin_brief += " ..."
             else:
-                recent_pin_brief += " (...)"
+                # Put quotes around message content
+                pin_brief = "\"" + pin_brief + "\""
 
             # Retrieve message author
-            recent_pin_author = (
+            pin_author = (
                 recent_pin.author.mention
                 + f" ({recent_pin.author.id})"
             )
 
-            # Retrieve date message was created
-            recent_pin_date = recent_pin.created_at
-            friendly_recent_pin_date = tools.fmt_time_friendly(
-                recent_pin_date
+            # Get info related to when this message was created
+            pin_created = "{0} GMT `({1})`".format(
+                # Date message was created
+                tools.fmt_time_friendly(
+                    recent_pin.created_at
+                    ),
+                # String describing how long ago this message was created
+                tools.fmt_time_delta_friendly(
+                    recent_pin.created_at
+                    )
             )
 
+            # If message has been edited
+            if recent_pin.edited_at:
+                # Get info related to when this message was edited
+                pin_edited = "{0} GMT `({1})`".format(
+                    # Date message was edited
+                    tools.fmt_time_friendly(
+                        recent_pin.edited_at
+                        ),
+                    # String describing how long ago this message was edited
+                    tools.fmt_time_delta_friendly(
+                        recent_pin.edited_at
+                        )
+                )
+            else:
+                pin_edited = "N/A"
+
             # Get discord.com/channels/ link to the message
-            recent_pin_url = recent_pin.jump_url
+            pin_url = recent_pin.jump_url
 
             embed.add_field(
-                name="Most Recent Pin:",
-                value=f"**Author:** {recent_pin_author}"
-                      f"\n**Created:** {friendly_recent_pin_date} GMT"  # TODO: Add "# days ago"?
-                      f"\n**Content:** {recent_pin_brief}"
-                      f"\n> [Jump To Message]({recent_pin_url})",
+                name="__Most Recent Pin__",
+                value=f"**Author:** {pin_author}"
+                      f"\n**Created:** {pin_created}"
+                      f"\n**Modified:** {pin_edited}"
+                      f"\n**Content:** {pin_brief}"
+                      f"\n> [**Jump To Message**]({pin_url})",
                 inline=False
             )
         except IndexError:  # Channel has no pinned messages
             embed.add_field(
-                name="Most Recent Pin:",
+                name="__Most Recent Pin__",
                 value="The specified channel has no pinned messages",
                 inline=False
             )
