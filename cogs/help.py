@@ -3,13 +3,21 @@
 import app_logger
 import config
 import discord
+import os
 
 from discord.ext import commands
 
 logger = app_logger.get_logger(__name__)
 
+# File path for owner-only help command text file
+txt_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../data")
+txt_dir = os.path.join(txt_dir, "txt")
+file_name = "owner-help.txt"
+txt_file_path = os.path.join(txt_dir, file_name)
+logger.info("TXT File Path: {}".format(txt_file_path))
 
-class NewHelpCog(commands.Cog):
+
+class HelpCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -21,7 +29,6 @@ class NewHelpCog(commands.Cog):
     # - A "list staff team" command or just a "members in @role"
     # - Make moderation commands more useful and optimized, if I ever make
     #   something as sophisticated as localbot then we would switch over.
-    # - Add simple nickname change command
     # - At some point move custom commands over to this bot
     # - Auto response? Like in PCMR
 
@@ -349,6 +356,14 @@ class NewHelpCog(commands.Cog):
         embed.set_footer(text=config.BOT_FOOTER)
         await ctx.send(embed=embed)
 
+    @help.command()
+    @commands.is_owner()
+    async def owner(self, ctx):
+        with open(txt_file_path, "r", encoding="utf-8") as f:
+            msg = "".join(f.readlines())
+            logger.debug("TXT File Data Loaded")
+
+        await ctx.send(msg)
 
 def setup(bot):
-    bot.add_cog(NewHelpCog(bot))
+    bot.add_cog(HelpCog(bot))

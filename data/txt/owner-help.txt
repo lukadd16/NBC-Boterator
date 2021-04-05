@@ -1,0 +1,52 @@
+__**jishaku**__
+> py/pyi [code]
+> └ Evaluates python code
+> └ Variables: `_ctx`, `_bot`, `_find`, `_get`.
+
+> debug [boterator-cmd]
+> └ Executes a command with an exception wrapper & a timer. Allows you to quickly get feedback on reproducible command errors and slowdowns.
+
+> repeat [times] [boterator-cmd]
+> └ Repeats a command a number of times
+
+> in [channel] [boterator-cmd]
+> └ Execute a command in another channel
+
+> su [member] [boterator-cmd]
+> └ Execute a command as another user
+
+> cat [file or filepath]
+> └ Reads a file from your file-system, auto-detects encoding + programming language styling.
+
+> curl [url]
+> └ Reads text from a URL & attempts to detect encoding + language (similar to cat)
+> └ Useful for displaying contents of online files. E.g. files from paste sites, the `message.txt` file created when a discord msg is too long.
+
+> sudo [boterator-cmd]
+> └ Bypasses all checks and cooldowns on a given command
+
+> shell [command]
+> └ Execute commands within the host server's shell
+
+__**owner.py**__
+> load [path.name]
+
+> unload [path.name]
+
+> reload
+> └ all
+> └ cog [path.name]
+> └ config
+> └ tools
+
+> shutdown <reason>
+
+> status [status] <reason>
+> └ Valid status params: `online`, `idle`, `dnd`, `offline`, `stream`
+
+__**partners.py**__
+> partner
+> └ send
+> └ refresh
+> └ add [invite] [repID] <0xHexcode> <banner> <website>
+> └ edit [msgID] [invite] [repID] <0xHexcode> <banner> <website>
