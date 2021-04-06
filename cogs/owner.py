@@ -134,7 +134,7 @@ class OwnerCog(commands.Cog):
         delta_uptime_seconds = delta_uptime.total_seconds()
 
         # Convert delta into human readable format
-        total_uptime = tools.fmt_seconds_friendly(delta_uptime_seconds)
+        total_uptime = tools.seconds_to_str(delta_uptime_seconds)
 
         # Report uptime & shutdown
         embed = discord.Embed(

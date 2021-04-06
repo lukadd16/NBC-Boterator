@@ -118,74 +118,74 @@ class CommandErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.CommandOnCooldown):
             if error.cooldown.type == commands.BucketType.default:
-                cooldown_left_str = tools.fmt_seconds_friendly(
+                str_cooldown_left = tools.seconds_to_str(
                     error.retry_after
                 )
 
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for the "
-                    f"entire bot, retry in `{cooldown_left_str}`.",
+                    f"entire bot, retry in `{str_cooldown_left}`.",
                     delete_after=error.retry_after
                 )
             elif error.cooldown.type == commands.BucketType.user:
-                cooldown_left_str = tools.fmt_seconds_friendly(
+                str_cooldown_left = tools.seconds_to_str(
                     error.retry_after
                 )
 
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for you, "
-                    f"retry in `{cooldown_left_str}`.",
+                    f"retry in `{str_cooldown_left}`.",
                     delete_after=error.retry_after
                 )
             elif error.cooldown.type == commands.BucketType.guild:
-                cooldown_left_str = tools.fmt_seconds_friendly(
+                str_cooldown_left = tools.seconds_to_str(
                     error.retry_after
                 )
 
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for this "
-                    f"server, retry in `{cooldown_left_str}`.",
+                    f"server, retry in `{str_cooldown_left}`.",
                     delete_after=error.retry_after
                 )
             elif error.cooldown.type == commands.BucketType.channel:
-                cooldown_left_str = tools.fmt_seconds_friendly(
+                str_cooldown_left = tools.seconds_to_str(
                     error.retry_after
                 )
 
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for this "
-                    f"channel, retry in `{cooldown_left_str}`.",
+                    f"channel, retry in `{str_cooldown_left}`.",
                     delete_after=error.retry_after
                 )
             elif error.cooldown.type == commands.BucketType.member:
-                cooldown_left_str = tools.fmt_seconds_friendly(
+                str_cooldown_left = tools.seconds_to_str(
                     error.retry_after
                 )
 
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for you, "
-                    f"retry in `{cooldown_left_str}`.",
+                    f"retry in `{str_cooldown_left}`.",
                     delete_after=error.retry_after
                 )
             elif error.cooldown.type == commands.BucketType.category:
-                cooldown_left_str = tools.fmt_seconds_friendly(
+                str_cooldown_left = tools.seconds_to_str(
                     error.retry_after
                 )
 
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for this "
-                    f"category of channels, retry in `{cooldown_left_str}`.",
+                    f"category of channels, retry in `{str_cooldown_left}`.",
                     delete_after=error.retry_after
                 )
             # TODO: Fix so that the role on cooldown is mentioned (if possible)
             elif error.cooldown.type == commands.BucketType.role:
-                cooldown_left_str = tools.fmt_seconds_friendly(
+                str_cooldown_left = tools.seconds_to_str(
                     error.retry_after
                 )
 
                 await ctx.send(
                     f"The command `{ctx.command}` is on cooldown for your "
-                    f"role, retry in `{cooldown_left_str}`.",
+                    f"role, retry in `{str_cooldown_left}`.",
                     delete_after=error.retry_after
                 )
 
