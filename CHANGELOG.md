@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.4.3...v1.5.0) (2021-04-05)
+
+
+### Features
+
+* New Owner-only Help Subcommand; Rename class ([7492340](https://www.github.com/lukadd16/NBC-Boterator/commit/74923404eded8e2ee9477ded7976cf7678165d0e))
+* Strip markdown and mentions from pinfo Content field; Add Modified field; Specify how long ago the message was sent/edited ([25dfb7a](https://www.github.com/lukadd16/NBC-Boterator/commit/25dfb7a430eb800a065728895357a7cfa4275129))
+
+
+### Bug Fixes
+
+* Add +1 to value calculated in get_join_position() helper method ([09eb8a4](https://www.github.com/lukadd16/NBC-Boterator/commit/09eb8a46b441635d1f95076852cc725abd8e8ae7))
+* Add helper method that returns how many sec/min/hrs/days ago a datetime object is relative to today; Refactor logic to convert seconds into readable time format ([d272f01](https://www.github.com/lukadd16/NBC-Boterator/commit/d272f016b959169354d825f45b7386ceb64541f5))
+
 ### [1.4.3](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.4.2...v1.4.3) (2021-02-18)
 
 
