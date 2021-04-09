@@ -110,7 +110,7 @@ class UtilitiesCog(commands.Cog):
             url=self.bot.user.avatar_url
         )
         embed.add_field(
-            name="Developer: ",
+            name="Developer:",
             value="`Lukadd.16#8870`",
             inline=True
         )
@@ -120,37 +120,37 @@ class UtilitiesCog(commands.Cog):
             inline=True
         )
         embed.add_field(
-            name="Uptime: ",
+            name="Uptime:",
             value=f"`{str_uptime}`",
             inline=True
         )
         embed.add_field(
-            name="Python Version: ",
+            name="Python Version:",
             value=f"`{py_version}`",
             inline=True
         )
         embed.add_field(
-            name="Library Version: ",
+            name="Library Version:",
             value=f"`Discord.py {disc_version}`",
             inline=True
         )
         embed.add_field(
-            name="Websocket Ping: ",
+            name="Websocket Ping:",
             value="`{:.2f}ms`".format(web_latency),
             inline=True
         )
         embed.add_field(
-            name="RAM Usage: ",
+            name="RAM Usage:",
             value=f"`{bot_memory_usage} MB`",
             inline=True
         )
         embed.add_field(
-            name="PLACEHOLDER: ",
+            name="PLACEHOLDER:",
             value="`placeholder`",
             inline=True
         )
         embed.add_field(
-            name="Server OS: ",
+            name="Server OS:",
             value=f"`{platform.system()}`",
             inline=True
         )
@@ -432,20 +432,24 @@ class UtilitiesCog(commands.Cog):
 
         logger.debug("Debug Stack:")
 
-        # snowflake_time is outputted as a datetime.datetime object
-        # Call helper method to convert time to readable format
-        user_createdate = tools.datetime_to_str(
-            discord.utils.snowflake_time(
-                member.id
-            )
+        # Get creation date (in GMT) of the member's discord account
+        # Method returns a datetime.datetime object
+        snowflake = discord.utils.snowflake_time(member.id)
+
+        # Convert snowflake into formatted string
+        user_createdate = "{0} ({1})".format(
+            tools.datetime_to_str(snowflake),
+            tools.delta_datetime_to_str(snowflake)
         )
         logger.debug(
             "> (tools) Account Created On: %s", user_createdate
         )
 
-        # Convert guild join time to readable format
-        member_joindate = tools.datetime_to_str(
-            member.joined_at
+        # Convert datetime that the user joined the guild into a
+        # formatted string
+        member_joindate = "{0} ({1})".format(
+            tools.datetime_to_str(member.joined_at),
+            tools.delta_datetime_to_str(member.joined_at)
         )
         logger.debug(
             "> (tools) Joined Guild On: %s", member_joindate
@@ -510,38 +514,38 @@ class UtilitiesCog(commands.Cog):
             url=member.avatar_url
         )
         embed.add_field(
-            name="Account Created (GMT):",
+            name="Account Created",
             value=f"{user_createdate}",
             inline=True
         )
         embed.add_field(
-            name="Joined Guild (GMT):",
+            name="Joined Guild",
             value=f"{member_joindate}",
             inline=True
         )
         embed.add_field(
-            name="Member #:",
+            name="Member #",
             value=f"{member_join_position} of {len(ctx.guild.members)}",
             inline=True
         )
         embed.add_field(
-            name="User ID:",
+            name="User ID",
             value=f"{member.id}",
             inline=True
         )
         embed.add_field(
-            name="Nickname:",
+            name="Nickname",
             value=f"{member.nick}",
             inline=True
         )
         embed.add_field(
-            name=f"Roles [{member_role_sum}]:",
+            name=f"Roles [{member_role_sum}]",
             value=f"{member_role_list}",
             inline=False
         )
         embed.set_footer(
             text=f"Requested by {ctx.author.name}#{ctx.author.discriminator}",
-            icon_url=(ctx.author.avatar_url)
+            icon_url=ctx.author.avatar_url
         )
         await ctx.send(embed=embed)
 
@@ -567,7 +571,7 @@ class UtilitiesCog(commands.Cog):
 
         embed.set_footer(
             text=f"Requested by {ctx.author.name}#{ctx.author.discriminator}",
-            icon_url=(ctx.author.avatar_url)
+            icon_url=ctx.author.avatar_url
         )
         await ctx.send(embed=embed)
 
