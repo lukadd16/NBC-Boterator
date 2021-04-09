@@ -408,6 +408,20 @@ class UtilitiesCog(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @pinned.error()
+    async def pinned_error(self, ctx, error):
+        # Bot does not have access to the mentioned channel
+        if isinstance(error, discord.Forbidden):
+            embed = discord.Embed(
+                title="ERROR - 403 Forbidden",
+                description="I do not have access to view this channel. Please check my permissions and try again.",
+                colour=config.BOT_ERR_COLOUR
+            )
+            embed.set_footer(
+                text=config.BOT_FOOTER
+            )
+            await ctx.send(embed=embed)
+
     # Deprecated, remove entirely in a future release
     @commands.command()
     async def uptime(self, ctx):
