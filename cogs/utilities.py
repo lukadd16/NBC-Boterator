@@ -289,8 +289,6 @@ class UtilitiesCog(commands.Cog):
         )
         await message.edit(embed=embed)
 
-    # TODO: Bot currently does not handle 403 Missing Access error
-    #       (which occurs when the bot can't see the mentioned channel)
     @commands.command(aliases=["pins", "pinfo"])
     async def pinned(self, ctx, channel: Optional[discord.TextChannel] = None):
         if channel is None:
@@ -408,7 +406,7 @@ class UtilitiesCog(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @pinned.error()
+    @pinned.error
     async def pinned_error(self, ctx, error):
         # Bot does not have access to the mentioned channel
         if isinstance(error, discord.Forbidden):
@@ -451,9 +449,9 @@ class UtilitiesCog(commands.Cog):
         snowflake = discord.utils.snowflake_time(member.id)
 
         # Convert snowflake into formatted string
-        user_createdate = "{0} ({1})".format(
-            tools.datetime_to_str(snowflake),
-            tools.delta_datetime_to_str(snowflake)
+        user_createdate = "{0} ({1} GMT)".format(
+            tools.delta_datetime_to_str(snowflake),
+            tools.datetime_to_str(snowflake)
         )
         logger.debug(
             "> (tools) Account Created On: %s", user_createdate
@@ -461,9 +459,9 @@ class UtilitiesCog(commands.Cog):
 
         # Convert datetime that the user joined the guild into a
         # formatted string
-        member_joindate = "{0} ({1})".format(
-            tools.datetime_to_str(member.joined_at),
-            tools.delta_datetime_to_str(member.joined_at)
+        member_joindate = "{0} ({1} GMT)".format(
+            tools.delta_datetime_to_str(member.joined_at),
+            tools.datetime_to_str(member.joined_at)
         )
         logger.debug(
             "> (tools) Joined Guild On: %s", member_joindate
@@ -513,44 +511,38 @@ class UtilitiesCog(commands.Cog):
         # that has a colour other than the default invisible one
 
         embed = discord.Embed(
-            title=f"User Info – `{member.name}#{member.discriminator}`",
-                  # f"{status_emoji}{bot_identify}",
+            # title=f"User Info – `{member.name}#{member.discriminator}`",
             description=f"{member.mention}{status_emoji}{bot_identify}",
             colour=config.BOT_COLOUR,
             timestamp=ctx.message.created_at
         )
         embed.set_author(
-            name=config.BOT_AUTHOR_CLICK,
+            name=f"{member.name}#{member.discriminator}",
             url=config.WEBSITE_URL,
-            icon_url=self.bot.user.avatar_url
+            icon_url=member.avatar_url
         )
         embed.set_thumbnail(
             url=member.avatar_url
         )
         embed.add_field(
-            name="Account Created",
-            value=f"{user_createdate}",
+            name="User ID",
+            value=f"```{member.id}```",
             inline=True
+        )
+        embed.add_field(
+            name="Account Created",
+            value=f"```{user_createdate}```",
+            inline=False
         )
         embed.add_field(
             name="Joined Guild",
-            value=f"{member_joindate}",
-            inline=True
+            value=f"```{member_joindate}```",
+            inline=False
         )
         embed.add_field(
             name="Member #",
-            value=f"{member_join_position} of {len(ctx.guild.members)}",
-            inline=True
-        )
-        embed.add_field(
-            name="User ID",
-            value=f"{member.id}",
-            inline=True
-        )
-        embed.add_field(
-            name="Nickname",
-            value=f"{member.nick}",
-            inline=True
+            value=f"```{member_join_position} of {len(ctx.guild.members)}```",
+            inline=False
         )
         embed.add_field(
             name=f"Roles [{member_role_sum}]",
