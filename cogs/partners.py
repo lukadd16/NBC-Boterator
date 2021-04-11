@@ -29,6 +29,52 @@ logger = app_logger.get_logger(__name__)
 # For command invocation pretty sure allowed to separate each arg on a new line (will make my life easier, but won't make any difference on the back-end)
 
 
+# Will take the msgID passed to edit cmd and check to make sure the referenced message exists and is in the set #partners channel
+# Just propagate this up to cog-level handler?
+class PMessage(commands.Converter):
+    pass
+
+
+class PColour(commands.Converter):
+    async def convert(self, ctx, argument: str):
+        if argument is None:
+            colour = config.DISC_DARK_EMBED_BG
+            logger.info(
+                "No colour specified, setting default discord.Embed.Empty value."
+            )
+        else:  # Convert string to desired base-16 integer
+            colour = int(argument, 16)
+            logger.debug(
+                "Colour as Base-16 Integer: {}".format(colour)
+            )
+        return colour
+
+
+class PBanner(commands.Converter):
+    async def convert(self, ctx, argument: str):
+        if argument is None:
+            logger.info(
+                "No banner specified, setting default discord.Embed.Empty value."
+            )
+            return discord.Embed.Empty
+
+
+# TODO: Not sure if need to explicitly pass argument back if not manipulating it
+class PWebsite(commands.Converter):
+    async def convert(self, ctx, argument: str):
+        if argument is None:
+            return discord.Embed.Empty
+
+
+class InviteValueError(ValueError):
+    """Raise when the provided invite was of the correct format but did not point to a valid guild"""
+    def __init__(self, message, invite):
+        self.message = message
+        # The offending invite that caused the error
+        self.invite = invite
+        super(InviteValueError, self).__init__(message, invite)
+
+
 class Partners(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -52,6 +98,39 @@ class Partners(commands.Cog):
         logger.info("JSON File Path: {}".format(db_file_path))
 
         return db_file_path
+
+    @commands.Cog.listener()
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, InviteValueError):
+            embed = discord.Embed(
+                title="ERROR",
+                description="A guild object could not be obtained from the "
+                            "provided invite, perhaps it was for a Group DM?",
+                colour=config.BOT_ERR_COLOUR,
+                timestamp=datetime.utcnow()
+            )
+            embed.set_author(
+                name=config.BOT_AUTHOR_NAME,
+                url=config.WEBSITE_URL,
+                icon_url=self.bot.user.avatar_url
+            )
+            embed.set_footer(
+                text="Offending Invite: {}".format(error.invite.url)
+            )
+            await ctx.message.delete()  # Delete command invocation
+            await ctx.send(embed=embed)
+            logger.info(
+                "No guild found, terminating command execution."
+            )
+            logger.info(
+                "Offending Invite: {}".format(error.invite.url)
+            )
+
+        elif isinstance(error, discord.Forbidden):
+            pass
+
+        elif isinstance(error, discord.NotFound):
+            pass
 
     @commands.group(aliases=["partners"])
     async def partner(self, ctx):
@@ -215,60 +294,18 @@ class Partners(commands.Cog):
             ),
             icon_url=ctx.author.avatar_url
         )
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
     # For now going to lock to admins only
     # After/together with this I should create an inviteinfo command (alias = ii)
-    # TODO: Local error handler? Or have I already covered most cases?
+    # TODO: Add cog-level error handler for 403 Forbidden and 404 Not Found errors (latter of which can occur when the msgID does not exist in the partners channel)
     @partner.command()
     async def add(self, ctx, invite: discord.Invite, rep: discord.Member,
-                  colour: Optional[str] = None, banner: Optional[str] = None,
-                  web: Optional[str] = None):
-        # Handle optional attributes
-        if colour is None:
-            colour = discord.Embed.Empty  # Or discord.Colour.dark_theme() which would blend in with dark mode
-            logger.info(
-                "No colour specified, setting default discord.Embed.Empty value."
-            )
-        else:  # Convert string to desired base-16 integer
-            colour = int(colour, 16)
-            logger.debug(
-                "Colour as Base-16 Integer: {}".format(colour)
-            )
-        if banner is None:
-            banner = discord.Embed.Empty
-            logger.info(
-                "No banner specified, setting default discord.Embed.Empty value."
-            )
-        if web is None:
-            web = discord.Embed.Empty
-
-        # Confirm invite returns a valid guild
+                  colour: Optional[PColour] = None, banner: Optional[PBanner] = None,
+                  web: Optional[PWebsite] = None):
+        # Confirm invite points to a valid guild
         if invite.guild is None:
-            embed = discord.Embed(
-                title="ERROR",
-                description="A guild object could not be obtained from the "
-                            "provided invite, perhaps it was for a Group DM?",
-                colour=config.BOT_ERR_COLOUR,
-                timestamp=datetime.utcnow()
-            )
-            embed.set_author(
-                name=config.BOT_AUTHOR_NAME,
-                url=config.WEBSITE_URL,
-                icon_url=self.bot.user.avatar_url
-            )
-            embed.set_footer(
-                text="Offending Invite: {}".format(invite.url)
-            )
-            await ctx.message.delete()  # Delete command invokation
-            await ctx.channel.send(embed=embed)
-            logger.info(
-                "No guild found, terminating command execution."
-            )
-            logger.info(
-                "Offending Invite: {}".format(invite.url)
-            )
-            return
+            raise InviteValueError(invite=invite)  # TODO: test this, do I need to have a message arg?
 
         embed = discord.Embed(
             title="PARTNERSHIP MENU",
@@ -424,53 +461,11 @@ class Partners(commands.Cog):
 
     @partner.command()
     async def edit(self, ctx, message: int, invite: discord.Invite,
-                   rep: discord.Member, colour: Optional[str] = None,
-                   banner: Optional[str] = None, web: Optional[str] = None):
-        # Handle optional attributes
-        if colour is None:
-            colour = discord.Embed.Empty  # Or discord.Colour.dark_theme() which would blend in with dark mode
-            logger.info(
-                "No colour specified, setting default discord.Embed.Empty value."
-            )
-        else:  # Convert string to desired base-16 integer
-            colour = int(colour, 16)
-            logger.debug(
-                "Colour as Base-16 Integer: {}".format(colour)
-            )
-        if banner is None:
-            banner = discord.Embed.Empty
-            logger.info(
-                "No banner specified, setting default discord.Embed.Empty value."
-            )
-        if web is None:
-            web = discord.Embed.Empty
-
-        # Confirm invite returns a valid guild
+                   rep: discord.Member, colour: Optional[PColour] = None,
+                   banner: Optional[PBanner] = None, web: Optional[PWebsite] = None):
+        # Confirm invite points to a valid guild
         if invite.guild is None:
-            embed = discord.Embed(
-                title="ERROR",
-                description="A guild object could not be obtained from the "
-                            "provided invite, perhaps it was for a Group DM?",
-                colour=config.BOT_ERR_COLOUR,
-                timestamp=datetime.utcnow()
-            )
-            embed.set_author(
-                name=config.BOT_AUTHOR_NAME,
-                url=config.WEBSITE_URL,
-                icon_url=self.bot.user.avatar_url
-            )
-            embed.set_footer(
-                text="Offending Invite: {}".format(invite.url)
-            )
-            await ctx.message.delete()  # Delete command invokation
-            await ctx.channel.send(embed=embed)
-            logger.info(
-                "No guild found, terminating command execution."
-            )
-            logger.info(
-                "Offending Invite: {}".format(invite.url)
-            )
-            return
+            raise InviteValueError(invite=invite)
 
         embed = discord.Embed(
             title="PARTNERSHIP MENU",
