@@ -4,6 +4,7 @@
 
 import app_logger
 import config
+import discord
 
 from datetime import datetime
 from typing import TypeVar
@@ -29,7 +30,7 @@ def _divmod(a: _N2, b: _N2):
 
 # Converts a time in seconds to a string with a specific format
 # Returned Formatting: 1d 9h 8m 7s
-def seconds_to_str(seconds):
+def seconds_to_str(seconds: _N2) -> str:
     days, remainder = divmod(seconds, 86400)
     hours, remainder = divmod(remainder, 3600)
     minutes, seconds = divmod(remainder, 60)
@@ -48,13 +49,13 @@ def seconds_to_str(seconds):
 
 # Converts a datetime object to a human-readable string
 # Returned Formatting: Wed, Jul 1, 1987 05:44 PM GMT
-def datetime_to_str(time: datetime):
+def datetime_to_str(time: datetime) -> str:
     return time.strftime("%a, %b X%d, %Y %I:%M %p").replace("X0", "X").replace("X", "")
 
 
 # Returns how long ago a particular datetime object occurred
 # Example: Sat, Apr 3, 2021 04:25 PM GMT (3 days ago)
-def delta_datetime_to_str(start_time: datetime):
+def delta_datetime_to_str(start_time: datetime) -> str:
     # Find the difference in time between today and the
     # start_time (which points to a date in the past)
     # Operation returns a timedelta object
@@ -71,7 +72,7 @@ def delta_datetime_to_str(start_time: datetime):
 
 
 # Helper method; Contains the comparison logic that determines how a calculated delta should be formatted as a string
-def _formatted_delta(days: int, hours: int, minutes: int, seconds: float):
+def _formatted_delta(days: int, hours: int, minutes: int, seconds: float) -> str:
     if days > 1:
         return "{0} days ago".format(days)
     if days == 1:
@@ -90,33 +91,31 @@ def _formatted_delta(days: int, hours: int, minutes: int, seconds: float):
 
 # Returns the emoji (defined in the config file) that corresponds to the
 # status of a passed in discord.Member object
-# TODO: Redundant elif and else
-def get_member_status(member):
+def get_member_status(member: discord.Member) -> str:
     if f"{member.status}".lower() == "online":
         return f"{config.EMOJI_ONLINE}"
-    elif f"{member.status}".lower() == "idle":
+    if f"{member.status}".lower() == "idle":
         return f"{config.EMOJI_IDLE}"
-    elif f"{member.status}".lower() == "dnd":
+    if f"{member.status}".lower() == "dnd":
         return f"{config.EMOJI_DND}"
-    elif f"{member.status}".lower() == "offline":
+    if f"{member.status}".lower() == "offline":
         return f"{config.EMOJI_OFFLINE}"
-    else:
-        return f"{config.EMOJI_STREAM}"
+
+    return f"{config.EMOJI_STREAM}"
 
 
 # Returns either an emoji or an empty string to indicate whether or not
-# the passed in discord.Member object is a bot
-# TODO: Redundant else statement
-def do_bot_check(member):
-    if member.bot is True:
+# the passed in discord.User object is a bot
+def do_bot_check(user: discord.User) -> str:
+    if user.bot is True:
         return f"{config.EMOJI_BOT_TAG}"
-    else:
-        return ""
+
+    return ""
 
 
 # Calculate a member's join position via comparing their join date to other
 # members; currently being used in the whois and joinpos commands
-def get_join_position(ctx, member):
+def get_join_position(ctx, member: discord.Member) -> int:
     return sum(
         m.joined_at < member.joined_at
         for m in ctx.guild.members
