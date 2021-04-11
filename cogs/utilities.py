@@ -488,6 +488,12 @@ class UtilitiesCog(commands.Cog):
         )
         logger.debug("> (tools) User Status: %s", status_emoji)
 
+        # Obtain the hex code for the member's top-most role
+        # If member has no roles (i.e. rendered colour is #000000),
+        # then set member_rendered_colour to the colour of a dark-mode embed
+        member_rendered_colour = member.colour if member.colour.value is not 0 else config.DISC_DARK_EMBED_BG
+        logger.debug("> Discord Rendered Colour: %s", member_rendered_colour)
+
         # Subtract by 1 to omit the @everyone role
         member_role_sum = len(member.roles) - 1
         logger.debug("> Role Count: %s", member_role_sum)
@@ -497,7 +503,7 @@ class UtilitiesCog(commands.Cog):
         # Else perform list manipulation logic.
         if member_role_sum == 0:
             member_role_list = None
-        elif member_role_sum >= 1:
+        else:
             # Separate each role by a single space
             member_role_list = ' '.join(
                 [
@@ -506,14 +512,10 @@ class UtilitiesCog(commands.Cog):
             )
         logger.debug("> List of Roles: %s", member_role_list)
 
-        # TODO: Now that I understand how to get roles, make a system that loops
-        # through user's roles (from highest to lowest) finding the first one
-        # that has a colour other than the default invisible one
-
         embed = discord.Embed(
             # title=f"User Info – `{member.name}#{member.discriminator}`",
             description=f"{member.mention}{status_emoji}{bot_identify}",
-            colour=config.BOT_COLOUR,
+            colour=member_rendered_colour,
             timestamp=ctx.message.created_at
         )
         embed.set_author(
