@@ -13,36 +13,59 @@ from typing import Optional
 
 logger = app_logger.get_logger(__name__)
 
-# Database configuration
-db_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../data")
-db_dir = os.path.join(db_dir, "db")
-db_file_name = "partners.json"
-db_file_path = os.path.join(db_dir, db_file_name)
-logger.info("JSON File Path: {}".format(db_file_path))
+# Command Structure:
+# partner
+#   - init (send_req)
+#       > refresh (edit_req)
+#   - add
+#   - edit (msgID, field, value)
+#       > msgID (discord.Message)
+#           >> invite (discord.Invite)
+#           >> rep (ID)
+#           >> colour (hexcode)
+#           >> banner (str URL)
+#           >> website (str URL)
+
+# For command invocation pretty sure allowed to separate each arg on a new line (will make my life easier, but won't make any difference on the back-end)
 
 
 class Partners(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.db_file_path = self._init_db()
+
+    # TODO: Replace with custom checks when those are implemented
+    async def cog_check(self, ctx):
+        return commands.has_guild_permissions(administrator=True) and commands.guild_only()
 
     def cog_unload(self):
         for h in logger.handlers:
             logger.removeHandler(h)
 
+    # Database configuration
+    @staticmethod
+    def _init_db() -> str:
+        db_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../data")
+        db_dir = os.path.join(db_dir, "db")
+        db_file_name = "partners.json"
+        db_file_path = os.path.join(db_dir, db_file_name)
+        logger.info("JSON File Path: {}".format(db_file_path))
+
+        return db_file_path
+
     @commands.group(aliases=["partners"])
-    @commands.has_guild_permissions()
     async def partner(self, ctx):
         # Could use the base command to explain how to partner, etc. (could also add a link via MD to the requirements embed)
         # E.g. Want to partner with us? Just head on over to [this]() message to learn how!
         pass
 
-    @partner.command(aliases=["send", "sreq"])
-    @commands.has_guild_permissions(administrator=True)
-    async def send_requirements(self, ctx):
+    # Sends the requirements for partnership message to the set partners channel
+    @partner.group()
+    async def init(self, ctx):
+        await ctx.trigger_typing()
         # Open DB file in Binary Read-Only mode
-        # Binary mode is needed so that special characters (e.g. é)
-        # will display properly
-        with open(db_file_path, "rb") as f:
+        # Binary mode so that special characters (e.g. é) display properly
+        with open(self.db_file_path, "rb") as f:
             data = json.load(f)
             logger.debug("JSON Data Loaded")
 
@@ -50,7 +73,7 @@ class Partners(commands.Cog):
         embed = discord.Embed(
             title="{}".format(data['requirementsEmbed']['title']),
             description="{}".format(data['requirementsEmbed']['description']),
-            colour=config.BOT_COLOUR,
+            colour=config.DISC_DARK_EMBED_BG,
             timestamp=datetime.utcnow()  # This attribute is timezone aware
         )
         embed.add_field(
@@ -73,7 +96,7 @@ class Partners(commands.Cog):
             icon_url=ctx.guild.icon_url
         )
 
-        # Get object of the channel we want to send to
+        # Get discord.TextChannel object (via discord.Guild) for the partners channel we want to send to
         guild = discord.utils.get(
             self.bot.guilds,
             name=ctx.guild.name
@@ -83,10 +106,10 @@ class Partners(commands.Cog):
             id=config.PARTNERS_CHANNEL_ID
         )
 
-        msg = await channel.send(embed=embed)
+        req = await channel.send(embed=embed)
         logger.info(
             "Partnership Requirements Embed Sent (MSG ID: {})".format(
-                msg.id
+                req.id
             )
         )
 
@@ -101,7 +124,7 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="Partnership Requirements Sent",
-            value="**MSG ID:** {}".format(msg.id),
+            value="**MSG ID:** {}".format(req.id),
             inline=False
         )
         embed.set_footer(
@@ -111,15 +134,15 @@ class Partners(commands.Cog):
             ),
             icon_url=ctx.author.avatar_url
         )
-        await ctx.channel.send(embed=embed)
+        await ctx.reply(embed=embed)
 
-    @partner.command(aliases=["refresh", "ereq"])
-    @commands.has_guild_permissions(administrator=True)
-    async def edit_requirements(self, ctx):
+    @init.command()
+    async def refresh(self, ctx):
+        await ctx.trigger_typing()
         # Open DB file in Binary Read-Only mode
         # Binary mode is needed so that special characters (e.g. é)
         # will display properly
-        with open(db_file_path, "rb") as f:
+        with open(self.db_file_path, "rb") as f:
             data = json.load(f)
             logger.debug("JSON Data Loaded")
 
@@ -150,7 +173,8 @@ class Partners(commands.Cog):
             icon_url=ctx.guild.icon_url
         )
 
-        # Get object of the message we want to edit
+        # Get discord.Message object (via discord.Guild and discord.TextChannel)
+        # for the "requirements for partnership" message we want to edit
         guild = discord.utils.get(
             self.bot.guilds,
             name=ctx.guild.name
@@ -191,13 +215,12 @@ class Partners(commands.Cog):
             ),
             icon_url=ctx.author.avatar_url
         )
-        await ctx.channel.send(embed=embed)
+        await ctx.send(embed=embed)
 
     # For now going to lock to admins only
     # After/together with this I should create an inviteinfo command (alias = ii)
     # TODO: Local error handler? Or have I already covered most cases?
     @partner.command()
-    @commands.has_guild_permissions(administrator=True)
     async def add(self, ctx, invite: discord.Invite, rep: discord.Member,
                   colour: Optional[str] = None, banner: Optional[str] = None,
                   web: Optional[str] = None):
@@ -400,7 +423,6 @@ class Partners(commands.Cog):
         )
 
     @partner.command()
-    @commands.has_guild_permissions(administrator=True)
     async def edit(self, ctx, message: int, invite: discord.Invite,
                    rep: discord.Member, colour: Optional[str] = None,
                    banner: Optional[str] = None, web: Optional[str] = None):
