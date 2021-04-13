@@ -9,6 +9,7 @@ import os
 
 from datetime import datetime
 from discord.ext import commands
+from discord.ext.commands import ColourConverter
 from typing import Optional
 
 logger = app_logger.get_logger(__name__)
@@ -29,49 +30,56 @@ logger = app_logger.get_logger(__name__)
 # For command invocation pretty sure allowed to separate each arg on a new line (will make my life easier, but won't make any difference on the back-end)
 
 
-# Will take the msgID passed to edit cmd and check to make sure the referenced message exists and is in the set #partners channel
-# Just propagate this up to cog-level handler?
-class PMessage(commands.Converter):
-    pass
-
-
 class PColour(commands.Converter):
     async def convert(self, ctx, argument: str):
-        if argument is None:
+        print("REACH")
+        if argument is None:  # TODO: will never get called
+            print("REACH IF")
             colour = config.DISC_DARK_EMBED_BG
             logger.info(
-                "No colour specified, setting default discord.Embed.Empty value."
+                "No colour specified, returning DARK_EMBED_BG constant."
             )
-        else:  # Convert string to desired base-16 integer
-            colour = int(argument, 16)
+        else:
+            print("REACH ELSE")
+            colour = await ColourConverter.convert(ctx, argument)  # Use built-in discord.py converter
+            print("REACH POST CONVERT")
             logger.debug(
-                "Colour as Base-16 Integer: {}".format(colour)
+                "Colour Post-Conversion: {}".format(colour)
             )
         return colour
 
+# BANNER AND WEBSITE DON'T FIT THE USE CASE OF CONVERTERS (since we're not really manipulating the arg at all)
 
-class PBanner(commands.Converter):
-    async def convert(self, ctx, argument: str):
-        if argument is None:
-            logger.info(
-                "No banner specified, setting default discord.Embed.Empty value."
-            )
-            return discord.Embed.Empty
-
-
-# TODO: Not sure if need to explicitly pass argument back if not manipulating it
-class PWebsite(commands.Converter):
-    async def convert(self, ctx, argument: str):
-        if argument is None:
-            return discord.Embed.Empty
+# class PBanner(commands.Converter):
+#     async def convert(self, ctx, argument: str):
+#         print(argument)
+#
+#         if argument is None:
+#             logger.info(
+#                 "No banner specified, returning default discord.Embed.Empty value."
+#             )
+#             return discord.Embed.Empty
+#
+#
+# # TODO: Not sure if need to explicitly pass argument back if not manipulating it
+# class PWebsite(commands.Converter):
+#     async def convert(self, ctx, argument: str):
+#         print(argument)
+#
+#         if argument is None:
+#             logger.info(
+#                 "No website specified, returning default discord.Embed.Empty value."
+#             )
+#             return discord.Embed.Empty
+#         # else:
+#         #     return None
 
 
 class InviteValueError(ValueError):
     """Raise when the provided invite was of the correct format but did not point to a valid guild"""
-    def __init__(self, message, invite):
+    def __init__(self, message: str, invite: discord.Invite):
         self.message = message
-        # The offending invite that caused the error
-        self.invite = invite
+        self.invite = invite  # The offending invite that caused the error
         super(InviteValueError, self).__init__(message, invite)
 
 
@@ -96,51 +104,108 @@ class Partners(commands.Cog):
         db_file_name = "partners.json"
         db_file_path = os.path.join(db_dir, db_file_name)
         logger.info("JSON File Path: {}".format(db_file_path))
-
         return db_file_path
 
-    @commands.Cog.listener()
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, InviteValueError):
-            embed = discord.Embed(
-                title="ERROR",
-                description="A guild object could not be obtained from the "
-                            "provided invite, perhaps it was for a Group DM?",
-                colour=config.BOT_ERR_COLOUR,
-                timestamp=datetime.utcnow()
-            )
-            embed.set_author(
-                name=config.BOT_AUTHOR_NAME,
-                url=config.WEBSITE_URL,
-                icon_url=self.bot.user.avatar_url
-            )
-            embed.set_footer(
-                text="Offending Invite: {}".format(error.invite.url)
-            )
-            await ctx.message.delete()  # Delete command invocation
-            await ctx.send(embed=embed)
-            logger.info(
-                "No guild found, terminating command execution."
-            )
-            logger.info(
-                "Offending Invite: {}".format(error.invite.url)
-            )
+    # Returns a discord.TextChannel object for the #partners channel defined in our config file
+    def get_channel(self, ctx) -> discord.TextChannel:
+        guild = discord.utils.get(
+            self.bot.guilds,
+            name=ctx.guild.name
+        )
+        target_channel = discord.utils.get(
+            guild.text_channels,
+            id=config.PARTNERS_CHANNEL_ID
+        )
+        return target_channel
 
-        elif isinstance(error, discord.Forbidden):
-            pass
+    # Returns a discord.Message object for a message in the #partners channel
+    # whose ID matches the one passed in.
+    async def get_msg(self, ctx, mid: int) -> discord.Message:
+        part_channel = self.get_channel(
+            ctx
+        )
+        target_msg = await part_channel.fetch_message(
+            mid
+        )
+        return target_msg
 
-        elif isinstance(error, discord.NotFound):
-            pass
+    @staticmethod
+    def check_banner_arg(banner):
+        if banner is None:
+            logger.info(
+                "No banner specified, returning default discord.Embed.Empty value."
+            )
+            return discord.Embed.Empty
+        else:
+            return banner
+
+    @staticmethod
+    def check_web_arg(website):
+        if website is None:
+            logger.info(
+                "No website specified, returning default discord.Embed.Empty value."
+            )
+            return discord.Embed.Empty
+        else:
+            return None
+
+    # NOTE: declaring a cog-level error handler like this effectively overrides my global one
+    #       By doing so none of my already defined handlers such as NotOwner get called (and would have to be rewritten here)
+    #       So instead, just going to add the necessary handlers to the global one
+
+    # async def cog_command_error(self, ctx, error):
+    #     if isinstance(error, InviteValueError):
+    #         embed = discord.Embed(
+    #             title="ERROR",
+    #             description="A guild object could not be obtained from the "
+    #                         "provided invite, perhaps it was for a Group DM?",
+    #             colour=config.BOT_ERR_COLOUR,
+    #             timestamp=datetime.utcnow()
+    #         )
+    #         embed.set_author(
+    #             name=config.BOT_AUTHOR_NAME,
+    #             url=config.WEBSITE_URL,
+    #             icon_url=self.bot.user.avatar_url
+    #         )
+    #         embed.set_footer(
+    #             text="Offending Invite: {}".format(error.invite.url)
+    #         )
+    #         await ctx.message.delete()  # Delete command invocation
+    #         await ctx.send(embed=embed)
+    #         logger.info(
+    #             "No guild found, terminating command execution."
+    #         )
+    #         logger.info(
+    #             "Offending Invite: {}".format(error.invite.url)
+    #         )
+    #
+    #     elif isinstance(error, discord.Forbidden):
+    #         pass
+    #
+    #     elif isinstance(error, discord.NotFound):
+    #         pass
 
     @commands.group(aliases=["partners"])
     async def partner(self, ctx):
         # Could use the base command to explain how to partner, etc. (could also add a link via MD to the requirements embed)
         # E.g. Want to partner with us? Just head on over to [this]() message to learn how!
-        pass
+        if ctx.invoked_subcommand is None:
+            await ctx.send(
+                "You did not specify a subcommand. Valid subcommands are:"
+                "\n>>> `init`"
+                "\n`init refresh`"
+                "\n`add`"
+                "\n`edit`"
+            )
 
     # Sends the requirements for partnership message to the set partners channel
     @partner.group()
     async def init(self, ctx):
+        # If the refresh subcommand was specified, prevent the bare init command from continuing.
+        # TODO: figure out if there's a native way to handle this behaviour.
+        if ctx.invoked_subcommand is not None:
+            return
+
         await ctx.trigger_typing()
         # Open DB file in Binary Read-Only mode
         # Binary mode so that special characters (e.g. é) display properly
@@ -175,20 +240,13 @@ class Partners(commands.Cog):
             icon_url=ctx.guild.icon_url
         )
 
-        # Get discord.TextChannel object (via discord.Guild) for the partners channel we want to send to
-        guild = discord.utils.get(
-            self.bot.guilds,
-            name=ctx.guild.name
-        )
-        channel = discord.utils.get(
-            guild.text_channels,
-            id=config.PARTNERS_CHANNEL_ID
-        )
+        # Get TextChannel object for the channel we want to send the embed to
+        target = self.get_channel(ctx)
 
-        req = await channel.send(embed=embed)
+        req_msg = await target.send(embed=embed)
         logger.info(
             "Partnership Requirements Embed Sent (MSG ID: {})".format(
-                req.id
+                req_msg.id
             )
         )
 
@@ -203,13 +261,12 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="Partnership Requirements Sent",
-            value="**MSG ID:** {}".format(req.id),
+            value="**MSG ID:** {}".format(req_msg.id),
             inline=False
         )
         embed.set_footer(
-            text="Actioned by {}#{}".format(
-                ctx.author.name,
-                ctx.author.discriminator
+            text="Actioned by {0.name}#{0.discriminator}".format(
+                ctx.author
             ),
             icon_url=ctx.author.avatar_url
         )
@@ -219,8 +276,7 @@ class Partners(commands.Cog):
     async def refresh(self, ctx):
         await ctx.trigger_typing()
         # Open DB file in Binary Read-Only mode
-        # Binary mode is needed so that special characters (e.g. é)
-        # will display properly
+        # Binary mode is needed so that special characters (e.g. é) will display properly
         with open(self.db_file_path, "rb") as f:
             data = json.load(f)
             logger.debug("JSON Data Loaded")
@@ -252,24 +308,13 @@ class Partners(commands.Cog):
             icon_url=ctx.guild.icon_url
         )
 
-        # Get discord.Message object (via discord.Guild and discord.TextChannel)
-        # for the "requirements for partnership" message we want to edit
-        guild = discord.utils.get(
-            self.bot.guilds,
-            name=ctx.guild.name
-        )
-        channel = discord.utils.get(
-            guild.text_channels,
-            id=config.PARTNERS_CHANNEL_ID
-        )
-        msg = await channel.fetch_message(
-            config.PARTNERS_MSG_ID
-        )
+        # Get Message object for the "requirements for partnership" message we want to edit
+        target = await self.get_msg(ctx, config.PARTNERS_MSG_ID)
 
-        await msg.edit(embed=new_embed)
+        await target.edit(embed=new_embed)
         logger.info(
             "Partnership Requirements Embed Edited (MSG ID: {})".format(
-                msg.id
+                target.id
             )
         )
 
@@ -284,13 +329,12 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="Partnership Requirements Edited",
-            value="**MSG ID:** {}".format(msg.id),
+            value="**MSG ID:** {}".format(target.id),
             inline=False
         )
         embed.set_footer(
-            text="Actioned by {}#{}".format(
-                ctx.author.name,
-                ctx.author.discriminator
+            text="Actioned by {0.name}#{0.discriminator}".format(
+                ctx.author
             ),
             icon_url=ctx.author.avatar_url
         )
@@ -301,11 +345,16 @@ class Partners(commands.Cog):
     # TODO: Add cog-level error handler for 403 Forbidden and 404 Not Found errors (latter of which can occur when the msgID does not exist in the partners channel)
     @partner.command()
     async def add(self, ctx, invite: discord.Invite, rep: discord.Member,
-                  colour: Optional[PColour] = None, banner: Optional[PBanner] = None,
-                  web: Optional[PWebsite] = None):
+                  colour: Optional[ColourConverter] = None, banner: Optional[str] = None,
+                  web: Optional[str] = None):
         # Confirm invite points to a valid guild
         if invite.guild is None:
-            raise InviteValueError(invite=invite)  # TODO: test this, do I need to have a message arg?
+            raise InviteValueError("Invite has no guild associated with it", invite)  # TODO: test this, do I need to have a message arg?
+
+        # Handle optional parameters and populate them with an appropriate
+        # default value (such as discord.Embed.Empty) if a value was not provided.
+        banner = self.check_banner_arg(banner)
+        web = self.check_web_arg(web)
 
         embed = discord.Embed(
             title="PARTNERSHIP MENU",
@@ -323,13 +372,12 @@ class Partners(commands.Cog):
             inline=False
         )
         embed.set_footer(
-            text="Actioned by {}#{}".format(
-                ctx.author.name,
-                ctx.author.discriminator
+            text="Actioned by {0.name}#{0.discriminator}".format(
+                ctx.author
             ),
             icon_url=ctx.author.avatar_url
         )
-        desc_embed = await ctx.channel.send(embed=embed)
+        desc_embed = await ctx.reply(embed=embed)
 
         # We only want a response from the user who invoked this command
         def check(m):
@@ -370,7 +418,7 @@ class Partners(commands.Cog):
             )
             return
 
-        # Construct embed object
+        # Construct embed containing info related to the partner
         embed = discord.Embed(
             title="{}".format(invite.guild.name),
             description="{}".format(provided_desc.content),
@@ -379,11 +427,11 @@ class Partners(commands.Cog):
             timestamp=datetime.utcnow()
         )
         embed.add_field(
-            name="{} Representative".format("\U0001f465"),
+            name="{} Representative".format(config.PARTNER_EMOJI_REP),
             value="{}".format(rep.mention)
         )
         embed.add_field(
-            name="{} Invite".format("\U0001f517"),
+            name="{} Invite".format(config.PARTNER_EMOJI_INVITE),
             value="**{}**".format(invite.url)
         )
         embed.set_thumbnail(
@@ -400,37 +448,28 @@ class Partners(commands.Cog):
         await provided_desc.delete()
         await ctx.message.delete()
         logger.debug(
-            "Deleted message containing server description"
+            "Deleted author input message containing server description"
         )
         logger.debug(
-            "Deleted command invokation"
+            "Deleted command invocation"
         )
 
-        # Get object of the channel we want to send to
-        guild = discord.utils.get(
-            self.bot.guilds,
-            name=ctx.guild.name
-        )
-        channel = discord.utils.get(
-            guild.text_channels,
-            id=config.PARTNERS_CHANNEL_ID
-        )
+        # Get TextChannel object for the channel we want to send the embed to
+        target = self.get_channel(ctx)  # TODO: test this
+
         logger.debug(
-            "Fetched channel {}({}) from guild {}({})".format(
-                channel.name,
-                channel.id,
-                guild.name,
-                guild.id
+            "Fetched channel {0.name}({0.id}) from guild {1.name}({1.id})".format(
+                target,
+                target.guild,  # TODO: test this
             )
         )
 
-        # Send the given information about the new partner to our
-        # public #partners channel
-        msg = await channel.send(embed=embed)
+        # Send the given information about the new partner to our public #partners channel
+        partner_msg = await target.send(embed=embed)
         logger.info(
             "New Partner Added By {} (MSG ID: {})".format(
                 ctx.author,
-                msg.id
+                partner_msg.id
             )
         )
 
@@ -445,7 +484,7 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="Partner Added",
-            value="**MSG ID:** {}".format(msg.id),
+            value="**MSG ID:** {}".format(partner_msg.id),
             inline=False
         )
         embed.set_footer(
@@ -455,17 +494,15 @@ class Partners(commands.Cog):
             ),
             icon_url=ctx.author.avatar_url
         )
-        await desc_embed.edit(
-            embed=embed
-        )
+        await desc_embed.edit(embed=embed)
 
     @partner.command()
     async def edit(self, ctx, message: int, invite: discord.Invite,
                    rep: discord.Member, colour: Optional[PColour] = None,
-                   banner: Optional[PBanner] = None, web: Optional[PWebsite] = None):
+                   banner: Optional[str] = None, web: Optional[str] = None):
         # Confirm invite points to a valid guild
         if invite.guild is None:
-            raise InviteValueError(invite=invite)
+            raise InviteValueError("Invite has no guild associated with it", invite)
 
         embed = discord.Embed(
             title="PARTNERSHIP MENU",
@@ -561,42 +598,29 @@ class Partners(commands.Cog):
         await provided_desc.delete()
         await ctx.message.delete()
         logger.debug(
-            "Deleted message containing server description"
+            "Deleted author input message containing server description"
         )
         logger.debug(
-            "Deleted command invokation"
+            "Deleted command invocation"
         )
 
-        # Get object of the message we want to edit
-        guild = discord.utils.get(
-            self.bot.guilds,
-            name=ctx.guild.name
-        )
-        channel = discord.utils.get(
-            guild.text_channels,
-            id=config.PARTNERS_CHANNEL_ID
-        )
-        msg = await channel.fetch_message(
-            message
-        )
+        # Get Message object for the existing partner embed we want to edit
+        target = await self.get_msg(ctx, message)
         logger.debug(
-            "Fetched message with ID {} from channel {}({}) in guild {}({})".format(
-                msg.id,
-                channel.name,
-                channel.id,
-                guild.name,
-                guild.id
+            "Fetched message with ID {0.id} from channel {1.name}({1.id}) in guild {2.name}({2.id})".format(  # TODO: test this
+                target,
+                target.channel,
+                target.guild
             )
         )
 
-        # Edit the specified partner from our public #partners channel
-        # with the updated information
-        await msg.edit(embed=new_embed)
+        # Edit the specified partner from our public #partners channel with the updated details
+        await target.edit(embed=new_embed)
         logger.info(
-            "Partner '{}' Edited By {} (MSG ID: {})".format(
-                invite.guild.name,
-                ctx.author,
-                msg.id
+            "Partner '{0.name}' Edited By {1.author} (MSG ID: {2.id})".format(  # TODO: test this
+                invite.guild,
+                ctx,
+                target
             )
         )
 
@@ -611,7 +635,7 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="Partner Edited",
-            value="**MSG ID:** {}".format(msg.id),
+            value="**MSG ID:** {}".format(target.id),
             inline=False
         )
         embed.set_footer(
@@ -621,9 +645,7 @@ class Partners(commands.Cog):
             ),
             icon_url=ctx.author.avatar_url
         )
-        await desc_embed.edit(
-            embed=embed
-        )
+        await desc_embed.edit(embed=embed)
 
 
 def setup(bot):
