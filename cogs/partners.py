@@ -210,12 +210,8 @@ class Partners(commands.Cog):
     # from continuing if an additional subcommand was also specified.
     @partner.group(invoke_without_command=True)
     async def init(self, ctx):
-        # If the refresh subcommand was specified,
-        # TODO: figure out if there's a native way to handle this behaviour.
-        # if ctx.invoked_subcommand is not None:
-        #     return
-
         await ctx.trigger_typing()
+
         # Open DB file in Binary Read-Only mode
         # Binary mode so that special characters (e.g. é) display properly
         with open(self.db_file_path, "rb") as f:
@@ -349,7 +345,6 @@ class Partners(commands.Cog):
         )
         await ctx.reply(embed=embed)
 
-    # TODO: After/together with this I should create an inviteinfo command (alias = ii)
     @partner.command()
     async def add(self, ctx, invite: discord.Invite, rep: discord.Member,
                   colour: Optional[str] = None, banner: Optional[str] = None,
@@ -524,7 +519,6 @@ class Partners(commands.Cog):
         logger.debug("Field arg = {}".format(field))
         logger.debug("Value arg = {}".format(value))
 
-        # TODO: encapsulate all data validation and conversions in static methods (like already existing check_web and check_banner)
         if any(field in ele for ele in self.fields.values()):  # Valid field was provided
             if field in self.fields.get(0):  # Embed Description
                 # Perform data validation on value arg
@@ -569,6 +563,7 @@ class Partners(commands.Cog):
                 f"\n`{self.fields.get(5)}`"
             )
 
+    # TODO: add logger events where necessary
     @commands.command()
     async def _edit_description(self, ctx, target: discord.Message, new_desc: str) -> None:
         # Get embed attached to the target message
@@ -578,7 +573,7 @@ class Partners(commands.Cog):
         data = embed.to_dict()
 
         # Obtain the existing description
-        cur_desc = data["description"]  # TODO: use [] access syntax
+        cur_desc = data["description"]
 
         # Set the description in the dictionary to the new one
         data["description"] = new_desc
