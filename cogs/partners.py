@@ -1,5 +1,4 @@
 # Description: Cog with commands relevant to new server partnership system
-import inspect
 
 import app_logger
 import asyncio
@@ -475,8 +474,8 @@ class Partners(commands.Cog):
 
         # Handle optional parameters and populate them with an appropriate
         # default value (such as discord.Embed.Empty) if a value was not provided.
-        banner = self.validate_banner(banner)
-        web = self.validate_website(web)
+        banner = self.validate_banner(ctx, banner)
+        web = self.validate_website(ctx, web)
 
         embed = discord.Embed(
             title="PARTNERSHIP MENU",
@@ -637,7 +636,7 @@ class Partners(commands.Cog):
         if any(field in ele for ele in self.fields.values()):  # Valid field was provided
             if field in self.fields.get(0):  # Embed Description
                 # Perform data validation on value arg
-                value = self.validate_desc(ctx, value)
+                value = self.validate_description(ctx, value)
 
                 # Call method from current context to edit partner description
                 # Note: ctx.invoke() ignores all checks and converters of the command being called
@@ -769,7 +768,7 @@ class Partners(commands.Cog):
         # )
 
     @commands.command()
-    async def _edit_invite_field(self, ctx, target: discord.TextChannel, new_invite: discord.Invite) -> None:
+    async def _edit_invite_field(self, ctx, target: discord.Message, new_invite: discord.Invite) -> None:
         # Get embed attached to the target message
         embed = target.embeds[0]
 
@@ -821,7 +820,7 @@ class Partners(commands.Cog):
         await ctx.reply(embed=embed)
 
     @commands.command()
-    async def _edit_representative_field(self, ctx, target: discord.TextChannel, new_rep: discord.Member) -> None:
+    async def _edit_representative_field(self, ctx, target: discord.Message, new_rep: discord.Member) -> None:
         # Get embed attached to the target message
         embed = target.embeds[0]
 
@@ -831,8 +830,8 @@ class Partners(commands.Cog):
         # Obtain existing representative (as string)
         cur_rep = data["fields"][0]["value"]
 
-        # Convert rep to a Member object
-        cur_rep = await MemberConverter().convert(ctx, cur_rep)
+        # # Convert rep to a Member object
+        # cur_rep = await MemberConverter().convert(ctx, cur_rep)
 
         # Set the value for the representative field in the dictionary to the new one
         data["fields"][0]["value"] = new_rep.mention
@@ -875,7 +874,7 @@ class Partners(commands.Cog):
         await ctx.reply(embed=embed)
 
     @commands.command()
-    async def _edit_embed_colour(self, ctx, target: discord.TextChannel, new_colour: discord.Colour) -> None:
+    async def _edit_embed_colour(self, ctx, target: discord.Message, new_colour: discord.Colour) -> None:
         # Get embed attached to the target message
         embed = target.embeds[0]
 
@@ -895,7 +894,7 @@ class Partners(commands.Cog):
         new_embed = discord.Embed.from_dict(data)
 
         # Edit the target message with our new embed
-        target.edit(embed=new_embed)
+        await target.edit(embed=new_embed)
 
         # Action complete, report status to context author
         embed = discord.Embed(
@@ -926,7 +925,7 @@ class Partners(commands.Cog):
         await ctx.reply(embed=embed)
 
     @commands.command()
-    async def _edit_embed_thumbnail(self, ctx, target: discord.TextChannel, new_banner: str) -> None:
+    async def _edit_embed_thumbnail(self, ctx, target: discord.Message, new_banner: str) -> None:
         # Get embed attached to the target message
         embed = target.embeds[0]
 
@@ -949,7 +948,7 @@ class Partners(commands.Cog):
         new_embed = discord.Embed.from_dict(data)
 
         # Edit the target message with our new embed
-        target.edit(embed=new_embed)
+        await target.edit(embed=new_embed)
 
         # Action complete, report status to context author
         embed = discord.Embed(
@@ -980,7 +979,7 @@ class Partners(commands.Cog):
         await ctx.reply(embed=embed)
 
     @commands.command()
-    async def _edit_embed_url(self, ctx, target: discord.TextChannel, new_website: str) -> None:
+    async def _edit_embed_url(self, ctx, target: discord.Message, new_website: str) -> None:
         # Get embed attached to the target message
         embed = target.embeds[0]
 
@@ -1000,7 +999,7 @@ class Partners(commands.Cog):
         new_embed = discord.Embed.from_dict(data)
 
         # Edit the target message with our new embed
-        target.edit(embed=new_embed)
+        await target.edit(embed=new_embed)
 
         # Action complete, report status to context author
         embed = discord.Embed(
