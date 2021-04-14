@@ -9,7 +9,7 @@ import os
 
 from datetime import datetime
 from discord.ext import commands
-from discord.ext.commands import ColourConverter
+from discord.ext.commands import ColourConverter, InviteConverter, MemberConverter
 from typing import Optional, Any
 
 logger = app_logger.get_logger(__name__)
@@ -521,17 +521,18 @@ class Partners(commands.Cog):
         logger.debug("Field arg has value: {}".format(field))
         logger.debug("fields.values: {}".format(self.fields.values()))
 
-        if any(field in ele for ele in self.fields.values()):
-
         # TODO: test field processing logic
-        #if field in self.fields.values():  # Valid field was provided
+        if any(field in ele for ele in self.fields.values()):  # Valid field was provided
             if field in self.fields.get(0):  # Call method to edit partner description
                 await ctx.invoke(self.bot.get_command("_edit_description"), target=target, new_desc=value)  # TODO: going to experiment with passing desc directly to edit command (on new line)
             elif field in self.fields.get(1):  # Call method to edit partner invite
+                value = await InviteConverter.convert(self, ctx, value)  # TODO: ctx invoking ignores checks and converters, so must perform manually prior to calling meth
                 await ctx.invoke(self.bot.get_command("_edit_invite_field"), target=target, new_invite=value)
             elif field in self.fields.get(2):  # Call method to edit partner representative
+                value = await MemberConverter.convert(self, ctx, value)
                 await ctx.invoke(self.bot.get_command("_edit_representative_field"), target=target, new_rep=value)
             elif field in self.fields.get(3):  # Call method to edit partner (embed) colour
+                value = await ColourConverter.convert(self, ctx, value)
                 await ctx.invoke(self.bot.get_command("_edit_embed_colour"), target=target, new_colour=value)
             elif field in self.fields.get(4):  # Call method to edit partner banner
                 await ctx.invoke(self.bot.get_command("_edit_embed_thumbnail"), target=target, new_banner=value)
@@ -562,8 +563,7 @@ class Partners(commands.Cog):
         # Set the description in the dictionary to the new one
         data.update(description=new_desc)
 
-        # Update timestamp
-        # TODO: use datetime.utcnow().isoformat() to get timestamp into ISO8601 that discord needs
+        # Update timestamp with the current time in required ISO8601 format
         data.update(timestamp=datetime.utcnow().isoformat())
 
         # Convert the dictionary to a discord.Embed object
@@ -582,15 +582,10 @@ class Partners(commands.Cog):
             url=config.WEBSITE_URL,
             icon_url=self.bot.user.avatar_url
         )
-        # embed.add_field(
-        #     name="Partner Description Updated",
-        #     value="**MSG ID:** {}".format(target.id),
-        #     inline=False
-        # )
         embed.add_field(
             name="OLD",  # TODO: underline?
             value="```{}```".format(cur_desc),
-            inline=True  # TODO: if inline not visually feasible, then move NEW to be on top
+            inline=True
         )
         embed.add_field(
             name="NEW",
@@ -604,79 +599,6 @@ class Partners(commands.Cog):
             icon_url=ctx.author.avatar_url
         )
         await ctx.reply(embed=embed)
-        # embed = discord.Embed(
-        #     title="PARTNERSHIP MENU",
-        #     colour=config.BOT_COLOUR
-        # )
-        # embed.set_author(
-        #     name=config.BOT_AUTHOR_NAME,
-        #     url=config.WEBSITE_URL,
-        #     icon_url=self.bot.user.avatar_url
-        # )
-        # embed.add_field(
-        #     name="Server Description",
-        #     value="Please enter the accompanying server description/"
-        #           "advertisement for {}.".format(invite.guild.name),  # TODO: either remove mention of invite.guild or retrive the embed and its invite at beginning of the function
-        #     inline=False
-        # )
-        # embed.set_footer(
-        #     text="Actioned by {}#{}".format(
-        #         ctx.author.name,
-        #         ctx.author.discriminator
-        #     ),
-        #     icon_url=ctx.author.avatar_url
-        # )
-        # desc_embed = await ctx.reply(embed=embed)
-        #
-        # # We only want a response from the user who invoked this command
-        # def check(m):
-        #     return m.author == ctx.author
-        #
-        # # Get the updated description/advertisement for the specified
-        # # server partner
-        # try:
-        #     logger.debug(
-        #         "Awaiting input from author for updated partner description"
-        #     )
-        #     provided_desc = await self.bot.wait_for(
-        #         "message",
-        #         timeout=60.0,
-        #         check=check
-        #     )
-        # except asyncio.TimeoutError:
-        #     embed = discord.Embed(
-        #         title="WARNING",
-        #         colour=config.BOT_ERR_COLOUR
-        #     )
-        #     embed.set_author(
-        #         name=config.BOT_AUTHOR_NAME,
-        #         url=config.WEBSITE_URL,
-        #         icon_url=self.bot.user.avatar_url
-        #     )
-        #     embed.add_field(
-        #         name="Partner Edit Cancelled",
-        #         value="This action timed-out",
-        #         inline=False
-        #     )
-        #     embed.set_footer(
-        #         text="Actioned by {}".format(ctx.author),
-        #         icon_url=ctx.author.avatar_url
-        #     )
-        #     await desc_embed.edit(embed=embed)
-        #     logger.debug(
-        #         "Action timed out"
-        #     )
-        #     return
-
-        # Construct embed object
-        # new_embed = discord.Embed(
-        #     title="{}".format(invite.guild.name),
-        #     description="{}".format(provided_desc.content),
-        #     colour=colour,
-        #     url=web,
-        #     timestamp=datetime.utcnow()
-        # )
-
 
         # await provided_desc.delete()
         # await ctx.message.delete()
@@ -713,18 +635,26 @@ class Partners(commands.Cog):
             raise InviteValueError("Invite has no guild associated with it", new_invite)
 
         # Get embed attached to the target message
+        embed = target.embeds[0]
 
         # Convert embed to a mutable dictionary
+        data = embed.to_dict()
 
         # Obtain existing invite
+        cur_invite = data.get("fields")[1].get("value")  # TODO: test syntax
 
         # Set the value for the invite field in the dictionary to the new one
+        new_invite = "**{}**".format(new_invite.url)  # Match bolded text formatting
+        data["fields"][1]["value"] = "{}".format(new_invite)  # TODO: test syntax
 
-        # Update timestamp
+        # Update timestamp with the current time in required ISO8601 format
+        data.update(timestamp=datetime.utcnow().isoformat())
 
         # Convert the dictionary to a discord.Embed object
+        new_embed = discord.Embed.from_dict(data)
 
         # Edit the target message with our new embed
+        await target.edit(embed=new_embed)
 
         # Action complete, report status to context author
         embed = discord.Embed(
@@ -738,12 +668,12 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="OLD",
-            value="```{}```".format(),  # TODO: obtained invite from old goes here
+            value="```{}```".format(cur_invite),  # TODO: obtained invite from old goes here
             inline=True
         )
         embed.add_field(
             name="NEW",
-            value="```{}```".format(new_invite.url),
+            value="```{}```".format(new_invite),
             inline=True
         )
         embed.set_footer(
