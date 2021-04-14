@@ -30,6 +30,14 @@ logger = app_logger.get_logger(__name__)
 # For command invocation pretty sure allowed to separate each arg on a new line (will make my life easier, but won't make any difference on the back-end)
 
 
+class DataValidationError(ValueError):
+    """Raise when a data validator (method performing various checks and operations on data) encountered a problem
+    that prevented it from continuing."""
+    def __init__(self, message: str):
+        self.message = message
+        super(DataValidationError, self).__init__(message)
+
+
 class InviteValueError(ValueError):
     """Raise when the provided invite was of the correct format but did not point to a valid guild"""
     def __init__(self, message: str, invite: discord.Invite):
