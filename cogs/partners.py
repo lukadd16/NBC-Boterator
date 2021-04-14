@@ -89,7 +89,8 @@ class Partners(commands.Cog):
         )
         return target_msg
 
-    def validate_description(self, ctx, desc):
+    @staticmethod
+    def validate_description(desc):
         if desc is None:
             raise errors.DataValidationError("Partner description cannot be blank.")
 
@@ -100,15 +101,20 @@ class Partners(commands.Cog):
 
         return desc
 
-    def validate_invite(self, ctx, inv):
+    @staticmethod
+    def validate_invite(ctx, inv):
         if inv is None:
             raise errors.DataValidationError("Invite field cannot be blank.")
 
         try:
             inv = await InviteConverter().convert(ctx, inv)
-        except:  # Whichever error was associated with failed conversion
-            pass  # Send error message
-            return
+        except commands.BadInviteArgument:
+            logger.error(
+                "InviteConverter could not convert the provided invite argument, dispatching error..."
+            )
+            raise errors.DataValidationError(
+                "A bad argument for invite was passed (`InviteConverter().convert()` failed)."
+            )
 
         # Confirm invite points to a valid guild
         if inv.guild is None:
@@ -118,19 +124,23 @@ class Partners(commands.Cog):
 
         return inv
 
-    def validate_representative(self, ctx, rep):
+    @staticmethod
+    def validate_representative(ctx, rep):
         if rep is None:
             raise errors.DataValidationError("Representative field cannot be blank.")
 
         try:
             rep = await MemberConverter().convert(ctx, rep)
-        except:  # Error for failed conversion
-            pass  # Send error message
-            return
+        except commands.MemberNotFound:
+            logger.error(
+                "MemberConverter could not convert/find the provided rep argument, dispatching error..."
+            )
+            raise errors.DataValidationError("Member Not Found (`MemberConverter().convert()` failed)")
 
         return rep
 
-    def validate_colour(self, ctx, colour):
+    @staticmethod
+    def validate_colour(ctx, colour):
         if colour is None:
             logger.info(
                 "No colour specified, returning DARK_EMBED_BG constant."
@@ -139,14 +149,19 @@ class Partners(commands.Cog):
 
         try:
             colour = await ColourConverter().convert(ctx, colour)
-        except:  # Error for failed conversion
-            pass  # Send error message
-            return
+        except commands.BadColourArgument:
+            logger.error(
+                "ColourConverter could not convert the provided colour argument, dispatching error..."
+            )
+            raise errors.DataValidationError(
+                "A bad argument for colour was provided (`ColourConverter().convert()` failed)"
+            )
 
         return colour
 
-    # Does not actually validate that URL actually points to a file, but rather the existence of the arg.
-    def validate_banner(self, ctx, banner):
+    # Does not validate that URL actually points to a file, but rather the existence of the arg.
+    @staticmethod
+    def validate_banner(banner):
         if banner is None:
             logger.info(
                 "No banner specified, returning default discord.Embed.Empty value."
@@ -155,8 +170,9 @@ class Partners(commands.Cog):
 
         return banner
 
-    # Does not actually validate that URL actually points to a website, but rather the existence of the arg.
-    def validate_website(self, ctx, web):
+    # Does not validate that URL actually points to a website, but rather the existence of the arg.
+    @staticmethod
+    def validate_website(web):
         if web is None:
             logger.info(
                 "No website specified, returning default discord.Embed.Empty value."
@@ -336,7 +352,7 @@ class Partners(commands.Cog):
     # TODO: After/together with this I should create an inviteinfo command (alias = ii)
     @partner.command()
     async def add(self, ctx, invite: discord.Invite, rep: discord.Member,
-                  colour: Optional[ColourConverter] = None, banner: Optional[str] = None,
+                  colour: Optional[str] = None, banner: Optional[str] = None,
                   web: Optional[str] = None):
         # Confirm invite points to a valid guild
         if invite.guild is None:
@@ -346,8 +362,9 @@ class Partners(commands.Cog):
 
         # Handle optional parameters and populate them with an appropriate
         # default value (such as discord.Embed.Empty) if a value was not provided.
-        banner = self.validate_banner(ctx, banner)
-        web = self.validate_website(ctx, web)
+        colour = self.validate_colour(ctx, colour)
+        banner = self.validate_banner(banner)
+        web = self.validate_website(web)
 
         embed = discord.Embed(
             title="PARTNERSHIP MENU",
@@ -410,6 +427,9 @@ class Partners(commands.Cog):
                 "Action timed out"
             )
             return
+
+        # Ensure description does not exceed max allowed character length
+        provided_desc = self.validate_description(provided_desc)
 
         # Construct embed containing info related to the partner
         embed = discord.Embed(
@@ -508,8 +528,7 @@ class Partners(commands.Cog):
         if any(field in ele for ele in self.fields.values()):  # Valid field was provided
             if field in self.fields.get(0):  # Embed Description
                 # Perform data validation on value arg
-                value = self.validate_description(ctx, value)
-
+                value = self.validate_description(value)
                 # Call method from current context to edit partner description
                 # Note: ctx.invoke() ignores all checks and converters of the command being called
                 # Ref: https://discordpy.readthedocs.io/en/stable/ext/commands/api.html?highlight=context%20invoke#discord.ext.commands.Context.invoke
@@ -517,7 +536,6 @@ class Partners(commands.Cog):
             elif field in self.fields.get(1):  # Embed Invite Field
                 # Perform data validation on value arg
                 value = self.validate_invite(ctx, value)
-
                 # Call method to edit partner invite
                 await ctx.invoke(self.bot.get_command("_edit_invite_field"), target=target, new_invite=value)
             elif field in self.fields.get(2):  # Embed Representative Field
@@ -532,12 +550,12 @@ class Partners(commands.Cog):
                 await ctx.invoke(self.bot.get_command("_edit_embed_colour"), target=target, new_colour=value)
             elif field in self.fields.get(4):  # Embed Thumbnail
                 # Perform data validation
-                value = self.validate_banner(ctx, value)
+                value = self.validate_banner(value)
                 # Call method to edit partner banner
                 await ctx.invoke(self.bot.get_command("_edit_embed_thumbnail"), target=target, new_banner=value)
             else:  # Embed URL
                 # Perform data validation
-                value = self.validate_website(ctx, value)
+                value = self.validate_website(value)
                 # Call method to edit partner embed website
                 await ctx.invoke(self.bot.get_command("_edit_embed_url"), target=target, new_website=value)
         else:  # Invalid field was specified
