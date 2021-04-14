@@ -11,6 +11,7 @@ from datetime import datetime
 from discord.ext import commands
 from discord.ext.commands import ColourConverter, InviteConverter, MemberConverter
 from typing import Optional, Union
+from utils import errors
 
 logger = app_logger.get_logger(__name__)
 
@@ -28,22 +29,6 @@ logger = app_logger.get_logger(__name__)
 #           >> website (str URL)
 
 # For command invocation pretty sure allowed to separate each arg on a new line (will make my life easier, but won't make any difference on the back-end)
-
-
-class DataValidationError(ValueError):
-    """Raise when a data validator (method performing various checks and operations on data) encountered a problem
-    that prevented it from continuing."""
-    def __init__(self, message: str):
-        self.message = message
-        super(DataValidationError, self).__init__(message)
-
-
-class InviteValueError(ValueError):
-    """Raise when the provided invite was of the correct format but did not point to a valid guild"""
-    def __init__(self, message: str, invite: discord.Invite):
-        self.message = message
-        self.invite = invite  # The offending invite that caused the error
-        super(InviteValueError, self).__init__(message, invite)
 
 
 class Partners(commands.Cog):
@@ -106,61 +91,18 @@ class Partners(commands.Cog):
 
     def validate_description(self, ctx, desc):
         if desc is None:
-            logger.info(
-                "No description specified, sending error message to author context."
-            )
-            embed = discord.Embed(
-                title="ERROR",
-                description="Partner description cannot be blank.",
-                colour=config.BOT_ERR_COLOUR,
-                timestamp=datetime.utcnow()
-            )
-            embed.set_author(
-                name=config.BOT_AUTHOR_NAME,
-                url=config.WEBSITE_URL,
-                icon_url=self.bot.user.avatar_url
-            )
-            ctx.reply(embed=embed)
-            return
+            raise errors.DataValidationError("Partner description cannot be blank.")
 
-        if len(desc) > self.MAX_DESCRIPTION_LENGTH:
-            logger.info(
-                "Provided description is too long, sending error message to author context."
+        if len(desc) > Partners.MAX_DESCRIPTION_LENGTH:
+            raise errors.DataValidationError(
+                "Partner description is too long ({}/{}).".format(len(desc), Partners.MAX_DESCRIPTION_LENGTH)
             )
-            embed = discord.Embed(
-                title="ERROR",
-                description="Partner description is too long ({}/{}).".format(len(desc), self.MAX_DESCRIPTION_LENGTH),
-                colour=config.BOT_ERR_COLOUR,
-                timestamp=datetime.utcnow()
-            )
-            embed.set_author(
-                name=config.BOT_AUTHOR_NAME,
-                url=config.WEBSITE_URL,
-                icon_url=self.bot.user.avatar_url
-            )
-            ctx.reply(embed=embed)
-            return
 
         return desc
 
     def validate_invite(self, ctx, inv):
         if inv is None:
-            logger.info(
-                "No invite specified, sending error message to author context."
-            )
-            embed = discord.Embed(
-                title="ERROR",
-                description="Invite field cannot be blank.",
-                colour=config.BOT_ERR_COLOUR,
-                timestamp=datetime.utcnow()
-            )
-            embed.set_author(
-                name=config.BOT_AUTHOR_NAME,
-                url=config.WEBSITE_URL,
-                icon_url=self.bot.user.avatar_url
-            )
-            ctx.reply(embed=embed)
-            return
+            raise errors.DataValidationError("Invite field cannot be blank.")
 
         try:
             inv = await InviteConverter().convert(ctx, inv)
@@ -170,20 +112,18 @@ class Partners(commands.Cog):
 
         # Confirm invite points to a valid guild
         if inv.guild is None:
-            raise InviteValueError("Invite has no guild associated with it", inv)
+            raise errors.InviteValueError(
+                "A guild object could not be obtained from the provided invite, perhaps it was for a Group DM?", inv
+            )
 
         return inv
 
     def validate_representative(self, ctx, rep):
         if rep is None:
-            logger.info(
-                "No representative specified, sending error message to author context."
-            )
-            pass  # Send error message; Missing required arg
-            return
+            raise errors.DataValidationError("Representative field cannot be blank.")
 
         try:
-            pass  # MemberConverter
+            rep = await MemberConverter().convert(ctx, rep)
         except:  # Error for failed conversion
             pass  # Send error message
             return
@@ -235,41 +175,7 @@ class Partners(commands.Cog):
             return hex(decimal).lstrip("0x").upper()
         raise ValueError("You must pass either an int or a str")
 
-    # NOTE: declaring a cog-level error handler like this effectively overrides my global one
-    #       By doing so none of my already defined handlers such as NotOwner get called (and would have to be rewritten here)
-    #       So instead, just going to add the necessary handlers to the global one
-
-    # async def cog_command_error(self, ctx, error):
-    #     if isinstance(error, InviteValueError):
-    #         embed = discord.Embed(
-    #             title="ERROR",
-    #             description="A guild object could not be obtained from the "
-    #                         "provided invite, perhaps it was for a Group DM?",
-    #             colour=config.BOT_ERR_COLOUR,
-    #             timestamp=datetime.utcnow()
-    #         )
-    #         embed.set_author(
-    #             name=config.BOT_AUTHOR_NAME,
-    #             url=config.WEBSITE_URL,
-    #             icon_url=self.bot.user.avatar_url
-    #         )
-    #         embed.set_footer(
-    #             text="Offending Invite: {}".format(error.invite.url)
-    #         )
-    #         await ctx.message.delete()  # Delete command invocation
-    #         await ctx.send(embed=embed)
-    #         logger.info(
-    #             "No guild found, terminating command execution."
-    #         )
-    #         logger.info(
-    #             "Offending Invite: {}".format(error.invite.url)
-    #         )
-    #
-    #     elif isinstance(error, discord.Forbidden):
-    #         pass
-    #
-    #     elif isinstance(error, discord.NotFound):
-    #         pass
+    # TODO: Add global error handler for 403 Forbidden and 404 Not Found errors (latter of which can occur when the message does not exist in the partners channel)
 
     @commands.group(aliases=["partners"], invoke_without_command=True)
     async def partner(self, ctx):
@@ -284,9 +190,11 @@ class Partners(commands.Cog):
         )
 
     # Sends the requirements for partnership message to the set partners channel
+    # Parameter invoke_without_command=True prevents the invocation of the bare init command
+    # from continuing if an additional subcommand was also specified.
     @partner.group(invoke_without_command=True)
     async def init(self, ctx):
-        # If the refresh subcommand was specified, prevent the bare init command from continuing.
+        # If the refresh subcommand was specified,
         # TODO: figure out if there's a native way to handle this behaviour.
         # if ctx.invoked_subcommand is not None:
         #     return
@@ -426,14 +334,15 @@ class Partners(commands.Cog):
         await ctx.reply(embed=embed)
 
     # TODO: After/together with this I should create an inviteinfo command (alias = ii)
-    # TODO: Add global error handler for 403 Forbidden and 404 Not Found errors (latter of which can occur when the msgID does not exist in the partners channel)
     @partner.command()
     async def add(self, ctx, invite: discord.Invite, rep: discord.Member,
                   colour: Optional[ColourConverter] = None, banner: Optional[str] = None,
                   web: Optional[str] = None):
         # Confirm invite points to a valid guild
         if invite.guild is None:
-            raise InviteValueError("Invite has no guild associated with it", invite)
+            raise errors.InviteValueError(
+                "A guild object could not be obtained from the provided invite, perhaps it was for a Group DM?", invite
+            )
 
         # Handle optional parameters and populate them with an appropriate
         # default value (such as discord.Embed.Empty) if a value was not provided.
@@ -606,23 +515,14 @@ class Partners(commands.Cog):
                 # Ref: https://discordpy.readthedocs.io/en/stable/ext/commands/api.html?highlight=context%20invoke#discord.ext.commands.Context.invoke
                 await ctx.invoke(self.bot.get_command("_edit_description"), target=target, new_desc=value)  # TODO: going to experiment with passing desc directly to edit command (on new line)
             elif field in self.fields.get(1):  # Embed Invite Field
-                # if value is None:
-                # else:
-                #     value = await InviteConverter().convert(ctx, value)  # TODO: ctx invoking ignores checks and converters, so must perform manually prior to calling meth
-                # print(value)
-
-                # Validate value arg contains has a non-default value
-
                 # Perform data validation on value arg
                 value = self.validate_invite(ctx, value)
 
                 # Call method to edit partner invite
                 await ctx.invoke(self.bot.get_command("_edit_invite_field"), target=target, new_invite=value)
             elif field in self.fields.get(2):  # Embed Representative Field
-
                 # Perform data validation
-                value = await MemberConverter().convert(ctx, value)
-
+                value = self.validate_representative(ctx, value)
                 # Call method to edit partner representative
                 await ctx.invoke(self.bot.get_command("_edit_representative_field"), target=target, new_rep=value)
             elif field in self.fields.get(3):  # Embed Colour
