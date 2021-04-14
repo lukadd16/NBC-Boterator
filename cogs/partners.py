@@ -30,51 +30,6 @@ logger = app_logger.get_logger(__name__)
 # For command invocation pretty sure allowed to separate each arg on a new line (will make my life easier, but won't make any difference on the back-end)
 
 
-class PColour(commands.Converter):
-    async def convert(self, ctx, argument: str):
-        print("REACH")
-        if argument is None:  # TODO: will never get called
-            print("REACH IF")
-            colour = config.DISC_DARK_EMBED_BG
-            logger.info(
-                "No colour specified, returning DARK_EMBED_BG constant."
-            )
-        else:
-            print("REACH ELSE")
-            colour = await ColourConverter.convert(ctx, argument)  # Use built-in discord.py converter
-            print("REACH POST CONVERT")
-            logger.debug(
-                "Colour Post-Conversion: {}".format(colour)
-            )
-        return colour
-
-# BANNER AND WEBSITE DON'T FIT THE USE CASE OF CONVERTERS (since we're not really manipulating the arg at all)
-
-# class PBanner(commands.Converter):
-#     async def convert(self, ctx, argument: str):
-#         print(argument)
-#
-#         if argument is None:
-#             logger.info(
-#                 "No banner specified, returning default discord.Embed.Empty value."
-#             )
-#             return discord.Embed.Empty
-#
-#
-# # TODO: Not sure if need to explicitly pass argument back if not manipulating it
-# class PWebsite(commands.Converter):
-#     async def convert(self, ctx, argument: str):
-#         print(argument)
-#
-#         if argument is None:
-#             logger.info(
-#                 "No website specified, returning default discord.Embed.Empty value."
-#             )
-#             return discord.Embed.Empty
-#         # else:
-#         #     return None
-
-
 class InviteValueError(ValueError):
     """Raise when the provided invite was of the correct format but did not point to a valid guild"""
     def __init__(self, message: str, invite: discord.Invite):
