@@ -44,7 +44,7 @@ class Partners(commands.Cog):
             1: ["invite", "inv"],
             2: ["representative", "rep"],
             3: ["colour", "color"],
-            4: ["banner", "thumb"],
+            4: ["banner", "image"],
             5: ["website", "web"]
         }
 
@@ -94,15 +94,21 @@ class Partners(commands.Cog):
         if desc is None:
             raise errors.DataValidationError("Partner description cannot be blank.")
 
-        if len(desc) > Partners.MAX_DESCRIPTION_LENGTH:
-            raise errors.DataValidationError(
-                "Partner description is too long ({}/{}).".format(len(desc), Partners.MAX_DESCRIPTION_LENGTH)
-            )
+        if isinstance(desc, str):
+            if len(desc) > Partners.MAX_DESCRIPTION_LENGTH:
+                raise errors.DataValidationError(
+                    "Partner description is too long ({}/{}).".format(len(desc), Partners.MAX_DESCRIPTION_LENGTH)
+                )
+        elif isinstance(desc, discord.Message):
+            if len(desc.content) > Partners.MAX_DESCRIPTION_LENGTH:
+                raise errors.DataValidationError(
+                    "Partner description is too long ({}/{}).".format(len(desc.content), Partners.MAX_DESCRIPTION_LENGTH)
+                )
 
         return desc
 
     @staticmethod
-    def validate_invite(ctx, inv):
+    async def validate_invite(ctx, inv):
         if inv is None:
             raise errors.DataValidationError("Invite field cannot be blank.")
 
@@ -125,7 +131,7 @@ class Partners(commands.Cog):
         return inv
 
     @staticmethod
-    def validate_representative(ctx, rep):
+    async def validate_representative(ctx, rep):
         if rep is None:
             raise errors.DataValidationError("Representative field cannot be blank.")
 
@@ -140,12 +146,14 @@ class Partners(commands.Cog):
         return rep
 
     @staticmethod
-    def validate_colour(ctx, colour):
+    async def validate_colour(ctx, colour):
         if colour is None:
             logger.info(
                 "No colour specified, returning DARK_EMBED_BG constant."
             )
-            return config.DISC_DARK_EMBED_BG
+            colour = "#{}".format(Partners.hex(config.DISC_DARK_EMBED_BG))  # Convert integer constant defined in config file to proper string form for processing by ColourConverter
+            colour = await ColourConverter().convert(ctx, colour)  # Convert config constant to a discord.Colour object
+            return colour
 
         try:
             colour = await ColourConverter().convert(ctx, colour)
@@ -357,7 +365,7 @@ class Partners(commands.Cog):
 
         # Handle optional parameters and populate them with an appropriate
         # default value (such as discord.Embed.Empty) if a value was not provided.
-        colour = self.validate_colour(ctx, colour)
+        colour = await self.validate_colour(ctx, colour)
         banner = self.validate_banner(banner)
         web = self.validate_website(web)
 
@@ -373,7 +381,7 @@ class Partners(commands.Cog):
         embed.add_field(
             name="Server Description",
             value="Please enter the accompanying server description/"
-                  "advertisement for {}.".format(invite.guild.name),
+                  "advertisement for `{}`.".format(invite.guild.name),
             inline=False
         )
         embed.set_footer(
@@ -453,14 +461,14 @@ class Partners(commands.Cog):
             icon_url=ctx.guild.icon_url
         )
 
-        await provided_desc.delete()
-        await ctx.message.delete()
-        logger.debug(
-            "Deleted author input message containing server description"
-        )
-        logger.debug(
-            "Deleted command invocation"
-        )
+        # await provided_desc.delete()
+        # await ctx.message.delete()
+        # logger.debug(
+        #     "Deleted author input message containing server description"
+        # )
+        # logger.debug(
+        #     "Deleted command invocation"
+        # )
 
         # Get TextChannel object for the channel we want to send the embed to
         target = self.get_channel(ctx)
@@ -502,7 +510,7 @@ class Partners(commands.Cog):
             ),
             icon_url=ctx.author.avatar_url
         )
-        await desc_embed.edit(embed=embed)
+        await provided_desc.reply(embed=embed)
 
     @partner.command()
     async def edit(self, ctx, message: int, field: str, *, value=None):
@@ -529,24 +537,24 @@ class Partners(commands.Cog):
                 await ctx.invoke(self.bot.get_command("_edit_description"), target=target, new_desc=value)  # TODO: going to experiment with passing desc directly to edit command (on new line)
             elif field in self.fields.get(1):  # Embed Invite Field
                 # Perform data validation on value arg
-                value = self.validate_invite(ctx, value)
+                value = await self.validate_invite(ctx, value)
                 # Call method to edit partner invite
                 await ctx.invoke(self.bot.get_command("_edit_invite_field"), target=target, new_invite=value)
             elif field in self.fields.get(2):  # Embed Representative Field
                 # Perform data validation
-                value = self.validate_representative(ctx, value)
+                value = await self.validate_representative(ctx, value)
                 # Call method to edit partner representative
                 await ctx.invoke(self.bot.get_command("_edit_representative_field"), target=target, new_rep=value)
             elif field in self.fields.get(3):  # Embed Colour
                 # Perform data validation
-                value = self.validate_colour(ctx, value)
+                value = await self.validate_colour(ctx, value)
                 # Call method to edit partner (embed) colour
                 await ctx.invoke(self.bot.get_command("_edit_embed_colour"), target=target, new_colour=value)
             elif field in self.fields.get(4):  # Embed Thumbnail
                 # Perform data validation
                 value = self.validate_banner(value)
                 # Call method to edit partner banner
-                await ctx.invoke(self.bot.get_command("_edit_embed_thumbnail"), target=target, new_banner=value)
+                await ctx.invoke(self.bot.get_command("_edit_embed_image"), target=target, new_banner=value)
             else:  # Embed URL
                 # Perform data validation
                 value = self.validate_website(value)
@@ -598,7 +606,7 @@ class Partners(commands.Cog):
             icon_url=self.bot.user.avatar_url
         )
         embed.add_field(
-            name="OLD",  # TODO: underline?
+            name="OLD",
             value="```{}```".format(cur_desc),
             inline=True
         )
@@ -706,8 +714,8 @@ class Partners(commands.Cog):
         # Obtain existing representative (as string)
         cur_rep = data["fields"][0]["value"]
 
-        # # Convert rep to a Member object
-        # cur_rep = await MemberConverter().convert(ctx, cur_rep)
+        # Convert rep to a Member object
+        cur_rep = await MemberConverter().convert(ctx, cur_rep)
 
         # Set the value for the representative field in the dictionary to the new one
         data["fields"][0]["value"] = new_rep.mention
@@ -758,10 +766,11 @@ class Partners(commands.Cog):
         data = embed.to_dict()
 
         # Obtain existing colour
-        cur_colour = self.hex(data["colour"])
+        cur_colour = self.hex(data["color"])
+        # TODO: can't be bothered to do it now, but would be nice when cur_colour == DISC_DARK_EMBED_BG to show OLD as being "None"
 
         # Set the embed's colour in the dictionary to the new one
-        data["colour"] = new_colour.value  # Value attr returns the base 10 decimal that represents the colour object
+        data["color"] = new_colour.value  # Value attr returns the base 10 decimal that represents the colour object
 
         # Update timestamp
         data["timestamp"] = datetime.utcnow().isoformat()
@@ -801,27 +810,41 @@ class Partners(commands.Cog):
         await ctx.reply(embed=embed)
 
     @commands.command()
-    async def _edit_embed_thumbnail(self, ctx, target: discord.Message, new_banner: str) -> None:
+    async def _edit_embed_image(self, ctx, target: discord.Message, new_banner: str) -> None:
         # Get embed attached to the target message
         embed = target.embeds[0]
+
+        # Obtain URL of existing banner (embed's image)
+        cur_banner = embed.image.url
 
         # Convert embed to a mutable dictionary
         data = embed.to_dict()
 
-        # Obtain URL of existing banner (thumbnail)
-        # TODO: access thumbnail attr of the embed (and from thumbnail, url)
-        cur_banner = data["thumbnail"]["url"]
+        # try:
+        #     cur_banner = data["image"]["url"]
+        # except KeyError:
+        #     cur_banner = None
 
-        # Set thumbnail URL in the dictionary to the new one
-        # TODO: use built-in set_thumbnail() meth
-        data["thumbnail"]["url"] = new_banner
+        # # cur_banner = data.setdefault(["image"]["url"], None)  # TODO: may not work the way I want it to
+        # 
+        # # Prevent TypeError (Embed.Empty not serializable) when ["image"]["url"] does not exist in the dictionary
+        # if new_banner is None:
+        #     # data.setdefault("image", new_banner)
+        #     data.pop("image")
+        # else:
+        #     # Set image URL in the dictionary to the new one (Discord automatically updates the proxy version for us)
+        #     # data["image"]["url"] = new_banner
+        #     data.setdefault("image", {"url": new_banner})
 
         # Update timestamp
-        # TODO: not sure how going to manage this without embed as dict
         data["timestamp"] = datetime.utcnow().isoformat()
 
         # Convert the dictionary to a discord.Embed object
         new_embed = discord.Embed.from_dict(data)
+
+        # Set image attr to the new one (Discord automatically updates the proxy version for us)
+        # Why not do this step with the dict? It's much cleaner (and less painful) to just deal with an Embed object directly
+        new_embed.set_image(url=new_banner)
 
         # Edit the target message with our new embed
         await target.edit(embed=new_embed)
@@ -859,14 +882,24 @@ class Partners(commands.Cog):
         # Get embed attached to the target message
         embed = target.embeds[0]
 
+        # Obtain existing title URL
+        cur_website = embed.url
+
         # Convert embed to a mutable dictionary
         data = embed.to_dict()
 
-        # Obtain existing title URL
-        cur_website = data["url"]
+        # TODO: does not handle case where "url" key does not exist (image is likely susceptible to same)
+
+
+        # try:
+        #     cur_website = data["url"]
+        # except KeyError:
+        #     cur_website = None
+        # cur_website = data.setdefault("url", None)
 
         # Set the embed's URL to the new one
-        data["url"] = new_website
+        # data["url"] = new_website
+        data.setdefault("url", new_website)
 
         # Update timestamp
         data["timestamp"] = datetime.utcnow().isoformat()
