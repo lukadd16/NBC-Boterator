@@ -461,15 +461,6 @@ class Partners(commands.Cog):
             icon_url=ctx.guild.icon_url
         )
 
-        # await provided_desc.delete()
-        # await ctx.message.delete()
-        # logger.debug(
-        #     "Deleted author input message containing server description"
-        # )
-        # logger.debug(
-        #     "Deleted command invocation"
-        # )
-
         # Get TextChannel object for the channel we want to send the embed to
         target = self.get_channel(ctx)
 
@@ -531,35 +522,47 @@ class Partners(commands.Cog):
             if field in self.fields.get(0):  # Embed Description
                 # Perform data validation on value arg
                 value = self.validate_description(value)
+
                 # Call method from current context to edit partner description
                 # Note: ctx.invoke() ignores all checks and converters of the command being called
                 # Ref: https://discordpy.readthedocs.io/en/stable/ext/commands/api.html?highlight=context%20invoke#discord.ext.commands.Context.invoke
-                await ctx.invoke(self.bot.get_command("_edit_description"), target=target, new_desc=value)  # TODO: going to experiment with passing desc directly to edit command (on new line)
+                await ctx.invoke(self.bot.get_command("_edit_description"), target=target, new_desc=value)
+
             elif field in self.fields.get(1):  # Embed Invite Field
                 # Perform data validation on value arg
                 value = await self.validate_invite(ctx, value)
+
                 # Call method to edit partner invite
                 await ctx.invoke(self.bot.get_command("_edit_invite_field"), target=target, new_invite=value)
+
             elif field in self.fields.get(2):  # Embed Representative Field
                 # Perform data validation
                 value = await self.validate_representative(ctx, value)
+
                 # Call method to edit partner representative
                 await ctx.invoke(self.bot.get_command("_edit_representative_field"), target=target, new_rep=value)
+
             elif field in self.fields.get(3):  # Embed Colour
                 # Perform data validation
                 value = await self.validate_colour(ctx, value)
+
                 # Call method to edit partner (embed) colour
                 await ctx.invoke(self.bot.get_command("_edit_embed_colour"), target=target, new_colour=value)
+
             elif field in self.fields.get(4):  # Embed Thumbnail
                 # Perform data validation
                 value = self.validate_banner(value)
+
                 # Call method to edit partner banner
                 await ctx.invoke(self.bot.get_command("_edit_embed_image"), target=target, new_banner=value)
+
             else:  # Embed URL
                 # Perform data validation
                 value = self.validate_website(value)
+
                 # Call method to edit partner embed website
                 await ctx.invoke(self.bot.get_command("_edit_embed_url"), target=target, new_website=value)
+
         else:  # Invalid field was specified
             await ctx.send(
                 "You did not specify a valid field to edit. Valid options are:"
@@ -623,25 +626,7 @@ class Partners(commands.Cog):
         )
         await ctx.reply(embed=embed)
 
-        # await provided_desc.delete()
-        # await ctx.message.delete()
-        # logger.debug(
-        #     "Deleted author input message containing server description"
-        # )
-        # logger.debug(
-        #     "Deleted command invocation"
-        # )
-
-        # # Get Message object for the existing partner embed we want to edit
-        # target = await self.get_msg(ctx, message)
-        # logger.debug(
-        #     "Fetched message with ID {0.id} from channel {1.name} ({1.id}) in guild {2.name} ({2.id})".format(
-        #         target,
-        #         target.channel,
-        #         target.guild
-        #     )
-        # )
-
+        # TODO: add similar info logger events to each edit subcommand
         # await target.edit(embed=new_embed)
         # logger.info(
         #     "Partner '{0.name}' Edited By {1.author} (MSG ID: {2.id})".format(
@@ -660,7 +645,7 @@ class Partners(commands.Cog):
         data = embed.to_dict()
 
         # Obtain existing invite
-        cur_invite = data["fields"][1]["value"]  # TODO: test syntax
+        cur_invite = data["fields"][1]["value"]
 
         # Set the value for the invite field in the dictionary to the new one
         new_invite = "**{}**".format(new_invite.url)  # Match existing bold text formatting
@@ -687,7 +672,7 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="OLD",
-            value="```{}```".format(cur_invite),  # TODO: obtained invite from old goes here
+            value="```{}```".format(cur_invite),
             inline=True
         )
         embed.add_field(
@@ -741,7 +726,7 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="OLD",
-            value="```{0.name}#{0.discriminator} ({0.id})```".format(cur_rep),  # TODO: obtained rep from old goes here
+            value="```{0.name}#{0.discriminator} ({0.id})```".format(cur_rep),
             inline=True
         )
         embed.add_field(
@@ -765,9 +750,9 @@ class Partners(commands.Cog):
         # Convert embed to a mutable dictionary
         data = embed.to_dict()
 
+        # TODO: can't be bothered to do it now, but would be nice when cur_colour == DISC_DARK_EMBED_BG to show OLD as being "None"
         # Obtain existing colour
         cur_colour = self.hex(data["color"])
-        # TODO: can't be bothered to do it now, but would be nice when cur_colour == DISC_DARK_EMBED_BG to show OLD as being "None"
 
         # Set the embed's colour in the dictionary to the new one
         data["color"] = new_colour.value  # Value attr returns the base 10 decimal that represents the colour object
@@ -793,7 +778,7 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="OLD",
-            value="```{}```".format(cur_colour),  # TODO: obtained colour from old goes here
+            value="```{}```".format(cur_colour),
             inline=True
         )
         embed.add_field(
@@ -820,22 +805,6 @@ class Partners(commands.Cog):
         # Convert embed to a mutable dictionary
         data = embed.to_dict()
 
-        # try:
-        #     cur_banner = data["image"]["url"]
-        # except KeyError:
-        #     cur_banner = None
-
-        # # cur_banner = data.setdefault(["image"]["url"], None)  # TODO: may not work the way I want it to
-        # 
-        # # Prevent TypeError (Embed.Empty not serializable) when ["image"]["url"] does not exist in the dictionary
-        # if new_banner is None:
-        #     # data.setdefault("image", new_banner)
-        #     data.pop("image")
-        # else:
-        #     # Set image URL in the dictionary to the new one (Discord automatically updates the proxy version for us)
-        #     # data["image"]["url"] = new_banner
-        #     data.setdefault("image", {"url": new_banner})
-
         # Update timestamp
         data["timestamp"] = datetime.utcnow().isoformat()
 
@@ -861,7 +830,7 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="OLD",
-            value="```{}```".format(cur_banner),  # TODO: obtained url from old goes here
+            value="```{}```".format(cur_banner),
             inline=True
         )
         embed.add_field(
@@ -888,17 +857,7 @@ class Partners(commands.Cog):
         # Convert embed to a mutable dictionary
         data = embed.to_dict()
 
-        # TODO: does not handle case where "url" key does not exist (image is likely susceptible to same)
-
-
-        # try:
-        #     cur_website = data["url"]
-        # except KeyError:
-        #     cur_website = None
-        # cur_website = data.setdefault("url", None)
-
         # Set the embed's URL to the new one
-        # data["url"] = new_website
         data.setdefault("url", new_website)
 
         # Update timestamp
@@ -922,7 +881,7 @@ class Partners(commands.Cog):
         )
         embed.add_field(
             name="OLD",
-            value="```{}```".format(cur_website),  # TODO: obtained URL from old goes here
+            value="```{}```".format(cur_website),
             inline=True
         )
         embed.add_field(
