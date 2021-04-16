@@ -521,7 +521,7 @@ class UtilitiesCog(commands.Cog):
         # Obtain the hex code for the member's top-most role
         # If member has no roles (i.e. rendered colour is #000000),
         # then set member_rendered_colour to the colour of a dark-mode embed
-        member_rendered_colour = member.colour if member.colour.value is not 0 else config.DISC_DARK_EMBED_BG
+        member_rendered_colour = member.colour if member.colour.value != 0 else config.DISC_DARK_EMBED_BG
         logger.debug("> Discord Rendered Colour: %s", member_rendered_colour)
 
         # Subtract by 1 to omit the @everyone role
@@ -629,6 +629,7 @@ class UtilitiesCog(commands.Cog):
     # Users are only allowed to use this command once every 30 seconds
     # TODO: Should add JSON file + ability to blacklist users from sending
     #       suggestions (then do the same for global cmd blacklist)
+    # TODO: Can use custom converter as "type" for user_suggestion (converter will have length logic)
     @commands.command()
     @commands.cooldown(1, 30, type=BucketType.user)
     @commands.guild_only()

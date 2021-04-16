@@ -2,12 +2,15 @@
 # Adapted from https://gist.github.com/EvieePy/7822af90858ef65012ea500bcecf1612
 
 import app_logger
+import config
 import discord
 import sys
 import traceback
 
+# from cogs.partners import InviteValueError  # Fact: bot only handles this error when error_handler gets reloaded once since error_handler is the first cog to be loaded at startup (while when reloading partners is already loaded)
+from datetime import datetime
 from discord.ext import commands
-from utils import tools
+from utils import tools, errors
 
 logger = app_logger.get_logger(__name__)
 
@@ -39,7 +42,7 @@ class CommandErrorHandler(commands.Cog):
                 return
 
         # Command error types that we want to ignore
-        ignored_exc = (commands.CommandNotFound)
+        ignored_exc = (commands.CommandNotFound,)
 
         # Check for original exceptions raised and sent to CommandInvokeError.
         # If nothing is found, keep the exception passed to on_command_error().
@@ -63,6 +66,14 @@ class CommandErrorHandler(commands.Cog):
                 f"`{ctx.invoked_with}`. Run `{ctx.prefix}help {ctx.command}` "
                 "for more information on how to use this command."
             )
+
+        # elif isinstance(error, commands.BadColourArgument):
+        #     await ctx.send(
+        #         f"I was not able to obtain a colour from the given value `{error.argument}`. This argument must be provided as a 3-digit hex shortcut (#fff) or 6-digit hex number (#ffffff)."
+        #     )
+
+        elif isinstance(error, commands.BadInviteArgument):
+            pass
 
         elif isinstance(error, commands.BadArgument):
             await ctx.send(
@@ -188,6 +199,51 @@ class CommandErrorHandler(commands.Cog):
                     f"role, retry in `{str_cooldown_left}`.",
                     delete_after=error.retry_after
                 )
+
+        elif isinstance(error, errors.InviteValueError):
+            embed = discord.Embed(
+                title="ERROR",
+                description="{}".format(error.message),
+                colour=config.BOT_ERR_COLOUR,
+                timestamp=datetime.utcnow()
+            )
+            embed.set_author(
+                name=config.BOT_AUTHOR_NAME,
+                url=config.WEBSITE_URL,
+                icon_url=self.bot.user.avatar_url
+            )
+            embed.set_footer(
+                text="Offending Invite: {}".format(error.invite.url)
+            )
+            # await ctx.message.delete()  # Delete command invocation
+            await ctx.reply(embed=embed)
+            logger.error(
+                "InviteValueError encountered, terminating command execution and sending message ({}) to context.".format(
+                    error.message
+                )
+            )
+            logger.info(
+                "Offending Invite: {}".format(error.invite.url)
+            )
+
+        elif isinstance(error, errors.DataValidationError):
+            embed = discord.Embed(
+                title="ERROR",
+                description="{}".format(error.message),
+                colour=config.BOT_ERR_COLOUR,
+                timestamp=datetime.utcnow()
+            )
+            embed.set_author(
+                name=config.BOT_AUTHOR_NAME,
+                url=config.WEBSITE_URL,
+                icon_url=self.bot.user.avatar_url
+            )
+            await ctx.reply(embed=embed)
+            logger.info(
+                "DataValidationError encountered, terminating command execution and sending message ({}) to context.".format(
+                    error.message
+                )
+            )
 
         # Any errors not explicitly defined above are handled here
         else:

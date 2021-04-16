@@ -45,8 +45,10 @@ __**owner.py**__
 > └ Valid status params: `online`, `idle`, `dnd`, `offline`, `stream`
 
 __**partners.py**__
-> partner
-> └ send
-> └ refresh
-> └ add [invite] [repID] <0xHexcode> <banner> <website>
-> └ edit [msgID] [invite] [repID] <0xHexcode> <banner> <website>
+> partner(s)
+> └ init
+> └—refresh
+> └ add [invite] [rep] <hexcode> <banner> <website>
+> └ edit [message-id] [field] [new-value]
+> └ ` - ` Valid fields are: `description`, `invite`, `rep`, `colour`, `banner` or `website`
+> ` > ` Note: the `colour`, `banner` and `website` args/fields can be empty or str "none"
