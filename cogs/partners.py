@@ -21,14 +21,12 @@ logger = app_logger.get_logger(__name__)
 #       > refresh (edit_req)
 #   - add
 #   - edit (msgID, field, value)
-#       > msgID (discord.Message)
-#           >> invite (discord.Invite)
-#           >> rep (ID)
-#           >> colour (hexcode)
+#       > msgID (discord.Message via int)
+#           >> invite (discord.Invite via str)
+#           >> rep (discord.Member via id)
+#           >> colour (hexcode via str)
 #           >> banner (str URL)
 #           >> website (str URL)
-
-# For command invocation pretty sure allowed to separate each arg on a new line (will make my life easier, but won't make any difference on the back-end)
 
 
 class Partners(commands.Cog):
@@ -76,6 +74,13 @@ class Partners(commands.Cog):
             guild.text_channels,
             id=config.PARTNERS_CHANNEL_ID
         )
+        logger.debug(
+            "Fetched channel {0.name} with ID {0.id} in guild {1.name} ({1.id})".format(
+                target_channel,
+                target_channel.guild
+            )
+        )
+
         return target_channel
 
     # Returns a discord.Message object for a message in the #partners channel
@@ -87,6 +92,14 @@ class Partners(commands.Cog):
         target_msg = await part_channel.fetch_message(
             mid
         )
+        logger.debug(
+            "Fetched message with ID {0.id} from channel {1.name} ({1.id}) in guild {2.name} ({2.id})".format(
+                target_msg,
+                target_msg.channel,
+                target_msg.guild
+            )
+        )
+
         return target_msg
 
     @staticmethod
@@ -102,7 +115,9 @@ class Partners(commands.Cog):
         elif isinstance(desc, discord.Message):
             if len(desc.content) > Partners.MAX_DESCRIPTION_LENGTH:
                 raise errors.DataValidationError(
-                    "Partner description is too long ({}/{}).".format(len(desc.content), Partners.MAX_DESCRIPTION_LENGTH)
+                    "Partner description is too long ({}/{}).".format(
+                        len(desc.content), Partners.MAX_DESCRIPTION_LENGTH
+                    )
                 )
 
         return desc
@@ -151,8 +166,10 @@ class Partners(commands.Cog):
             logger.info(
                 "No colour specified, returning DARK_EMBED_BG constant."
             )
-            colour = "#{}".format(Partners.hex(config.DISC_DARK_EMBED_BG))  # Convert integer constant defined in config file to proper string form for processing by ColourConverter
-            colour = await ColourConverter().convert(ctx, colour)  # Convert config constant to a discord.Colour object
+            # Convert integer constant defined in config file to proper string format for processing by ColourConverter
+            colour = "#{}".format(Partners.hex(config.DISC_DARK_EMBED_BG))
+            # Convert config constant to a discord.Colour object
+            colour = await ColourConverter().convert(ctx, colour)
             return colour
 
         try:
@@ -203,8 +220,6 @@ class Partners(commands.Cog):
 
     @commands.group(aliases=["partners"], invoke_without_command=True)
     async def partner(self, ctx):
-        # Could use the base command to explain how to partner, etc. (could also add a link via MD to the requirements embed)
-        # E.g. Want to partner with us? Just head on over to [this]() message to learn how!
         await ctx.send(
             "You did not specify a subcommand. Valid subcommands are:"
             "\n>>> `init`"
@@ -257,11 +272,7 @@ class Partners(commands.Cog):
         target = self.get_channel(ctx)
 
         req_msg = await target.send(embed=embed)
-        logger.info(
-            "Partnership Requirements Embed Sent (MSG ID: {})".format(
-                req_msg.id
-            )
-        )
+        logger.info("Partnership Requirements Embed Sent (MSG ID: {})".format(req_msg.id))
 
         embed = discord.Embed(
             title="SUCCESS",
@@ -325,11 +336,7 @@ class Partners(commands.Cog):
         target = await self.get_msg(ctx, config.PARTNERS_MSG_ID)
 
         await target.edit(embed=new_embed)
-        logger.info(
-            "Partnership Requirements Embed Edited (MSG ID: {})".format(
-                target.id
-            )
-        )
+        logger.info("Partnership Requirements Embed Edited (MSG ID: {})".format(target.id))
 
         embed = discord.Embed(
             title="SUCCESS",
@@ -363,8 +370,8 @@ class Partners(commands.Cog):
                 "A guild object could not be obtained from the provided invite, perhaps it was for a Group DM?", invite
             )
 
-        # Handle optional parameters and populate them with an appropriate
-        # default value (such as discord.Embed.Empty) if a value was not provided.
+        # Handle optional parameters and populate them with an
+        # appropriate default value if one was not provided.
         colour = await self.validate_colour(ctx, colour)
         banner = self.validate_banner(banner)
         web = self.validate_website(web)
@@ -398,9 +405,7 @@ class Partners(commands.Cog):
 
         # Get the server partner's description/advertisement
         try:
-            logger.debug(
-                "Awaiting input from author for partner description"
-            )
+            logger.debug("Awaiting input from author for partner description")
             provided_desc = await self.bot.wait_for(
                 "message",
                 timeout=60.0,
@@ -426,9 +431,7 @@ class Partners(commands.Cog):
                 icon_url=ctx.author.avatar_url
             )
             await desc_embed.edit(embed=embed)
-            logger.debug(
-                "Action timed out"
-            )
+            logger.debug("Action timed out")
             return
 
         # Ensure description does not exceed max allowed character length
@@ -463,13 +466,6 @@ class Partners(commands.Cog):
 
         # Get TextChannel object for the channel we want to send the embed to
         target = self.get_channel(ctx)
-
-        logger.debug(
-            "Fetched channel #{0.name} ({0.id}) from guild {1.name} ({1.id})".format(
-                target,
-                target.guild
-            )
-        )
 
         # Send the given information about the new partner to our public #partners channel
         partner_msg = await target.send(embed=embed)
@@ -507,21 +503,15 @@ class Partners(commands.Cog):
     async def edit(self, ctx, message: int, field: str, *, value=None):
         # Get Message object for the existing partner embed we want to edit
         target = await self.get_msg(ctx, message)
-        logger.debug(
-            "Fetched message with ID {0.id} from channel {1.name} ({1.id}) in guild {2.name} ({2.id})".format(
-                target,
-                target.channel,
-                target.guild
-            )
-        )
 
-        logger.debug("Field arg = {}".format(field))
-        logger.debug("Value arg = {}".format(value))
+        logger.debug("Initial field arg: {}".format(field))
+        logger.debug("Initial value arg: {}".format(value))
 
         if any(field in ele for ele in self.fields.values()):  # Valid field was provided
             if field in self.fields.get(0):  # Embed Description
                 # Perform data validation on value arg
                 value = self.validate_description(value)
+                logger.debug("Validated Description Arg: {}".format(value))
 
                 # Call method from current context to edit partner description
                 # Note: ctx.invoke() ignores all checks and converters of the command being called
@@ -531,6 +521,7 @@ class Partners(commands.Cog):
             elif field in self.fields.get(1):  # Embed Invite Field
                 # Perform data validation on value arg
                 value = await self.validate_invite(ctx, value)
+                logger.debug("Validated Invite Arg: {}".format(value))
 
                 # Call method to edit partner invite
                 await ctx.invoke(self.bot.get_command("_edit_invite_field"), target=target, new_invite=value)
@@ -538,6 +529,7 @@ class Partners(commands.Cog):
             elif field in self.fields.get(2):  # Embed Representative Field
                 # Perform data validation
                 value = await self.validate_representative(ctx, value)
+                logger.debug("Validated Member Arg: {}".format(value))
 
                 # Call method to edit partner representative
                 await ctx.invoke(self.bot.get_command("_edit_representative_field"), target=target, new_rep=value)
@@ -545,13 +537,15 @@ class Partners(commands.Cog):
             elif field in self.fields.get(3):  # Embed Colour
                 # Perform data validation
                 value = await self.validate_colour(ctx, value)
+                logger.debug("Validated Colour Arg: {}".format(value))
 
                 # Call method to edit partner (embed) colour
                 await ctx.invoke(self.bot.get_command("_edit_embed_colour"), target=target, new_colour=value)
 
-            elif field in self.fields.get(4):  # Embed Thumbnail
+            elif field in self.fields.get(4):  # Embed Image
                 # Perform data validation
                 value = self.validate_banner(value)
+                logger.debug("Validated Image Arg: {}".format(value))
 
                 # Call method to edit partner banner
                 await ctx.invoke(self.bot.get_command("_edit_embed_image"), target=target, new_banner=value)
@@ -559,6 +553,7 @@ class Partners(commands.Cog):
             else:  # Embed URL
                 # Perform data validation
                 value = self.validate_website(value)
+                logger.debug("Validated Web Arg: {}".format(value))
 
                 # Call method to edit partner embed website
                 await ctx.invoke(self.bot.get_command("_edit_embed_url"), target=target, new_website=value)
@@ -597,6 +592,7 @@ class Partners(commands.Cog):
 
         # Edit the target message with our new embed
         await target.edit(embed=new_embed)
+        logger.info("Updated Partner Description for {}".format(data["title"]))
 
         # Action complete, report status to context author
         embed = discord.Embed(
@@ -626,16 +622,6 @@ class Partners(commands.Cog):
         )
         await ctx.reply(embed=embed)
 
-        # TODO: add similar info logger events to each edit subcommand
-        # await target.edit(embed=new_embed)
-        # logger.info(
-        #     "Partner '{0.name}' Edited By {1.author} (MSG ID: {2.id})".format(
-        #         invite.guild,
-        #         ctx,
-        #         target
-        #     )
-        # )
-
     @commands.command()
     async def _edit_invite_field(self, ctx, target: discord.Message, new_invite: discord.Invite) -> None:
         # Get embed attached to the target message
@@ -659,6 +645,8 @@ class Partners(commands.Cog):
 
         # Edit the target message with our new embed
         await target.edit(embed=new_embed)
+        logger.info("Updated Invite for {}".format(data["title"]))
+        logger.info("Old Inv: {} | New Inv: {}".format(cur_invite, new_invite))
 
         # Action complete, report status to context author
         embed = discord.Embed(
@@ -713,6 +701,8 @@ class Partners(commands.Cog):
 
         # Edit the target message with our new embed
         await target.edit(embed=new_embed)
+        logger.info("Updated Representative for {}".format(data["title"]))
+        logger.info("Old Rep: {} | New Rep: {}".format(cur_rep.id, new_rep.id))
 
         # Action complete, report status to context author
         embed = discord.Embed(
@@ -750,7 +740,7 @@ class Partners(commands.Cog):
         # Convert embed to a mutable dictionary
         data = embed.to_dict()
 
-        # TODO: can't be bothered to do it now, but would be nice when cur_colour == DISC_DARK_EMBED_BG to show OLD as being "None"
+        # TODO: can't be bothered to do it now, but would be nice when cur_colour == DISC_DARK_EMBED_BG to show OLD as "None"
         # Obtain existing colour
         cur_colour = self.hex(data["color"])
 
@@ -765,6 +755,8 @@ class Partners(commands.Cog):
 
         # Edit the target message with our new embed
         await target.edit(embed=new_embed)
+        logger.info("Updated Embed Colour for {}".format(data["title"]))
+        logger.info("Old Value: {} | New Value: {}".format(cur_colour, self.hex(new_colour.value)))
 
         # Action complete, report status to context author
         embed = discord.Embed(
@@ -812,11 +804,14 @@ class Partners(commands.Cog):
         new_embed = discord.Embed.from_dict(data)
 
         # Set image attr to the new one (Discord automatically updates the proxy version for us)
-        # Why not do this step with the dict? It's much cleaner (and less painful) to just deal with an Embed object directly
+        # Why not do this with the dict? It's cleaner (and less painful) to just deal with the Embed object directly
+        # when updating the images
         new_embed.set_image(url=new_banner)
 
         # Edit the target message with our new embed
         await target.edit(embed=new_embed)
+        logger.info("Updated Banner (Embed Image) for {}".format(data["title"]))
+        logger.info("Old Value: {} | New Value: {}".format(cur_banner, new_banner))
 
         # Action complete, report status to context author
         embed = discord.Embed(
@@ -868,6 +863,8 @@ class Partners(commands.Cog):
 
         # Edit the target message with our new embed
         await target.edit(embed=new_embed)
+        logger.info("Updated Website (Embed URL) for {}".format(data["title"]))
+        logger.info("Old Value: {} | New Value: {}".format(cur_website, new_website))
 
         # Action complete, report status to context author
         embed = discord.Embed(
