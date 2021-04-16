@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.6.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.5.0...v1.6.0) (2021-04-16)
+
+
+### Features
+
+* Incorporate tools.py delta_datetime functionality into whois command ([3e0b884](https://www.github.com/lukadd16/NBC-Boterator/commit/3e0b8842d01b868eb93170bcc924a743de5e2b19))
+* Refactor cog and add new functionality to assist process of updating existing partner records ([#65](https://www.github.com/lukadd16/NBC-Boterator/issues/65)) ([417f0ec](https://www.github.com/lukadd16/NBC-Boterator/commit/417f0ecb9187880d0bff67ff2b6a496902e0621e))
+* **utilities:** Add field to whois command that indicates how long ago the specified user last sent a message in the guild ([e6ba8a5](https://www.github.com/lukadd16/NBC-Boterator/commit/e6ba8a586946da39d16eae95d9532c148dc7807f))
+* **utilities:** Colour of sidebar in embed response from whois command will match the colour of the specified member's top-most role ([2f13d3e](https://www.github.com/lukadd16/NBC-Boterator/commit/2f13d3e0b2eff904f2b56add4f9a4ee3230e24f5))
+
+
+### Bug Fixes
+
+* Add local error handler to pinned command to catch 403 Forbidden errors ([897df04](https://www.github.com/lukadd16/NBC-Boterator/commit/897df048cc7c18f92ece4ccab1eb38a406087875))
+
 ## [1.5.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.4.3...v1.5.0) (2021-04-05)
 
 
