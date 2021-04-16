@@ -146,7 +146,7 @@ class Partners(commands.Cog):
         return inv
 
     @staticmethod
-    async def validate_representative(ctx, rep):
+    async def validate_representative(ctx, rep: str):
         if rep is None:
             raise errors.DataValidationError("Representative field cannot be blank.")
 
@@ -161,8 +161,8 @@ class Partners(commands.Cog):
         return rep
 
     @staticmethod
-    async def validate_colour(ctx, colour):
-        if colour is None:
+    async def validate_colour(ctx, colour: str):
+        if colour is None or colour.lower() == "none":
             logger.info(
                 "No colour specified, returning DARK_EMBED_BG constant."
             )
@@ -186,8 +186,8 @@ class Partners(commands.Cog):
 
     # Does not validate that URL actually points to a file, but rather the existence of the arg.
     @staticmethod
-    def validate_banner(banner):
-        if banner is None:
+    def validate_banner(banner: str):
+        if banner is None or banner.lower() == "none":
             logger.info(
                 "No banner specified, returning default discord.Embed.Empty value."
             )
@@ -198,7 +198,7 @@ class Partners(commands.Cog):
     # Does not validate that URL actually points to a website, but rather the existence of the arg.
     @staticmethod
     def validate_website(web):
-        if web is None:
+        if web is None or web.lower() == "none":
             logger.info(
                 "No website specified, returning default discord.Embed.Empty value."
             )
@@ -853,7 +853,10 @@ class Partners(commands.Cog):
         data = embed.to_dict()
 
         # Set the embed's URL to the new one
-        data.setdefault("url", new_website)
+        try:
+            data["url"] = new_website  # Key already exists
+        except KeyError:
+            data.setdefault("url", new_website)  # Key does not exist
 
         # Update timestamp
         data["timestamp"] = datetime.utcnow().isoformat()
