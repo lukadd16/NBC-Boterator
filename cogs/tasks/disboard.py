@@ -1,7 +1,3 @@
-import functools
-import threading
-import time
-
 import app_logger
 import asyncio
 import config
@@ -10,7 +6,8 @@ import discord
 import discord.utils
 import os
 
-from discord.ext import commands, tasks
+from datetime import datetime
+from discord.ext import commands
 
 logger = app_logger.get_logger(__name__)
 
@@ -18,14 +15,17 @@ logger = app_logger.get_logger(__name__)
 class Disboard(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.settings = self._init_db()
+        self.settings = self.init_db()
+        self.last_bump_at = None
+        self.bump_delay = 7200  # Disboard restricts bumps to once every two hours
 
     def cog_unload(self):
         for h in logger.handlers:
             logger.removeHandler(h)
 
     # Database configuration
-    def _init_db(self):
+    @staticmethod
+    def init_db():
         # Construct the file path to our .INI file
         cwd = os.getcwd()
         db_dir = cwd + r"\data\db"
@@ -39,7 +39,7 @@ class Disboard(commands.Cog):
             with open(db_file_path) as f:
                 conf.read_file(f)
         except IOError:
-            logger.warning("The .INI settings file could not be configured, this cog will not function properly.")
+            logger.warning("The .INI settings file could not be configured.")
             conf = None
 
         return conf
@@ -68,18 +68,34 @@ class Disboard(commands.Cog):
 
         # Check if the string indicating server bump completed is in the embed's description
         if config.DISBOARD_SUCCESS in description.lower():
-            # A user just bumped the server, call our method to send the notification message (in two hours time)
+            # A user just bumped the server, keep track of the current time (which would be when
+            # the server was last bumped at) and call our method to send the notification message (in two hours time)
+            self.last_bump_at = datetime.utcnow()
+
             logger.info("Calling future !d bump notification")
             await self.send_notif_msg()
 
     async def send_notif_msg(self):
         # We want to wait two hours before sending the message
-        await asyncio.sleep(15)  # TODO: change delay to 7200 seconds after testing
+        await asyncio.sleep(self.bump_delay)
 
         logger.debug("Server can be bumped")
+        logger.debug("Last server bump occurred at: {}".format(self.last_bump_at))
 
         # Send message to the #bot-commands channel notifying members that the server can now be bumped
-        await self._get_notif_channel().send("*Beep Boop* {0} The server can now be bumped {0}".format(config.EMOJI_ROBOT))
+        target = self._get_notif_channel()
+        embed = discord.Embed(
+            title="{0} Beep Boop {0}".format(config.EMOJI_ROBOT),
+            description="The server can now be bumped"
+                        "\n> How do I bump? Type `!d bump`, simple!",
+            colour=2406327,  # This is the embed colour (as a base-10 int) that the disboard bot uses
+            timestamp=self.last_bump_at
+        )
+        embed.set_footer(
+            text="Most Recent Bump",
+            icon_url=target.guild.icon_url
+        )
+        await target.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
@@ -88,15 +104,15 @@ class Disboard(commands.Cog):
         embeds = message.embeds
 
         # Load state of config settings
-        notify_enabled = self.settings["disboard"].getboolean("notify_enabled")
-        bump_event_active = self.settings["disboard"].getboolean("bump_event_active")
+        notify_enabled = self.settings["disboard"].getboolean("notify-enabled")
+        bump_event_active = self.settings["disboard"].getboolean("bump-event-active")
 
         # We want to ignore messages from the bot itself (to avoid infinite recursion)
-        # if author.id is self.bot.user.id:
-        #     return
+        if author.id is self.bot.user.id:
+            return
 
         # If the message has an embed, check its description to see if it matches the one indicating the server bump was successful
-        if embeds is not None and notify_enabled is True:
+        if len(embeds) > 0 and notify_enabled is True:
             embed = embeds[0]
             as_dict = embed.to_dict()
             await self.check_description(as_dict)
@@ -107,7 +123,6 @@ class Disboard(commands.Cog):
     @commands.command()
     async def send_fake_bump(self, ctx):
         # Fetch the message containing the embed we are going to copy
-
         guild = discord.utils.get(  # Temporary
             self.bot.guilds,
             name="Northbridge Café"
@@ -116,7 +131,6 @@ class Disboard(commands.Cog):
             guild.text_channels,
             id=676502452694155324
         )
-
         disboard_msg = await target.fetch_message(835144761194315776)
 
         # Get the discord.Embed object from the message
