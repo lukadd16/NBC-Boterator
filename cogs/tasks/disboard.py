@@ -28,7 +28,7 @@ class Disboard(commands.Cog):
     def init_db():
         # Construct the file path to our .INI file
         cwd = os.getcwd()
-        db_dir = cwd + r"\data\db"
+        db_dir = os.path.join(cwd, "data", "db")
         db_file_name = "settings.ini"
         db_file_path = os.path.join(db_dir, db_file_name)
         logger.info("INI File Path: {}".format(db_file_path))
