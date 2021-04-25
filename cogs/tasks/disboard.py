@@ -49,7 +49,7 @@ class Disboard(commands.Cog):
         # Get the TextChannel we want to send the notification to
         target_channel = discord.utils.get(
             self.bot.get_all_channels(),
-            guild__name="Jarvis Bot",
+            guild__name="Northbridge Café",
             id=config.BOTS_CHANNEL
         )
         logger.debug(
