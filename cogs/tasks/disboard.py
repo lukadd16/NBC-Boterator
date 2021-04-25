@@ -66,14 +66,17 @@ class Disboard(commands.Cog):
         except KeyError:
             return
 
-        # Check if the string indicating server bump completed is in the embed's description
-        if config.DISBOARD_SUCCESS in description.lower():
-            # A user just bumped the server, keep track of the current time (which would be when
-            # the server was last bumped at) and call our method to send the notification message (in two hours time)
-            self.last_bump_at = datetime.utcnow()
+        if description is not None:
+            # Check if the string indicating server bump completed is in the embed's description
+            if config.DISBOARD_SUCCESS in description.lower():
+                # A user just bumped the server, keep track of the current time (which would be when
+                # the server was last bumped at) and call our method to send the notification message (in two hours time)
+                self.last_bump_at = datetime.utcnow()
 
-            logger.info("Calling future !d bump notification")
-            await self.send_notif_msg()
+                logger.info("Calling future !d bump notification")
+                await self.send_notif_msg()
+        else:
+            return
 
     async def send_notif_msg(self):
         # We want to wait two hours before sending the message
