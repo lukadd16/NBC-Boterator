@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.6.0...v1.7.0) (2021-04-25)
+
+
+### Features
+
+* Automated messages when server can be bumped on disboard.org ([#67](https://www.github.com/lukadd16/NBC-Boterator/issues/67)) ([2b13c41](https://www.github.com/lukadd16/NBC-Boterator/commit/2b13c41314a1ffc0c655d49109230f7b07fbb6e6))
+
 ## [1.6.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.5.0...v1.6.0) (2021-04-16)
 
 
