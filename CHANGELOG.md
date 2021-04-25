@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.7.1](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.7.0...v1.7.1) (2021-04-25)
+
+
+### Bug Fixes
+
+* **disboard:** Avoid uncaught AttributeError (when description is NoneType) ([3c9b605](https://www.github.com/lukadd16/NBC-Boterator/commit/3c9b605230f02646828195dd879dd2a834d32d5b))
+* **disboard:** Use path.join rather than string literals when finding FP to settings.ini ([2f8b4ef](https://www.github.com/lukadd16/NBC-Boterator/commit/2f8b4efad182f0858ff3c2d1c19a7911e228ce2b))
+
 ## [1.7.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.6.0...v1.7.0) (2021-04-25)
 
 
