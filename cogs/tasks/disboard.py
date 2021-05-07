@@ -78,7 +78,7 @@ class Disboard(commands.Cog):
                 self.last_bump_at = datetime.utcnow()
 
                 # Ignore any errors raised when attempting to delete the previous bump notification message
-                with suppress(discord.NotFound, discord.Forbidden, discord.HTTPException):
+                with suppress(discord.NotFound, discord.Forbidden, discord.HTTPException, AttributeError):
                     await self.last_notif_msg.delete()
                     logger.info("Deleted most recent bump notification")
 
