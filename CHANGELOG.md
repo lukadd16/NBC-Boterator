@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.8.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.7.1...v1.8.0) (2021-05-07)
+
+
+### Features
+
+* [WIP] Implement custom checks for future use in moderation commands ([1b397d0](https://www.github.com/lukadd16/NBC-Boterator/commit/1b397d00d315de873f3c3fb395b760e198042eca))
+
+
+### Bug Fixes
+
+* **disboard:** Fetched notif channel from wrong server ([6d7678c](https://www.github.com/lukadd16/NBC-Boterator/commit/6d7678cc4db289a0e859fecc22a8de9396644df4))
+* Last automated bump message should be deleted when the server is bumped again ([679e20e](https://www.github.com/lukadd16/NBC-Boterator/commit/679e20ef98e48be1d82a465ac8980c91608e100a))
+
 ### [1.7.1](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.7.0...v1.7.1) (2021-04-25)
 
 
