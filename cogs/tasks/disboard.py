@@ -1,13 +1,15 @@
-import app_logger
 import asyncio
-import config
 import configparser
+import os
+from contextlib import suppress
+from datetime import datetime
+
 import discord
 import discord.utils
-import os
-
-from datetime import datetime
 from discord.ext import commands
+
+import app_logger
+import config
 
 logger = app_logger.get_logger(__name__)
 
@@ -17,6 +19,7 @@ class Disboard(commands.Cog):
         self.bot = bot
         self.settings = self.init_db()
         self.last_bump_at = None
+        self.last_notif_msg = None  # Store the ID of the most recently sent bump notification embed
         self.bump_delay = 7200  # Disboard restricts bumps to once every two hours
 
     def cog_unload(self):
@@ -71,7 +74,13 @@ class Disboard(commands.Cog):
             if config.DISBOARD_SUCCESS in description.lower():
                 # A user just bumped the server, keep track of the current time (which would be when
                 # the server was last bumped at) and call our method to send the notification message (in two hours time)
+                logger.info("Server was bumped")
                 self.last_bump_at = datetime.utcnow()
+
+                # Ignore any errors raised when attempting to delete the previous bump notification message
+                with suppress(discord.NotFound, discord.Forbidden, discord.HTTPException):
+                    await self.last_notif_msg.delete()
+                    logger.info("Deleted most recent bump notification")
 
                 logger.info("Calling future !d bump notification")
                 await self.send_notif_msg()
@@ -98,7 +107,10 @@ class Disboard(commands.Cog):
             text="Most Recent Bump",
             icon_url=target.guild.icon_url
         )
-        await target.send(embed=embed)
+        msg = await target.send(embed=embed)
+
+        # Store ID of the message we just sent
+        self.last_notif_msg = msg
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
