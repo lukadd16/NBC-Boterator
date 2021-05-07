@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.8.1](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.8.0...v1.8.1) (2021-05-07)
+
+
+### Bug Fixes
+
+* **disboard:** Ignore AttributeError on first run of check_description ([831f91e](https://www.github.com/lukadd16/NBC-Boterator/commit/831f91e544e337a83516f4c00b167c52f68461e0))
+
 ## [1.8.0](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.7.1...v1.8.0) (2021-05-07)
 
 
