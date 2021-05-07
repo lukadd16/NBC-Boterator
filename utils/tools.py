@@ -74,19 +74,19 @@ def delta_datetime_to_str(start_time: datetime) -> str:
 # Helper method; Contains the comparison logic that determines how a calculated delta should be formatted as a string
 def _formatted_delta(days: int, hours: int, minutes: int, seconds: float) -> str:
     if days > 1:
-        return "{0} days ago".format(days)
+        return "{} days ago".format(days)
     if days == 1:
-        return "{0} day ago".format(days)
+        return "{} day ago".format(days)
     if hours > 1:
-        return "{0} hours ago".format(hours)
+        return "{} hours ago".format(hours)
     if hours == 1:
-        return "{0} hour ago".format(hours)
+        return "{} hour ago".format(hours)
     if minutes > 1:
-        return "{0} minutes ago".format(minutes)
+        return "{} minutes ago".format(minutes)
     if minutes == 1:
-        return "{0} minute ago".format(minutes)
+        return "{} minute ago".format(minutes)
 
-    return "{0} seconds ago".format(int(seconds))
+    return "{} seconds ago".format(int(seconds))
 
 
 # Returns the emoji (defined in the config file) that corresponds to the
