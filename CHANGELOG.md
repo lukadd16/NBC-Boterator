@@ -5,7 +5,7 @@
 
 ### Bug Fixes
 
-* suggest_channel in __init__ produced NoneType object instead of TextChannel; move UtilitiesCog helper functions to tools module ([af6db91](https://www.github.com/lukadd16/NBC-Boterator/commit/af6db91e1fc60531cd126c6dddcd4e11750e6c32))
+* suggest_channel in \__init__ produced NoneType object instead of TextChannel; move UtilitiesCog helper functions to tools module ([af6db91](https://www.github.com/lukadd16/NBC-Boterator/commit/af6db91e1fc60531cd126c6dddcd4e11750e6c32))
 
 ### [1.8.1](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.8.0...v1.8.1) (2021-05-07)
 
