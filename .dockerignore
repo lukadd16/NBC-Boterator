@@ -1,0 +1,8 @@
+/Archive
+/.github
+/.vscode
+/env
+/logs
+*.md
+*.example.py
+**/__pycache__
