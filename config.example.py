@@ -40,7 +40,7 @@ BOT_HELP_BAN_ARG = "```Optional days argument is how many days prior (to a max o
 BOT_GITHUB_HOME = "https://github.com/lukadd16/NBC-Boterator"
 BOT_GITHUB_LATEST = "https://github.com/lukadd16/NBC-Boterator/releases/latest"
 BOT_YOUTUBE_CHANNEL = "https://www.youtube.com/channel/UCg0rmRJpWFPJPVQF6FfgBVw"
-BOT_URL = "http://northbridgecafe.tk"
+BOT_URL = "http://northbridgecafe.ga"
 
 # Embed Colours
 BOT_COLOUR = 0x1cc2ff
