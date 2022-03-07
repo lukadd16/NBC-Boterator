@@ -1,7 +1,7 @@
 # slim-buster is significantly smaller, but to compensate excludes certain tools such as gcc (which may be needed to build certain dependencies)
 # For now will use buster image until discover valid ways of reducing both image size and build time
 
-FROM python:3.7.9-buster
+FROM python:3.9.7-buster
 
 RUN apt-get -y update
 
