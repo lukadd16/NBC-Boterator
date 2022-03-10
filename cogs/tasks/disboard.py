@@ -77,10 +77,21 @@ class Disboard(commands.Cog):
                 logger.info("Server was bumped")
                 self.last_bump_at = datetime.utcnow()
 
-                # Ignore any errors raised when attempting to delete the previous bump notification message
-                with suppress(discord.NotFound, discord.Forbidden, discord.HTTPException, AttributeError):
+                # Attempt to delete the previous notification message that was sent by the bot
+                try:
                     await self.last_notif_msg.delete()
                     logger.info("Deleted most recent bump notification")
+                except discord.NotFound as ex:
+                    logger.error("The message referenced by last_notif_msg could not be found", ex, exc_info=True)
+                except discord.Forbidden as ex:
+                    logger.error("Deleting the previous bump notification is Forbidden", ex, exc_info=True)
+                except discord.HTTPException as ex:
+                    logger.error("HTTPException occurred while trying to delete the previous bump notification", ex, exc_info=True)
+                except AttributeError as ex:
+                    logger.error("AttributeError when trying to call .delete() on the last_notif_msg field, perhaps it is None?", ex, exc_info=True)
+                    logger.debug(f"Contents of last_notif_msg: {self.last_notif_msg}")
+                except Exception as ex:
+                    logger.error("An uncaught exception occurred while trying to call .delete()", ex, exc_info=True)
 
                 logger.info("Calling future !d bump notification")
                 await self.send_notif_msg()
