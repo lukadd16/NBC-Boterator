@@ -126,24 +126,26 @@ class Disboard(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         author = message.author
-        origin = message.channel
+        guild = message.guild
         embeds = message.embeds
-
-        # Load state of config settings
-        notify_enabled = self.settings["disboard"].getboolean("notify-enabled")
-        bump_event_active = self.settings["disboard"].getboolean("bump-event-active")
 
         # We want to ignore messages from the bot itself (to avoid infinite recursion)
         if author.id is self.bot.user.id:
             return
+
+        # Ensure we are only listening to the bot's home guild
+        if guild.id is config.HOME_SERVER_ID:
+            return
+
+        # Load state of config settings
+        notify_enabled = self.settings["disboard"].getboolean("notify-enabled")
+        # bump_event_active = self.settings["disboard"].getboolean("bump-event-active")
 
         # If the message has an embed, check its description to see if it matches the one indicating the server bump was successful
         if len(embeds) > 0 and notify_enabled is True:
             embed = embeds[0]
             as_dict = embed.to_dict()
             await self.check_description(as_dict)
-
-        # Checks for the bump event would go here...
 
     # Will send an embed in #bot-commands that is identical to the one disboard's bot would send upon successful bump of the server
     @commands.command()
