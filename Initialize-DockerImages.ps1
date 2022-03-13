@@ -1,13 +1,3 @@
-# Commands for building dev images (these should be in a different script):
-# docker buildx build --platform linux/arm/v7 -f Dockerfile.dev -t lukadd16/nbc-boterator:X.Y.Z-armv7 .
-# docker buildx build --platform linux/amd64 -f Dockerfile.dev -t lukadd16/nbc-boterator:X.Y.Z-amd64 .
-
-
-# In addition to ^^, should also run the cmd that exports the armv7 version (but cd into the 'My Programming/Docker/Exported Images' dir):
-# docker save -o nbc-boterator-X.Y.Z-armv7.tar lukadd16/nbc-boterator:X.Y.Z-armv7
-# NOTE: try getting this to work with gzip or other more compact file archive (I want to minimize how many MB I need to upload to the RPi each time)
-# Also, run this cmd
-
 function Initialize-DockerImages {
 
     <#
@@ -48,11 +38,6 @@ function Initialize-DockerImages {
             Description
             ---
             Builds docker images for a development environment, using the version number 1.8.2-preview in the image's tag.
-
-        .NOTES
-            Modified Date: 2022-02-22
-            ---
-            Version 1.0 - Initial Version
     #>
 
     [CmdletBinding()]
