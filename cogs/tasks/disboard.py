@@ -130,11 +130,11 @@ class Disboard(commands.Cog):
         embeds = message.embeds
 
         # We want to ignore messages from the bot itself (to avoid infinite recursion)
-        if author.id is self.bot.user.id:
+        if author.id == self.bot.user.id:
             return
 
         # Ensure we are only listening to the bot's home guild
-        if guild.id is config.HOME_SERVER_ID:
+        if guild.id != config.HOME_SERVER_ID:
             return
 
         # Load state of config settings
