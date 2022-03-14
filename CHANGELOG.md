@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.8.4](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.8.3...v1.8.4) (2022-03-14)
+
+
+### Bug Fixes
+
+* **disboard:** Guild check should be not equals ([8ac61ac](https://www.github.com/lukadd16/NBC-Boterator/commit/8ac61ac3f0d63421d4d897e7036eae2378f88d54))
+
 ### [1.8.3](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.8.2...v1.8.3) (2022-03-13)
 
 
