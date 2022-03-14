@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.8.3](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.8.2...v1.8.3) (2022-03-13)
+
+
+### Bug Fixes
+
+* **disboard:** Add guild check in on_message ([d29ed76](https://www.github.com/lukadd16/NBC-Boterator/commit/d29ed76d31cf4c4be64eb86e333cf87682787050))
+* **disboard:** Remove supression of exceptions when deleting notification msg ([8d6710c](https://www.github.com/lukadd16/NBC-Boterator/commit/8d6710c166e53f5192690a564c75037315c9c3b8))
+
 ### [1.8.2](https://www.github.com/lukadd16/NBC-Boterator/compare/v1.8.1...v1.8.2) (2021-12-25)
 
 
